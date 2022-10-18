@@ -1,0 +1,42 @@
+.tab-outer {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 15px 10px;
+  background-color: #e5e5e5;
+  width: 130px;
+}
+.tab-outer .tab-icon {
+  display: block;
+  width: 40px;
+  margin: 0 auto;
+  height: 40px;
+}
+.tab-outer .tab-text {
+  font-size: 14px;
+}
+
+/* Inactive tab */
+.myClass {
+  display: flex;
+  gap: 30px;
+}
+
+.myClass > li > button {
+  color: #343a40;
+  padding: 0;
+}
+
+/* Active tab */
+.myClass > li > button h6 {
+  border: 1px solid gray;
+  padding: 10px 10px;
+  border-radius: 5px;
+  margin-top: 15px;
+}
+
+.myClass > li > button.active h6,
+.myClass ul > li.active > button:hover h6,
+.myClass ul > li.active > button:focus h6 {
+  background-color: #0d6efd !important;
+  color: white !important;
+}/*# sourceMappingURL=addStock.css.map */
