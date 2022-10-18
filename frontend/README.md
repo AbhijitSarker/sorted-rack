@@ -1,4 +1,4 @@
-# Follow steps for sorted rack project setup
+# Follow steps for sortedrack project setup
 
 # Getting Started with Create React App
 
