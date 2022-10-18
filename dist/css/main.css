@@ -1,0 +1,98 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;700&display=swap");
+html,
+body {
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+body {
+  background: #e5e5e5;
+  font-family: "Open Sans";
+}
+
+h1 {
+  color: #212529;
+  font-size: 40px;
+  line-height: 54px;
+  font-weight: 700;
+}
+
+main {
+  height: 100vh;
+  height: -webkit-fill-available;
+  max-height: 100vh;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.sidebar {
+  width: 280px;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  flex-direction: column;
+}
+.form-signin h1 {
+  margin-bottom: 40px;
+}
+.form-signin .form-logo {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.form-signin .form-check {
+  margin-top: 24px;
+}
+.form-signin .login-btn {
+  margin-top: 24px;
+  width: 100%;
+}
+.form-signin .form-floating input {
+  background: #ffffff !important;
+}
+
+.stock-main-body .single-stock {
+  background: #f0f0f0;
+}
+.stock-main-body .stock-available {
+  color: #a2a2a2;
+}
+.stock-main-body .total-stock p {
+  color: #a2a2a2;
+}
+
+.system-details .table > :not(caption) > * > * {
+  border-bottom-width: 0 !important;
+}
+.system-details td {
+  padding-bottom: 20px;
+}
+
+.hide {
+  margin-left: -280px;
+}
+
+.h-100vh {
+  height: 100vh;
+}
+
+footer {
+  font-size: 16px;
+  line-height: 22px;
+  font-family: "Open Sans";
+  color: #212529;
+  opacity: 0.6;
+  text-align: center;
+  position: absolute;
+  bottom: 30px;
+  width: 100%;
+} /*# sourceMappingURL=main.css.map */
