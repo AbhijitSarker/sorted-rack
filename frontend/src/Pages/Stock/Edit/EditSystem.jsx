@@ -42,72 +42,73 @@ const EditSystemDetails = () => {
   const navigate = useNavigate();
   const [initialValues, setInitialValues] = useState({});
   const productCategoryRef = useRef(null);
-  const [response, axiosFetch] = useAxios();
-  const { setDeviceCategory } = useContext(StockContext);
+ const [response, error, loading, axiosFetch] = useAxios();
+ const { setDeviceCategory } = useContext(StockContext);
 
-  const getDeviceDetails = () =>
-    axiosFetch({
-      axiosInstance: axiosSecure,
-      method: "GET",
-      url: `product/${id}`,
-      requestConfig: [
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
-          },
-        },
-      ],
-    });
+ const getDeviceDetails = () =>
+   axiosFetch({
+     axiosInstance: axiosSecure,
+     method: "GET",
+     url: `/product/${id}`,
+     requestConfig: [
+       {
+         headers: {
+           Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
+         },
+       },
+     ],
+   });
 
-  useEffect(() => {
-    getDeviceDetails();
-  }, []);
+ useEffect(() => {
+   getDeviceDetails();
+ }, []);
 
-  useEffect(() => {
-    const deviceDetails = response?.product || {};
-    if (Object.keys(deviceDetails).length > 0) {
-      debugger;
-      productCategoryRef.current = deviceDetails.productCategory;
-      productCategoryRef.current === "Accessories"
-        ? setInitialValues({
-          accessoriesName: deviceDetails.accessoriesName,
-          dateOfPurchase: deviceDetails.dateOfPurchase?.split("T")[0] || "",
-          productType: deviceDetails.productType,
-          serialNumber: deviceDetails.serialNumber,
-          warrantyPeriod: deviceDetails.warrantyPeriod,
-        })
-        : setInitialValues({
-          systemBrand: deviceDetails.systemBrand,
-          systemModel: deviceDetails.systemModel,
-          systemName: deviceDetails.systemName,
-          os: deviceDetails.os,
-          cpu: deviceDetails.cpu,
-          ram: deviceDetails.ram,
-          storageType: deviceDetails.storageType,
-          storageCapacity: deviceDetails.storageCapacity,
-          macAddress: deviceDetails.macAddress,
-          ipAddress: deviceDetails.ipAddress,
-          productKey: deviceDetails.productKey,
-          serialNumber: deviceDetails.serialNumber,
-          dateOfPurchase: deviceDetails.dateOfPurchase?.split("T")[0] || "",
-          warrantyPeriod: deviceDetails.warrantyPeriod,
-        });
-    }
-  }, [response]);
+ useEffect(() => {
+   if (response) {
+     const deviceDetails = response?.product || {};
+     if (Object.keys(deviceDetails).length > 0) {
+       productCategoryRef.current = deviceDetails.productCategory;
+       productCategoryRef.current === "Accessories"
+         ? setInitialValues({
+             accessoriesName: deviceDetails.accessoriesName,
+             dateOfPurchase: deviceDetails.dateOfPurchase?.split("T")[0] || "",
+             productType: deviceDetails.productType,
+             serialNumber: deviceDetails.serialNumber,
+             warrantyPeriod: deviceDetails.warrantyPeriod,
+           })
+         : setInitialValues({
+             systemBrand: deviceDetails.systemBrand,
+             systemModel: deviceDetails.systemModel,
+             systemName: deviceDetails.systemName,
+             os: deviceDetails.os,
+             cpu: deviceDetails.cpu,
+             ram: deviceDetails.ram,
+             storageType: deviceDetails.storageType,
+             storageCapacity: deviceDetails.storageCapacity,
+             macAddress: deviceDetails.macAddress,
+             ipAddress: deviceDetails.ipAddress,
+             productKey: deviceDetails.productKey,
+             serialNumber: deviceDetails.serialNumber,
+             dateOfPurchase: deviceDetails.dateOfPurchase?.split("T")[0] || "",
+             warrantyPeriod: deviceDetails.warrantyPeriod,
+           });
+     }
+   }
+ }, [response]);
 
-  const handleUpdateStockDetails = async (values, setSubmitting) => {
-    const response = await axiosSecure.patch(`/product/${id}`, values, {
-      headers: {
-        Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
-      },
-    });
+ const handleUpdateStockDetails = async (values, setSubmitting) => {
+   const responseUpdated = await axiosSecure.patch(`/product/${id}`, values, {
+     headers: {
+       Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
+     },
+   });
 
-    setSubmitting(false);
-    if (response) {
-      setDeviceCategory(productCategoryRef.current);
-      navigate("/stock", { replace: true });
-    }
-  };
+   setSubmitting(false);
+   if (responseUpdated) {
+     setDeviceCategory(productCategoryRef.current);
+     navigate("/stock", { replace: true });
+   }
+ };
 
   return (
     <Container className="mt-3" style={{ width: "80%" }}>
