@@ -101,7 +101,7 @@ const LoginForm = () => {
                     value={email}
                     required
                   />
-                  <label htmlFor="floatingInputCustom">Email ID</label>
+                  <label htmlFor="floatingInputCustom">Email Address</label>
                 </Form.Floating>
                 <Form.Floating>
                   <Form.Control
