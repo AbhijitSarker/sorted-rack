@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React, { useEffect, useState, useRef, useContext, useMemo } from "react";
 import Spinner from "react-bootstrap/Spinner";
 import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
@@ -15,18 +15,25 @@ import Modal from "react-bootstrap/Modal";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { convertDate } from "../../../Utility/utility";
 import { StockContext } from "../../../contexts/StockContext";
+import PaginationComponent from "../../../component/Pagination/Pagination";
+import { Col, Form } from "react-bootstrap";
+import { Toaster } from "../../../component/Toaster/Toaster";
 
 const deleteStock = (stockItemId) =>
   axiosSecure.delete(`/product/${stockItemId}`, {
     headers: {
-      Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
+      Authorization: `Bearer ${
+        localStorage.userDetails && JSON.parse(localStorage.userDetails).token
+      }`,
     },
   });
 
 const ListStock = () => {
+  const [showToaster, setShowToaster] = useState(false);
   const { deviceCategory, setDeviceCategory } = useContext(StockContext);
   const [response, error, loading, axiosFetch] = useAxios();
   const [devicesDetails, setDevicesDetails] = useState([]);
+  const [search, setSearch] = useState("");
   const [refresh, setRefresh] = useState(false);
   const [showRemoveDeviceModal, setShowRemoveDeviceModal] = useState(false);
   const [showAssignmentModal, setShowAssignmentModal] = useState(false);
@@ -35,10 +42,17 @@ const ListStock = () => {
   const [selectedUserEmail, setSelectedUserEmail] = useState([]);
   const [selectedStockId, setSelectedStockId] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
+  const [totalItems, setTotalItems] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
   const removeDeviceIdRef = useRef(null);
 
-  const handleAssignmentModal = () => setShowAssignmentModal(!showAssignmentModal);
-  const handleRemoveDeviceModal = () => setShowRemoveDeviceModal(!showRemoveDeviceModal);
+  const handleAssignmentModal = () =>
+    setShowAssignmentModal(!showAssignmentModal);
+  const handleRemoveDeviceModal = () => {
+    setShowRemoveDeviceModal(!showRemoveDeviceModal);
+    setCurrentPage(1);
+  };
 
   const handleRemoveDevice = () => {
     setShowLoader(true);
@@ -47,6 +61,7 @@ const ListStock = () => {
       response && setShowLoader(false);
       handleRemoveDeviceModal();
       setRefresh(!refresh);
+      setShowToaster(true);
     })();
   };
 
@@ -58,7 +73,10 @@ const ListStock = () => {
       requestConfig: [
         {
           headers: {
-            Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
+            Authorization: `Bearer ${
+              localStorage.userDetails &&
+              JSON.parse(localStorage.userDetails).token
+            }`,
           },
         },
       ],
@@ -67,10 +85,14 @@ const ListStock = () => {
   const getAllUsers = async () => {
     const { data } = await axiosSecure.get("/user", {
       headers: {
-        Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
+        Authorization: `Bearer ${
+          localStorage.userDetails && JSON.parse(localStorage.userDetails).token
+        }`,
       },
     });
-    userList.current = data.user.filter((usr) => usr.branch === "Goa" && usr.status === "active");
+    userList.current = data.user.filter(
+      (usr) => usr.branch === "Goa" && usr.status === "active"
+    );
     const usersEmail = userList.current.map((user) => user.email);
     setEmailList(usersEmail);
   };
@@ -82,7 +104,9 @@ const ListStock = () => {
   };
 
   const handleUserStockAssignment = async () => {
-    const selectedUserId = userList.current.find((user) => user.email === selectedUserEmail[0])._id;
+    const selectedUserId = userList.current.find(
+      (user) => user.email === selectedUserEmail[0]
+    )._id;
 
     setShowLoader(true);
     await axiosSecure.post(
@@ -94,7 +118,10 @@ const ListStock = () => {
       },
       {
         headers: {
-          Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
+          Authorization: `Bearer ${
+            localStorage.userDetails &&
+            JSON.parse(localStorage.userDetails).token
+          }`,
         },
       }
     );
@@ -106,16 +133,44 @@ const ListStock = () => {
   const handleProductCategorySelect = (evt) => {
     getAllStockDetails();
     setDeviceCategory(evt);
+    setCurrentPage(1);
   };
 
   useEffect(() => {
     if (response?.products?.length > 0) {
       const filteredResponse = response?.products?.filter(
-        (product) => product.tag === "notassigned" && product.productCategory === deviceCategory
+        (product) =>
+          product.tag === "notassigned" &&
+          product.productCategory === deviceCategory
       );
       setDevicesDetails(filteredResponse);
     }
   }, [response]);
+
+  const filtered = useMemo(() => {
+    let filteredResult = devicesDetails;
+    setTotalItems(devicesDetails?.length);
+
+    if (search) {
+      if (deviceCategory === "System") {
+        filteredResult = filteredResult.filter((result) =>
+          result.systemName.toLowerCase().includes(search.toLowerCase())
+        );
+      } else {
+        filteredResult = filteredResult.filter((result) =>
+          result.accessoriesName.toLowerCase().includes(search.toLowerCase())
+        );
+      }
+    }
+    return filteredResult?.slice(
+      (currentPage - 1) * ITEMS_PER_PAGE,
+      (currentPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
+    );
+  }, [currentPage, response, search]);
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
 
   const showDeviceDetails = () =>
     deviceCategory === "System" ? (
@@ -139,9 +194,9 @@ const ListStock = () => {
           </tr>
         </thead>
         <tbody className="table-group-divider">
-          {devicesDetails.map((item, index) => (
+          {filtered.map((item, index) => (
             <tr key={index}>
-              <td className="stock-brand"> {item.systemBrand} </td>
+              <td className="stock-brand"> {item?.systemBrand} </td>
               <td className="stock-model"> {item.systemModel} </td>
               <td className="stock-name"> {item.systemName} </td>
               <td className="stock-os"> {item.os} </td>
@@ -152,17 +207,33 @@ const ListStock = () => {
               <td className="stock-mac"> {item.macAddress} </td>
               <td className="stock-key"> {item.productKey} </td>
               <td className="stock-serial"> {item.serialNumber} </td>
-              <td className="stock-date"> {convertDate(item.dateOfPurchase || "")} </td>
+              <td className="stock-date">
+                {" "}
+                {convertDate(item.dateOfPurchase || "")}{" "}
+              </td>
               <td className="stock-warranty"> {item.warrantyPeriod} </td>
               <td className="text-center table-action">
-                <Link to={`/stock/edit/${item._id}`} title="Edit" className="px-1" replace>
+                <Link
+                  to={`/stock/edit/${item._id}`}
+                  title="Edit"
+                  className="px-1"
+                  replace
+                >
                   <i className="bi bi-pencil-square"></i>
                 </Link>
-                  <i className="bi bi-trash-fill px-1" title="Delete"  onClick={() => {
+                <i
+                  className="bi bi-trash-fill px-1"
+                  title="Delete"
+                  onClick={() => {
                     handleRemoveDeviceModal();
                     removeDeviceIdRef.current = item._id;
-                  }}></i>
-                  <i title="Assign" className="bi bi-person-check-fill px-1" onClick={() => handleUserSelection(item._id)}></i>
+                  }}
+                ></i>
+                <i
+                  title="Assign"
+                  className="bi bi-person-check-fill px-1"
+                  onClick={() => handleUserSelection(item._id)}
+                ></i>
               </td>
             </tr>
           ))}
@@ -181,10 +252,10 @@ const ListStock = () => {
           </tr>
         </thead>
         <tbody className="table-group-divider">
-          {devicesDetails.map((item, index) => (
+          {filtered.map((item, index) => (
             <tr key={index}>
-              <td> {item.productType} </td>
-              <td> {item.accessoriesName} </td>
+              <td> {item?.productType} </td>
+              <td> {item?.accessoriesName} </td>
               <td> {convertDate(item.dateOfPurchase || "")} </td>
               <td> {item.serialNumber} </td>
               <td> {item.warrantyPeriod} </td>
@@ -198,7 +269,9 @@ const ListStock = () => {
                     removeDeviceIdRef.current = item._id;
                   }}
                 />
-                <MdAssignmentInd onClick={() => handleUserSelection(item._id)} />
+                <MdAssignmentInd
+                  onClick={() => handleUserSelection(item._id)}
+                />
               </td>
             </tr>
           ))}
@@ -209,24 +282,34 @@ const ListStock = () => {
   useEffect(() => {
     getAllStockDetails();
     getAllUsers();
-  }, [refresh]);
+  }, [refresh, deviceCategory]);
 
   return (
     <div className="flex-grow-1 mt-3 h-100 w-100 px-4">
       <div className="d-flex align-items-center justify-content-between">
-        
-        <Modal show={showRemoveDeviceModal} onHide={handleRemoveDeviceModal} className={showLoader ? "on-loading" : ""}>
+        <Modal
+          show={showRemoveDeviceModal}
+          onHide={handleRemoveDeviceModal}
+          className={showLoader ? "on-loading" : ""}
+        >
           {!showLoader ? (
             <>
               <Modal.Header closeButton>
                 <Modal.Title>Are you sure?</Modal.Title>
               </Modal.Header>
-              <Modal.Body>Do you really want to delete these records? This process cannot be undone.</Modal.Body>
+              <Modal.Body>
+                Do you really want to delete these records? This process cannot
+                be undone.
+              </Modal.Body>
               <Modal.Footer>
                 <Button variant="secondary" onClick={handleRemoveDeviceModal}>
                   Cancel
                 </Button>
-                <Button variant="primary" onClick={handleRemoveDevice} disabled={showLoader}>
+                <Button
+                  variant="primary"
+                  onClick={handleRemoveDevice}
+                  disabled={showLoader}
+                >
                   {showLoader ? <Spinner animation="grow" /> : "Delete"}
                 </Button>
               </Modal.Footer>
@@ -253,7 +336,11 @@ const ListStock = () => {
             <Button variant="secondary" onClick={handleAssignmentModal}>
               Cancel
             </Button>
-            <Button variant="primary" disabled={showLoader} onClick={handleUserStockAssignment}>
+            <Button
+              variant="primary"
+              disabled={showLoader}
+              onClick={handleUserStockAssignment}
+            >
               {showLoader ? "Assigning..." : "Assign"}
             </Button>
           </Modal.Footer>
@@ -261,24 +348,45 @@ const ListStock = () => {
       </div>
 
       <div className="row">
-        <div className="col-9">
+        <div className="col-6">
           <h2>Stock Listing</h2>
         </div>
 
-        <div className="col-3 d-flex justify-content-end">
+        <div className="col-6 d-flex justify-content-end">
+          <Form.Group
+            as={Col}
+            md="4"
+            className="me-3"
+            controlId="validationCustom01"
+          >
+            <Form.Control
+              onChange={handleSearch}
+              type="text"
+              placeholder={`Search ${deviceCategory}`}
+            />
+          </Form.Group>
           {
-            <DropdownButton id="dropdown-basic-button" className="me-3" title={deviceCategory} onSelect={handleProductCategorySelect}>
+            <DropdownButton
+              id="dropdown-basic-button"
+              className="me-3"
+              title={deviceCategory}
+              onSelect={handleProductCategorySelect}
+            >
               <Dropdown.Item eventKey="System">System</Dropdown.Item>
               <Dropdown.Item eventKey="Accessories">Accessories</Dropdown.Item>
             </DropdownButton>
           }
           <Link to="/stock/add">
-            <Button variant="primary mb-2 float-right">Add {deviceCategory}</Button>
+            <Button variant="primary mb-2 float-right">
+              Add {deviceCategory}
+            </Button>
           </Link>
         </div>
       </div>
-      
-      <div style={{ width: "100%", overflow: "auto" }}>{showDeviceDetails()}</div>
+
+      <div style={{ width: "100%", overflow: "auto" }}>
+        {showDeviceDetails()}
+      </div>
       {loading && (
         <div className="d-flex justify-content-center">
           <div className="spinner-border" role="status">
@@ -287,6 +395,21 @@ const ListStock = () => {
         </div>
       )}
       {!loading && error && <p className="error-msg">{error}</p>}
+      <div className="d-flex justify-content-end me-3 mt-3">
+        <PaginationComponent
+          total={devicesDetails?.length}
+          itemsPerPage={ITEMS_PER_PAGE}
+          currentPage={currentPage}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
+      </div>
+      <Toaster
+        title="user deleted successfully"
+        bg="danger"
+        showToaster={showToaster}
+        setShowToaster={setShowToaster}
+        to="stock"
+      ></Toaster>
     </div>
   );
 };

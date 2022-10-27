@@ -4,16 +4,17 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
+import Spinner from "react-bootstrap/Spinner";
 import * as yup from "yup";
 import "./accessoriesFormContainer.scss";
 import { axiosSecure } from "../../../../api/axios";
 import { StockContext } from "../../../../contexts/StockContext";
-
+import { Toaster } from "../../../../component/Toaster/Toaster";
 const AccessoriesFormContainer = () => {
+  const [showToaster, setShowToaster] = useState(false);
+  const [loadingBtn, setLoadingBtn] = useState(false);
   const { setDeviceCategory } = useContext(StockContext);
-  const navigate = useNavigate();
   const [count, setCount] = useState([1]);
   const handleCloseOption = () => {
     if (count.length > 1) {
@@ -69,8 +70,8 @@ const AccessoriesFormContainer = () => {
                     }
                   );
                   if (response.status === 201) {
+                    setShowToaster(true);
                     setDeviceCategory("Accessories");
-                    navigate("/stock", { replace: true });
                   }
                 } catch (errorMsg) {
                   alert(errorMsg.response.data.msg);
@@ -188,7 +189,14 @@ const AccessoriesFormContainer = () => {
                 </Row>
                 <Row>
                   <Col xl={12} className="mt-4">
-                    <Button type="submit">Add Accessory</Button>
+                    <Button style={{ width: "150px" }} type="submit">
+                      {" "}
+                      {loadingBtn ? (
+                        <Spinner size="sm" animation="border" role="status" />
+                      ) : (
+                        "Add Accessory"
+                      )}{" "}
+                    </Button>
                   </Col>
                 </Row>
               </Form>
@@ -196,6 +204,13 @@ const AccessoriesFormContainer = () => {
           </Formik>
         </Col>
       </Row>
+      <Toaster
+        title="Accessories added successfully"
+        bg="success"
+        showToaster={showToaster}
+        setShowToaster={setShowToaster}
+        to="stock"
+      ></Toaster>
     </>
   );
 };

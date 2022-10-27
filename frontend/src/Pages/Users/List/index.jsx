@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Tooltip from 'react-bootstrap/Tooltip';
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 import { Link } from "react-router-dom";
 import Col from "react-bootstrap/Col";
-import { BiEdit } from "react-icons/bi";
 import { axiosSecure } from "../../../api/axios";
 import useAxios from "../../../Hooks/useAxios";
 import "./listUser.scss";
+import PaginationComponent from "../../../component/Pagination/Pagination";
 const ListUser = () => {
   const [response, error, loading, axiosFetch] = useAxios();
-  const [searchedUsers, setSearchedUsers] = useState([]);
+  const [search, setSearch] = useState("");
+  const [totalItems, setTotalItems] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
 
   const fetchUserDetails = async () => {
     axiosFetch({
@@ -22,7 +25,10 @@ const ListUser = () => {
       requestConfig: [
         {
           headers: {
-            Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
+            Authorization: `Bearer ${
+              localStorage.userDetails &&
+              JSON.parse(localStorage.userDetails).token
+            }`,
           },
         },
       ],
@@ -33,10 +39,6 @@ const ListUser = () => {
     fetchUserDetails();
   }, []);
 
-  useEffect(() => {
-    setSearchedUsers(response?.user);
-  }, [response]);
-
   const handleStatusToggle = async (user) => {
     await axiosSecure.patch(
       `/user/updateuser/${user._id}`,
@@ -46,16 +48,33 @@ const ListUser = () => {
       },
       {
         headers: {
-          Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
+          Authorization: `Bearer ${
+            localStorage.userDetails &&
+            JSON.parse(localStorage.userDetails).token
+          }`,
         },
       }
     );
     fetchUserDetails();
   };
 
+  const filtered = useMemo(() => {
+    let filteredResult = response?.user;
+    setTotalItems(filteredResult?.length);
+
+    if (search) {
+      filteredResult = filteredResult.filter((result) =>
+        result.fname.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    return filteredResult?.slice(
+      (currentPage - 1) * ITEMS_PER_PAGE,
+      (currentPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
+    );
+  }, [currentPage, response, search]);
+
   const handleSearch = (e) => {
-    const result = response.user.filter((user) => user.fname.toLowerCase().includes(e.target.value));
-    setSearchedUsers(result);
+    setSearch(e.target.value);
   };
 
   return (
@@ -64,10 +83,19 @@ const ListUser = () => {
         <div className="col-9">
           <h2 className="py-3">User Listing</h2>
         </div>
-        <Form.Group as={Col} md="2" className="pe-3" controlId="validationCustom01">
-          <Form.Control onChange={handleSearch} type="text" placeholder="Search User" />
+        <Form.Group
+          as={Col}
+          md="2"
+          className="pe-3"
+          controlId="validationCustom01"
+        >
+          <Form.Control
+            onChange={handleSearch}
+            type="text"
+            placeholder="Search User"
+          />
         </Form.Group>
-        <div className="col-1">
+        <div style={{ width: "100px" }} className="col-1">
           <Link to="/user/add" replace className="btn btn-primary">
             Add User
           </Link>
@@ -81,57 +109,64 @@ const ListUser = () => {
         </div>
       )}
       {!loading && error && <p classname="error-msg">{error}</p>}
-      {searchedUsers?.length > 0 && (
-        <Table striped hover>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
-              <th>Branch</th>
-              <th>Type</th>
-              <th className="text-center">Action</th>
-            </tr>
-          </thead>
-          <tbody className="table-group-divider">
-            {searchedUsers?.map((item, index) => (
-              <tr key={index}>
-                <td className="text-center">
-                  <Form.Check
-                    type="switch"
-                    id="custom-switch"
-                    defaultChecked={item.status === "active" ? true : false}
-                    onClick={() => handleStatusToggle(item)}
-                  />
-                </td>
-                <td>{item.fname}</td>
-                <td>{item.lname}</td>
-                <td>{item.email}</td>
-                <td>{item.branch}</td>
-                <td>{item.role}</td>
-                <td className="text-center">
-                  
+
+      {totalItems && (
+        <div className="user-table">
+          <Table striped hover>
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Branch</th>
+                <th>Type</th>
+                <th className="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody className="table-group-divider">
+              {filtered?.map((item, index) => (
+                <tr key={index}>
+                  <td className="text-center">
+                    <Form.Check
+                      type="switch"
+                      id="custom-switch"
+                      defaultChecked={item.status === "active" ? true : false}
+                      onClick={() => handleStatusToggle(item)}
+                    />
+                  </td>
+                  <td>{item.fname}</td>
+                  <td>{item.lname}</td>
+                  <td>{item.email}</td>
+                  <td>{item.branch}</td>
+                  <td>{item.role}</td>
+                  <td className="text-center">
                     <OverlayTrigger
                       key={item._id}
                       placement="bottom"
                       overlay={
-                        <Tooltip id={`tooltip-${item._id}`}>
-                          Edit User
-                        </Tooltip>
+                        <Tooltip id={`tooltip-${item._id}`}>Edit User</Tooltip>
                       }
                     >
                       <Link to={`/user/edit/${item._id}`} replace>
                         <i className="bi bi-pencil-square"></i>
                       </Link>
                     </OverlayTrigger>
-
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
       )}
+      <div className="d-flex justify-content-end me-3">
+        <PaginationComponent
+          total={response?.user?.length}
+          itemsPerPage={ITEMS_PER_PAGE}
+          currentPage={currentPage}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
+      </div>
     </Container>
   );
 };
