@@ -10,7 +10,7 @@ const AssignItem = () => {
   const [search, setSearch] = useState("");
   const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 5;
+  const ITEMS_PER_PAGE = 10;
   const [showToaster, setShowToaster] = useState(false);
 
   const getAssignedDeviceDetails = async () => {
