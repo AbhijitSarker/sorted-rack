@@ -176,30 +176,45 @@ const getSingleAssignedProduct = async (req, res) => {
   const { id: assignedDeviceId } = req.params;
 
   if (req.user.role === "superadmin") {
-    const singleDoc = await AssignedProduct.findOne({
+    const singleAssignedDevice = await AssignedProduct.findOne({
       _id: assignedDeviceId,
     })
-      .populate({ path: "user", select: "fname branch email status" })
-      .populate({ path: "product", select: "device branch tag" });
-    if (!singleDoc) {
+    .populate({ path: "user", select: "email fname lname userName" })
+    .populate({
+      path: "product",
+      select:
+        "productType branch productCategory warrantyPeriod systemName systemModel systemBrand cpu ram storageType storageCapacity os macAddress productKey serialNumber accessoriesName networkDeviceName tag",
+    })
+    .populate({ path: "assignedBy", select: "email" });
+
+    
+    if (!singleAssignedDevice) {
       throw new CustomError.NotFoundError(
         `No document found with id ${assignedDeviceId}`
       );
     }
-    res.send(singleDoc);
+    res.status(StatusCodes.OK).json({ assignedDevice: singleAssignedDevice });
   }
 
   if (req.user.role === "admin") {
-    const singleDoc = await AssignedProduct.findOne({
+    const singleAssignedDevice = await AssignedProduct.findOne({
       _id: assignedDeviceId,
       branch: req.user.branch,
-    });
-    if (!singleDoc) {
+    })
+    .populate({ path: "user", select: "email fname lname userName" })
+    .populate({
+      path: "product",
+      select:
+        "productType branch productCategory warrantyPeriod systemName systemModel systemBrand cpu ram storageType storageCapacity os macAddress productKey serialNumber accessoriesName networkDeviceName tag",
+    })
+    .populate({ path: "assignedBy", select: "email" });
+
+    if (!singleAssignedDevice) {
       throw new CustomError.NotFoundError(
         `No document found with id ${assignedDeviceId}`
       );
     }
-    res.send(singleDoc);
+    res.status(StatusCodes.OK).json({ assignedDevice: singleAssignedDevice });
   }
 };
 
