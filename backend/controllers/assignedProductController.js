@@ -70,21 +70,15 @@ const createAssignedProduct = async (req, res) => {
 };
 
 const getAllAssignedProduct = async (req, res) => {
-  // Global object created to store values
-  // const assignedDevicesList = {
-  //   _id: "",
-  //   userFname: "",
-  //   userLname: "",
-  //   userEmail: "",
-  //   productType: "",
-  //   assignBy: "",
-  //   assignDate: "",
-  // };
-
+  
   if (req.user.role === "superadmin") {
     const response = await AssignedProduct.find({ status: "active" })
-      .populate({ path: "user", select: "email fname lname" })
-      .populate({ path: "product", select: "productType" })
+      .populate({ path: "user", select: "email fname lname userName" })
+      .populate({
+        path: "product",
+        select:
+          "productType branch productCategory warrantyPeriod systemName systemModel systemBrand cpu ram storageType storageCapacity os macAddress productKey serialNumber accessoriesName networkDeviceName tag",
+      })
       .populate({ path: "assignedBy", select: "email" });
 
     const finalResponse = response.map((item) => {
@@ -93,12 +87,36 @@ const getAllAssignedProduct = async (req, res) => {
       assignedDevicesList.userFname = item.user.fname;
       assignedDevicesList.userLname = item.user.lname;
       assignedDevicesList.userEmail = item.user.email;
+      assignedDevicesList.userName = item.user.userName;
+      assignedDevicesList.branch = item.product.branch;
+      assignedDevicesList.warrantyPeriod = item.product.warrantyPeriod;
+      assignedDevicesList.productCategory = item.product.productCategory;
+      assignedDevicesList.systemName = item.product.systemName;
+      assignedDevicesList.systemModel = item.product.systemModel;
       assignedDevicesList.productType = item.product.productType;
+      assignedDevicesList.systemBrand = item.product.systemBrand;
+      assignedDevicesList.cpu = item.product.cpu;
+      assignedDevicesList.ram = item.product.ram;
+      assignedDevicesList.storageCapacity = item.product.storageCapacity;
+      assignedDevicesList.os = item.product.os;
+      assignedDevicesList.macAddress = item.product.macAddress;
+      assignedDevicesList.productKey = item.product.productKey;
+      assignedDevicesList.serialNumber = item.product.serialNumber;
+      assignedDevicesList.accessoriesName =
+        item?.product?.accessoriesName == undefined
+          ? "--"
+          : item?.product?.accessoriesName;
+      assignedDevicesList.networkDeviceName =
+        item?.product?.networkDeviceName == undefined
+          ? "--"
+          : item?.product?.networkDeviceName;
+      assignedDevicesList.tag = item.product.tag;
+      assignedDevicesList.storageType = item.product.storageType;
       assignedDevicesList.assignBy = item.assignedBy.email;
       assignedDevicesList.assignDate = item.createdAt;
       return assignedDevicesList;
     });
-    console.log('finalResponse', finalResponse);
+    // console.log("finalResponse", finalResponse);
     res.status(StatusCodes.OK).json({ assignedDevices: finalResponse });
   }
   if (req.user.role === "admin") {
@@ -106,9 +124,13 @@ const getAllAssignedProduct = async (req, res) => {
       branch: req.user.branch,
       status: "active",
     })
-      .populate({ path: "user", select: "email fname lname" })
-      .populate({ path: "product", select: "device" })
-      .populate({ path: "assignedBy", select: "email" });
+    .populate({ path: "user", select: "email fname lname userName" })
+    .populate({
+      path: "product",
+      select:
+        "productType branch productCategory warrantyPeriod systemName systemModel systemBrand cpu ram storageType storageCapacity os macAddress productKey serialNumber accessoriesName networkDeviceName tag",
+    })
+    .populate({ path: "assignedBy", select: "email" });
 
     const finalResponse = response.map((item) => {
       const assignedDevicesList = {};
@@ -116,12 +138,36 @@ const getAllAssignedProduct = async (req, res) => {
       assignedDevicesList.userFname = item.user.fname;
       assignedDevicesList.userLname = item.user.lname;
       assignedDevicesList.userEmail = item.user.email;
+      assignedDevicesList.userName = item.user.userName;
+      assignedDevicesList.branch = item.product.branch;
+      assignedDevicesList.warrantyPeriod = item.product.warrantyPeriod;
+      assignedDevicesList.productCategory = item.product.productCategory;
+      assignedDevicesList.systemName = item.product.systemName;
+      assignedDevicesList.systemModel = item.product.systemModel;
       assignedDevicesList.productType = item.product.productType;
+      assignedDevicesList.systemBrand = item.product.systemBrand;
+      assignedDevicesList.cpu = item.product.cpu;
+      assignedDevicesList.ram = item.product.ram;
+      assignedDevicesList.storageCapacity = item.product.storageCapacity;
+      assignedDevicesList.os = item.product.os;
+      assignedDevicesList.macAddress = item.product.macAddress;
+      assignedDevicesList.productKey = item.product.productKey;
+      assignedDevicesList.serialNumber = item.product.serialNumber;
+      assignedDevicesList.accessoriesName =
+        item?.product?.accessoriesName == undefined
+          ? "--"
+          : item?.product?.accessoriesName;
+      assignedDevicesList.networkDeviceName =
+        item?.product?.networkDeviceName == undefined
+          ? "--"
+          : item?.product?.networkDeviceName;
+      assignedDevicesList.tag = item.product.tag;
+      assignedDevicesList.storageType = item.product.storageType;
       assignedDevicesList.assignBy = item.assignedBy.email;
       assignedDevicesList.assignDate = item.createdAt;
       return assignedDevicesList;
     });
-
+    // console.log("finalResponse", finalResponse);
     res.status(StatusCodes.OK).json({ assignedDevices: finalResponse });
   }
 };
@@ -209,7 +255,9 @@ const removeAssignedProduct = async (req, res) => {
 
 const deleteAllAssignedProduct = async (req, res) => {
   await AssignedProduct.deleteMany({});
-  res.status(StatusCodes.OK).json({message:'all assigned products deleated'})
+  res
+    .status(StatusCodes.OK)
+    .json({ message: "all assigned products deleated" });
 };
 
 module.exports = {
