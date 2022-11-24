@@ -39,7 +39,9 @@ const handleOnSubmit = (values) =>
   );
 
 const AddUser = () => {
-  const [showToaster, setShowToaster] = useState(false);
+  const [showAddToaster, setShowAddToaster] = useState(false);
+  const [showErrorToaster, setShowErrorToaster] = useState(false);
+  const [error, setError] = useState("");
   return (
     <div className="flex-grow-1">
       <Formik
@@ -57,10 +59,11 @@ const AddUser = () => {
           try {
             const response = await handleOnSubmit(values);
             if (response.status === 201) {
-              setShowToaster(true);
+              setShowAddToaster(true);
             }
           } catch (errorMsg) {
-            alert(errorMsg.response.data.msg);
+            setError(errorMsg.response.data.msg);
+            setShowErrorToaster(true);
           }
           setSubmitting(false);
         }}
@@ -199,9 +202,16 @@ const AddUser = () => {
       <Toaster
         title="User added successfully"
         bg="success"
-        showToaster={showToaster}
-        setShowToaster={setShowToaster}
+        showToaster={showAddToaster}
+        setShowToaster={setShowAddToaster}
         to="user"
+      ></Toaster>
+      <Toaster
+        title={error}
+        bg="danger"
+        showToaster={showErrorToaster}
+        setShowToaster={setShowErrorToaster}
+        to="user/add"
       ></Toaster>
     </div>
   );
