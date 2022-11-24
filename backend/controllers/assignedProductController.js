@@ -84,10 +84,10 @@ const getAllAssignedProduct = async (req, res) => {
     const finalResponse = response.map((item) => {
       const assignedDevicesList = {};
       assignedDevicesList._id = item._id;
-      assignedDevicesList.userFname = item.user.fname;
-      assignedDevicesList.userLname = item.user.lname;
-      assignedDevicesList.userEmail = item.user.email;
-      assignedDevicesList.userName = item.user.userName;
+      assignedDevicesList.firstName = item.user.fname;
+      assignedDevicesList.lastName = item.user.lname;
+      assignedDevicesList.email = item.user.email;
+      assignedDevicesList.username = item.user.userName;
       assignedDevicesList.branch = item.product.branch;
       assignedDevicesList.warrantyPeriod = item.product.warrantyPeriod;
       assignedDevicesList.productCategory = item.product.productCategory;
@@ -135,10 +135,10 @@ const getAllAssignedProduct = async (req, res) => {
     const finalResponse = response.map((item) => {
       const assignedDevicesList = {};
       assignedDevicesList._id = item._id;
-      assignedDevicesList.userFname = item.user.fname;
-      assignedDevicesList.userLname = item.user.lname;
-      assignedDevicesList.userEmail = item.user.email;
-      assignedDevicesList.userName = item.user.userName;
+      assignedDevicesList.firstname = item.user.fname;
+      assignedDevicesList.lastName = item.user.lname;
+      assignedDevicesList.email = item.user.email;
+      assignedDevicesList.username = item.user.userName;
       assignedDevicesList.branch = item.product.branch;
       assignedDevicesList.warrantyPeriod = item.product.warrantyPeriod;
       assignedDevicesList.productCategory = item.product.productCategory;
