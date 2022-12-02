@@ -64,8 +64,8 @@ const ListUser = () => {
     setTotalItems(filteredResult?.length);
 
     if (search) {
-      filteredResult = filteredResult.filter((result) =>
-        result.fname.toLowerCase().includes(search.toLowerCase())
+      filteredResult = filteredResult.filter((currentItem) =>
+        currentItem.fname.toLowerCase().includes(search.toLowerCase()) || currentItem.username.toLowerCase().includes(search.toLowerCase())
       );
     }
     return filteredResult?.slice(

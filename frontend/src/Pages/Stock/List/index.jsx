@@ -148,6 +148,7 @@ const ListStock = () => {
   }, [response]);
 
   const filtered = useMemo(() => {
+    debugger;
     let filteredResult = devicesDetails;
     setTotalItems(devicesDetails?.length);
 

@@ -1,11 +1,99 @@
-import React, { useState, useEffect, useMemo } from "react";
-import Container from "react-bootstrap/Container";
-import { Form, Table, Toast } from "react-bootstrap";
-import { axiosSecure } from "../../api/axios";
+import React, { useRef, useState, useEffect, useMemo } from "react";
+import { BsGear } from 'react-icons/bs';
 import { BiCheckCircle } from "react-icons/bi";
-import Col from "react-bootstrap/Col";
+import { Form, Table, Toast, Container, Dropdown, Col } from "react-bootstrap";
+import { axiosSecure } from "../../api/axios";
 import PaginationComponent from "../../component/Pagination/Pagination";
+
+
+
 const AssignItem = () => {
+  const [columns, setColumns] = useState([
+    {
+      fieldName: "First Name",
+      name: "userFname",
+      show: true,
+    },    {
+      fieldName: "Last Name",
+       name: "userLname",
+       show: true,
+    },    {
+      fieldName: "Email",
+       name: "userEmail",
+       show: true,
+    },
+    {
+      fieldName: "Product Type",
+       name: "productType",
+       show: false,
+    },    {
+      fieldName: "Assign By",
+       name: "assignBy",
+      show: false,
+    },  {
+      fieldName: "Assign Date",
+       name: "assignDate",
+      show: false,
+    },
+    {
+      fieldName: "Actions",
+       name: "actions",
+      show: false,
+    },
+    {
+      fieldName: "Product Category",
+      name: "productCategory",
+      show: false,
+    },
+    {
+      fieldName: "System Name",
+      name: "systemName",
+      show: false,
+    },
+    {
+      fieldName: "System Model",
+      name:"systemModel",
+      show: false,
+    },
+    {
+      fieldName: "System Brand",
+      name:"systemBrand",
+      show: false,
+    },    {
+      fieldName: "CPU",
+      name:"cpu",
+      show: false,
+    },    {
+      fieldName: "Storage Capacity",
+      name:"storageCapacity",
+      show: false,
+    },  {
+      fieldName: "OS",
+      name:"os",
+      show: false,
+    },  {
+      fieldName: "MAC Address",
+      name:"macAddress",
+      show: false,
+    },  {
+      fieldName: "Product Key",
+      name:"productKey",
+      show: false,
+    },  {
+      fieldName: "Serial Number",
+      name:"serialNumber",
+      show: false,
+    },  {
+      fieldName: "Storage Type",
+      name:"storageType",
+      show: false,
+    },  {
+      fieldName: "Product key",
+      name:"productKey",
+      show: false,
+    },
+
+  ]);
   const [assignedDeviceUserList, setAssignedDeviceUserList] = useState([]);
   const [search, setSearch] = useState("");
   const [totalItems, setTotalItems] = useState(0);
@@ -82,6 +170,19 @@ const AssignItem = () => {
     );
   }, [currentPage, assignedDeviceUserList, search]);
 
+  const handlerCheckbox = (e) => {
+    const checkboxStatus = e.target.checked;
+    const name = e.target.name;
+    const updatedColumns = columns.map(column => {
+      if (column.name === name) {
+        column.show = !column.show;
+      }
+      return column;
+    });
+    setColumns(updatedColumns);
+    setTimeout(() => document.querySelectorAll(`input[name=${name}]`)[0].checked = checkboxStatus, 500);
+  }
+
   return (
     <Container>
       <div className="d-flex align-items-center justify-content-between">
@@ -101,6 +202,30 @@ const AssignItem = () => {
           />
         </Form.Group>
       </div>
+
+
+      <div className="d-flex justify-content-end">
+        <Dropdown>
+          <Dropdown.Toggle variant="success" id="dropdown-basic" className="table-column-btn">
+            <BsGear />
+          </Dropdown.Toggle>
+          <Dropdown.Menu className="table-column-filter">
+            {
+              
+                  columns.slice(4).map((column, index) => <Dropdown.Item key={index}>
+                  <input
+                    type="checkbox"
+                    name={column.name}
+                      onChange={handlerCheckbox}
+                      checked={column.show}
+                  />
+                  <label>&nbsp;{column.fieldName}</label>
+                </Dropdown.Item>)
+              }
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+      
       <Toast
         className="toaster-position"
         onClose={() => setShowToaster(!showToaster)}
@@ -118,36 +243,54 @@ const AssignItem = () => {
           </div>
         </Toast.Header>
       </Toast>
+
       {filtered?.length > 0 ? (
-        <Table striped hover>
+        <Table striped hover responsive>
           <thead>
             <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
-              <th>Product Type</th>
-              <th>Assigned By</th>
-              <th>Date of Assignment</th>
-              <th className="text-center">Action</th>
+              {
+                columns.map(({ fieldName, name, show }) => <th id={name} className={`${show  ? 'show' : 'hide' } `}>{fieldName}</th>)
+              }
+
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody className="table-group-divider">
             {filtered.map((item, index) => {
               return (
                 <tr key={index}>
-                  <td>{item.userFname}</td>
-                  <td>{item.userLname}</td>
-                  <td>{item.userEmail}</td>
-                  <td>{item.productType}</td>
-                  <td>{item.assignBy}</td>
-                  <td>{getDate(item.assignDate)}</td>
-                  <td className="text-center">
+                  {
+                    columns.map(({ fieldName, name, show }) => <td id={name} className={`${show  ? 'show' : 'hide' } `}>{item[name] || "---"}</td>)
+                  }
+                    <td id="actions" className="text-center">
                     <i
                       className="bi bi-person-dash-fill px-1"
                       title="Un Assign"
                       onClick={() => handleUnassignment(item._id)}
                     ></i>
                   </td>
+
+                  {/* <td id="firstName">{item.userFname}</td>
+                  <td id="lastName">{item.userLname}</td>
+                  <td id="email">{item.userEmail}</td>
+                  <td id="productType">{item.productType}</td>
+                  <td id="assignedBy">{item.assignBy}</td>
+                  <td id="assignedOn">{getDate(item.assignDate)}</td>
+                  <td id="userName">{item.userName || "---"}</td>
+                  <td id="productCategory">{item.productCategory || "---"}</td>
+                  <td id="systemName">{item.systemName || "---"}</td>
+                  <td id="systemModel">{item.systemModel || "---"}</td>
+                  <td id="systemBrand">{item.systemBrand || "---"}</td>
+                  <td id="cpu">{item.cpu || "---"}</td>
+                  <td id="ram">{item.ram || "---"}</td>
+                  <td id="storageCapacity">{item.storageCapacity || "---"}</td>
+                  <td id="os">{item.os || "---"}</td>
+                  <td id="macAddress">{item.macAddress || "---"}</td>
+                  <td id="productKey">{item.productKey || "---"}</td>
+                  <td id="serialNumber">{item.serialNumber || "---"}</td>
+                  <td id="storageType">{item.storageType || "---"}</td>
+                  <td id="productKey">{item.productKey || "---"}</td> */}
+
                 </tr>
               );
             })}

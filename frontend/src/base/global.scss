@@ -108,3 +108,48 @@ h1 {
     }
   }
 }
+
+
+.hide {
+  display: none;
+}
+
+.show {
+  display: table-cell;
+}
+
+
+th {
+  min-width: 180px !important;
+  text-align: center;
+}
+
+td {
+  text-align: center;
+}
+
+
+.table-column-filter {
+  max-height: 110px;
+  overflow: auto;
+}
+
+.table-column-btn {
+  background-color: transparent;
+  border: 0;
+}
+
+.table-column-btn:hover, .table-column-btn:active {
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.table-column-btn svg { 
+  color: #000000;
+  font-size: 25px;
+}
+
+.table-column-btn::after {
+  display: none;
+}
