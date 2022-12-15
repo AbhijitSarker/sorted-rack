@@ -1,6 +1,7 @@
 import axios from "axios";
+
 const axiosSecure = axios.create({
-  baseURL: "https://apisortedrack.managedcoder.com/api/st/",
+  baseURL: process.env.REACT_APP_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -8,9 +9,8 @@ const axiosSecure = axios.create({
   }
 });
 
-
 const axiosOpen = axios.create({
-  baseURL: "https://apisortedrack.managedcoder.com/api/st/",
+  baseURL: process.env.REACT_APP_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',

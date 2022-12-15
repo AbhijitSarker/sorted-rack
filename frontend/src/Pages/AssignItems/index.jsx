@@ -4,96 +4,10 @@ import { BiCheckCircle } from "react-icons/bi";
 import { Form, Table, Toast, Container, Dropdown, Col } from "react-bootstrap";
 import { axiosSecure } from "../../api/axios";
 import PaginationComponent from "../../component/Pagination/Pagination";
-
-
+import Columns from "../../constants/AssigmentColumns.json";
 
 const AssignItem = () => {
-  const [columns, setColumns] = useState([
-    {
-      fieldName: "First Name",
-      name: "userFname",
-      show: true,
-    },    {
-      fieldName: "Last Name",
-       name: "userLname",
-       show: true,
-    },    {
-      fieldName: "Email",
-       name: "userEmail",
-       show: true,
-    },
-    {
-      fieldName: "Product Type",
-       name: "productType",
-       show: false,
-    },    {
-      fieldName: "Assign By",
-       name: "assignBy",
-      show: false,
-    },  {
-      fieldName: "Assign Date",
-       name: "assignDate",
-      show: false,
-    },
-    {
-      fieldName: "Actions",
-       name: "actions",
-      show: false,
-    },
-    {
-      fieldName: "Product Category",
-      name: "productCategory",
-      show: false,
-    },
-    {
-      fieldName: "System Name",
-      name: "systemName",
-      show: false,
-    },
-    {
-      fieldName: "System Model",
-      name:"systemModel",
-      show: false,
-    },
-    {
-      fieldName: "System Brand",
-      name:"systemBrand",
-      show: false,
-    },    {
-      fieldName: "CPU",
-      name:"cpu",
-      show: false,
-    },    {
-      fieldName: "Storage Capacity",
-      name:"storageCapacity",
-      show: false,
-    },  {
-      fieldName: "OS",
-      name:"os",
-      show: false,
-    },  {
-      fieldName: "MAC Address",
-      name:"macAddress",
-      show: false,
-    },  {
-      fieldName: "Product Key",
-      name:"productKey",
-      show: false,
-    },  {
-      fieldName: "Serial Number",
-      name:"serialNumber",
-      show: false,
-    },  {
-      fieldName: "Storage Type",
-      name:"storageType",
-      show: false,
-    },  {
-      fieldName: "Product key",
-      name:"productKey",
-      show: false,
-    },
-
-  ]);
+  const [columns, setColumns] = useState(Columns);
   const [assignedDeviceUserList, setAssignedDeviceUserList] = useState([]);
   const [search, setSearch] = useState("");
   const [totalItems, setTotalItems] = useState(0);
@@ -104,9 +18,7 @@ const AssignItem = () => {
   const getAssignedDeviceDetails = async () => {
     const response = await axiosSecure.get("/assignedProduct", {
       headers: {
-        Authorization: `Bearer ${
-          localStorage.userDetails && JSON.parse(localStorage.userDetails).token
-        }`,
+        Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
       },
     });
 
@@ -116,8 +28,7 @@ const AssignItem = () => {
   const getDate = (date) => {
     const newDate = new Date(date);
     const dt = newDate.getUTCDate();
-    const month =
-      newDate.getUTCMonth() + 1 === 13 ? 12 : newDate.getUTCMonth() + 1;
+    const month = newDate.getUTCMonth() + 1 === 13 ? 12 : newDate.getUTCMonth() + 1;
     const year = newDate.getUTCFullYear();
     return `${dt}-${month}-${year}`;
   };
@@ -131,10 +42,7 @@ const AssignItem = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${
-              localStorage.userDetails &&
-              JSON.parse(localStorage.userDetails).token
-            }`,
+            Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
           },
         }
       );
@@ -160,9 +68,7 @@ const AssignItem = () => {
     setTotalItems(filteredResult?.length);
 
     if (search) {
-      filteredResult = filteredResult.filter((result) =>
-        result.userFname.toLowerCase().includes(search.toLowerCase())
-      );
+      filteredResult = filteredResult.filter((result) => result.userFname.toLowerCase().includes(search.toLowerCase()));
     }
     return filteredResult?.slice(
       (currentPage - 1) * ITEMS_PER_PAGE,
@@ -173,15 +79,15 @@ const AssignItem = () => {
   const handlerCheckbox = (e) => {
     const checkboxStatus = e.target.checked;
     const name = e.target.name;
-    const updatedColumns = columns.map(column => {
+    const updatedColumns = columns.length > 0  && columns.map((column) => {
       if (column.name === name) {
         column.show = !column.show;
       }
       return column;
     });
     setColumns(updatedColumns);
-    setTimeout(() => document.querySelectorAll(`input[name=${name}]`)[0].checked = checkboxStatus, 500);
-  }
+    setTimeout(() => (document.querySelectorAll(`input[name=${name}]`)[0].checked = checkboxStatus), 500);
+  };
 
   return (
     <Container>
@@ -189,20 +95,10 @@ const AssignItem = () => {
         <div className="col-9">
           <h2 className="py-3">Assigned Devices</h2>
         </div>
-        <Form.Group
-          as={Col}
-          md="2"
-          className="pe-3"
-          controlId="validationCustom01"
-        >
-          <Form.Control
-            onChange={handleSearch}
-            type="text"
-            placeholder="Search devices"
-          />
+        <Form.Group as={Col} md="2" className="pe-3" controlId="validationCustom01">
+          <Form.Control onChange={handleSearch} type="text" placeholder="Search devices" />
         </Form.Group>
       </div>
-
 
       <div className="d-flex justify-content-end">
         <Dropdown>
@@ -210,22 +106,16 @@ const AssignItem = () => {
             <BsGear />
           </Dropdown.Toggle>
           <Dropdown.Menu className="table-column-filter">
-            {
-              
-                  columns.slice(4).map((column, index) => <Dropdown.Item key={index}>
-                  <input
-                    type="checkbox"
-                    name={column.name}
-                      onChange={handlerCheckbox}
-                      checked={column.show}
-                  />
-                  <label>&nbsp;{column.fieldName}</label>
-                </Dropdown.Item>)
-              }
+            {columns.slice(5).map((column, index) => (
+              <Dropdown.Item key={index}>
+                <input type="checkbox" name={column.name} onChange={handlerCheckbox} checked={column.show} />
+                <label>&nbsp;{column.fieldName}</label>
+              </Dropdown.Item>
+            ))}
           </Dropdown.Menu>
         </Dropdown>
       </div>
-      
+
       <Toast
         className="toaster-position"
         onClose={() => setShowToaster(!showToaster)}
@@ -248,9 +138,11 @@ const AssignItem = () => {
         <Table striped hover responsive>
           <thead>
             <tr>
-              {
-                columns.map(({ fieldName, name, show }) => <th id={name} className={`${show  ? 'show' : 'hide' } `}>{fieldName}</th>)
-              }
+              {columns.length > 0  && columns.map(({ id, fieldName, name, show }) => (
+                <th id={name} className={`${show ? "show" : "hide"} `} key={id}>
+                  {fieldName}
+                </th>
+              ))}
 
               <th>Actions</th>
             </tr>
@@ -259,10 +151,12 @@ const AssignItem = () => {
             {filtered.map((item, index) => {
               return (
                 <tr key={index}>
-                  {
-                    columns.map(({ fieldName, name, show }) => <td id={name} className={`${show  ? 'show' : 'hide' } `}>{item[name] || "---"}</td>)
-                  }
-                    <td id="actions" className="text-center">
+                  {columns.length > 0  && columns.map(({ fieldName, name, show }) => (
+                    <td id={name} className={`${show ? "show" : "hide"} `}>
+                      {item[name] || "---"}
+                    </td>
+                  ))}
+                  <td id="actions" className="text-center">
                     <i
                       className="bi bi-person-dash-fill px-1"
                       title="Un Assign"
@@ -290,7 +184,6 @@ const AssignItem = () => {
                   <td id="serialNumber">{item.serialNumber || "---"}</td>
                   <td id="storageType">{item.storageType || "---"}</td>
                   <td id="productKey">{item.productKey || "---"}</td> */}
-
                 </tr>
               );
             })}

@@ -6,6 +6,8 @@
 /frontend/dist/
 /frontend/build
 
+/frontend/.env
+
 /.pnp
 .pnp.js
 
