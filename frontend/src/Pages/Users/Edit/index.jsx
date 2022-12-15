@@ -10,10 +10,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import { axiosSecure } from "../../../api/axios";
 import useAxios from "../../../Hooks/useAxios";
 import "./Edit.scss";
-
+import { Toaster } from "../../../component/Toaster/Toaster";
 const EditUser = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [showToaster, setShowToaster] = useState(false);
   const [response, error, loading, axiosFetch] = useAxios();
   const [initialValues, setInitialValues] = useState({});
 
@@ -25,7 +26,10 @@ const EditUser = () => {
       requestConfig: [
         {
           headers: {
-            Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
+            Authorization: `Bearer ${
+              localStorage.userDetails &&
+              JSON.parse(localStorage.userDetails).token
+            }`,
           },
         },
       ],
@@ -93,7 +97,7 @@ const EditUser = () => {
               ],
             });
             setSubmitting(false);
-            navigate("/user", { replace: true });
+            setShowToaster(true);
           }}
         >
           {({
@@ -122,11 +126,8 @@ const EditUser = () => {
                         name="firstName"
                         value={values["firstName"]}
                         onChange={handleChange}
-                    
                       />
-                      <p className="errorMsg">
-                        {errors.firstName}
-                      </p>
+                      <p className="errorMsg">{errors.firstName}</p>
                     </FloatingLabel>
                   </Col>
                   <Col md={6} lg={6} xl={6}>
@@ -141,11 +142,8 @@ const EditUser = () => {
                         name="lastName"
                         onChange={handleChange}
                         value={values["lastName"]}
-                   
                       />
-                      <p className="errorMsg">
-                        {errors.lastName}
-                      </p>
+                      <p className="errorMsg">{errors.lastName}</p>
                     </FloatingLabel>
                   </Col>
                   <Col md={6} lg={6} xl={6}>
@@ -160,11 +158,8 @@ const EditUser = () => {
                         name="email"
                         onChange={handleChange}
                         value={values["email"]}
-              
                       />
-                      <p className="errorMsg">
-                        {errors.email}
-                      </p>
+                      <p className="errorMsg">{errors.email}</p>
                     </FloatingLabel>
                   </Col>
                   <Col md={6} lg={6} xl={6}>
@@ -198,6 +193,13 @@ const EditUser = () => {
           )}
         </Formik>
       )}
+      <Toaster
+        title="User updated successfully"
+        bg="success"
+        showToaster={showToaster}
+        setShowToaster={setShowToaster}
+        to="user"
+      ></Toaster>
     </div>
   );
 };

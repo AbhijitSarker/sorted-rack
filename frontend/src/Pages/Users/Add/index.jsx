@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik } from "formik";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -6,11 +6,10 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
-import { useNavigate } from "react-router-dom";
 import "./users.scss";
 import { axiosSecure } from "../../../api/axios";
 import * as yup from "yup";
-import { FormFloating } from "react-bootstrap";
+import { Toaster } from "../../../component/Toaster/Toaster";
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First Name is required"),
@@ -40,8 +39,9 @@ const handleOnSubmit = (values) =>
   );
 
 const AddUser = () => {
-  const navigate = useNavigate();
-
+  const [showAddToaster, setShowAddToaster] = useState(false);
+  const [showErrorToaster, setShowErrorToaster] = useState(false);
+  const [error, setError] = useState("");
   return (
     <div className="flex-grow-1">
       <Formik
@@ -59,10 +59,11 @@ const AddUser = () => {
           try {
             const response = await handleOnSubmit(values);
             if (response.status === 201) {
-              navigate("/user", { replace: true });
+              setShowAddToaster(true);
             }
           } catch (errorMsg) {
-            alert(errorMsg.response.data.msg);
+            setError(errorMsg.response.data.msg);
+            setShowErrorToaster(true);
           }
           setSubmitting(false);
         }}
@@ -174,13 +175,17 @@ const AddUser = () => {
                       value={values.branch}
                       onChange={handleChange}
                     >
-                      <option value="" disabled hidden>Select</option>
+                      <option value="" disabled hidden>
+                        Select
+                      </option>
                       <option value="Dhaka">Dhaka</option>
                       <option value="Goa">Goa</option>
                       <option value="Sylhet">Sylhet</option>
                     </Form.Select>
-                    <label for="floatingSelect">Select a branch</label>
-                    <div className="invalid-feedback">{touched.branch && errors.branch}</div>
+                    <label htmlFor="floatingSelect">Select a branch</label>
+                    <div className="invalid-feedback">
+                      {touched.branch && errors.branch}
+                    </div>
                   </FloatingLabel>
                 </Col>
               </Row>
@@ -194,6 +199,20 @@ const AddUser = () => {
           </Form>
         )}
       </Formik>
+      <Toaster
+        title="User added successfully"
+        bg="success"
+        showToaster={showAddToaster}
+        setShowToaster={setShowAddToaster}
+        to="user"
+      ></Toaster>
+      <Toaster
+        title={error}
+        bg="danger"
+        showToaster={showErrorToaster}
+        setShowToaster={setShowErrorToaster}
+        to="user/add"
+      ></Toaster>
     </div>
   );
 };

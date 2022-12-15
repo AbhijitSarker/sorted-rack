@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import * as yup from "yup";
 import { Formik } from "formik";
 import Container from "react-bootstrap/Container";
@@ -11,7 +11,9 @@ import useAxios from "../../../../Hooks/useAxios";
 import { useNavigate } from "react-router-dom";
 import { axiosSecure } from "../../../../api/axios";
 import { StockContext } from "../../../../contexts/StockContext";
+import { Toaster } from "../../../../component/Toaster/Toaster";
 const SytemDetailsForm = () => {
+  const [showToaster, setShowToaster] = useState(false);
   const [response, error, loading, axiosFetch] = useAxios();
   const { setDeviceCategory } = useContext(StockContext);
 
@@ -38,7 +40,10 @@ const SytemDetailsForm = () => {
     <>
       <Row>
         <Col>
-          <h4 className="fw-bold fs-5 mm " style={{ lineHeight: 1, margin: "24px 0" }}>
+          <h4
+            className="fw-bold fs-5 mm "
+            style={{ lineHeight: 1, margin: "24px 0" }}
+          >
             System Details
           </h4>
         </Col>
@@ -89,17 +94,28 @@ const SytemDetailsForm = () => {
                   },
                   {
                     headers: {
-                      Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
+                      Authorization: `Bearer ${
+                        localStorage.userDetails &&
+                        JSON.parse(localStorage.userDetails).token
+                      }`,
                     },
                   },
                 ],
               });
               setSubmitting(false);
               setDeviceCategory("System");
-              navigate("/stock", { replace: true });
+              setShowToaster(true);
             }}
           >
-            {({ handleSubmit, handleChange, handleBlur, values, touched, isValid, errors }) => (
+            {({
+              handleSubmit,
+              handleChange,
+              handleBlur,
+              values,
+              touched,
+              isValid,
+              errors,
+            }) => (
               <Form onSubmit={handleSubmit}>
                 <Row>
                   <Col md={6}>
@@ -112,7 +128,9 @@ const SytemDetailsForm = () => {
                         onChange={handleChange}
                         isInvalid={touched.systemBrand && !!errors.systemBrand}
                       />
-                      <Form.Control.Feedback type="invalid">{errors.systemBrand}</Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.systemBrand}
+                      </Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
                   <Col md={6}>
@@ -125,7 +143,9 @@ const SytemDetailsForm = () => {
                         onChange={handleChange}
                         isInvalid={touched.systemModel && !!errors.systemModel}
                       />
-                      <Form.Control.Feedback type="invalid">{errors.systemModel}</Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.systemModel}
+                      </Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
                   <Col md={6}>
@@ -138,7 +158,9 @@ const SytemDetailsForm = () => {
                         onChange={handleChange}
                         isInvalid={touched.systemName && !!errors.systemName}
                       />
-                      <Form.Control.Feedback type="invalid">{errors.systemName}</Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.systemName}
+                      </Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
                   <Col md={6}>
@@ -151,7 +173,9 @@ const SytemDetailsForm = () => {
                         onChange={handleChange}
                         isInvalid={touched.os && !!errors.os}
                       />
-                      <Form.Control.Feedback type="invalid">{errors.os}</Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.os}
+                      </Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
                   <Col md={6}>
@@ -164,7 +188,9 @@ const SytemDetailsForm = () => {
                         onChange={handleChange}
                         isInvalid={touched.cpu && !!errors.cpu}
                       />
-                      <Form.Control.Feedback type="invalid">{errors.cpu}</Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.cpu}
+                      </Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
                   <Col md={6}>
@@ -177,7 +203,9 @@ const SytemDetailsForm = () => {
                         onChange={handleChange}
                         isInvalid={touched.ram && !!errors.ram}
                       />
-                      <Form.Control.Feedback type="invalid">{errors.ram}</Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.ram}
+                      </Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
                   <Col md={6}>
@@ -190,7 +218,9 @@ const SytemDetailsForm = () => {
                         onChange={handleChange}
                         isInvalid={touched.storageType && !!errors.storageType}
                       />
-                      <Form.Control.Feedback type="invalid">{errors.storageType}</Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.storageType}
+                      </Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
                   <Col md={6}>
@@ -201,9 +231,13 @@ const SytemDetailsForm = () => {
                         placeholder="Storage Capacity"
                         value={values.storageCapacity}
                         onChange={handleChange}
-                        isInvalid={touched.storageCapacity && !!errors.storageCapacity}
+                        isInvalid={
+                          touched.storageCapacity && !!errors.storageCapacity
+                        }
                       />
-                      <Form.Control.Feedback type="invalid">{errors.storageCapacity}</Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.storageCapacity}
+                      </Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
                   <Col md={6}>
@@ -216,7 +250,9 @@ const SytemDetailsForm = () => {
                         onChange={handleChange}
                         isInvalid={touched.macAddress && !!errors.macAddress}
                       />
-                      <Form.Control.Feedback type="invalid">{errors.macAddress}</Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.macAddress}
+                      </Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
                   <Col md={6}>
@@ -229,7 +265,9 @@ const SytemDetailsForm = () => {
                         onChange={handleChange}
                         isInvalid={touched.ipAddress && !!errors.ipAddress}
                       />
-                      <Form.Control.Feedback type="invalid">{errors.ipAddress}</Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.ipAddress}
+                      </Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
                   <Col md={6}>
@@ -242,7 +280,9 @@ const SytemDetailsForm = () => {
                         onChange={handleChange}
                         isInvalid={touched.productKey && !!errors.productKey}
                       />
-                      <Form.Control.Feedback type="invalid">{errors.productKey}</Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.productKey}
+                      </Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
                   <Col md={6}>
@@ -253,9 +293,13 @@ const SytemDetailsForm = () => {
                         placeholder="Serial Number"
                         value={values.serialNumber}
                         onChange={handleChange}
-                        isInvalid={touched.serialNumber && !!errors.serialNumber}
+                        isInvalid={
+                          touched.serialNumber && !!errors.serialNumber
+                        }
                       />
-                      <Form.Control.Feedback type="invalid">{errors.serialNumber}</Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.serialNumber}
+                      </Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
                   <Col md={6}>
@@ -266,9 +310,13 @@ const SytemDetailsForm = () => {
                         placeholder="Warranty Period"
                         value={values.warrantyPeriod}
                         onChange={handleChange}
-                        isInvalid={touched.warrantyPeriod && !!errors.warrantyPeriod}
+                        isInvalid={
+                          touched.warrantyPeriod && !!errors.warrantyPeriod
+                        }
                       />
-                      <Form.Control.Feedback type="invalid">{errors.warrantyPeriod}</Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.warrantyPeriod}
+                      </Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
                   <Col md={6}>
@@ -281,10 +329,14 @@ const SytemDetailsForm = () => {
                         placeholder="Date Of Purchase"
                         value={values.dateOfPurchase}
                         onChange={handleChange}
-                        isInvalid={touched.dateOfPurchase && !!errors.dateOfPurchase}
+                        isInvalid={
+                          touched.dateOfPurchase && !!errors.dateOfPurchase
+                        }
                       />
                       <div className="invalid-feedback">
-                        {errors.dateOfPurchase && touched.dateOfPurchase && errors.dateOfPurchase}
+                        {errors.dateOfPurchase &&
+                          touched.dateOfPurchase &&
+                          errors.dateOfPurchase}
                       </div>
                     </FloatingLabel>
                   </Col>
@@ -299,6 +351,13 @@ const SytemDetailsForm = () => {
           </Formik>
         </Col>
       </Row>
+      <Toaster
+        title="System added successfully"
+        bg="success"
+        showToaster={showToaster}
+        setShowToaster={setShowToaster}
+        to="stock"
+      ></Toaster>
     </>
   );
 };

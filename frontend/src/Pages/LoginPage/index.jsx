@@ -86,7 +86,7 @@ const LoginForm = () => {
               <div className="form-logo">
                 <img alt="brand logo" src={logo} width="120px" height="100px" />
               </div>
-              <h1 className="text-center">SIGN IN</h1>
+              <h1 className="text-center" style={{'color': 'red'}}>SIGN IN</h1>
               <Form className="form" onSubmit={handleSubmit}>
                 <Form.Floating className="mb-3 ">
                   <Form.Control
@@ -101,7 +101,7 @@ const LoginForm = () => {
                     value={email}
                     required
                   />
-                  <label htmlFor="floatingInputCustom">Email address</label>
+                  <label htmlFor="floatingInputCustom">Email Address</label>
                 </Form.Floating>
                 <Form.Floating>
                   <Form.Control
