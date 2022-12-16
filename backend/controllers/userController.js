@@ -29,7 +29,7 @@ const getAllUsers = async (req, res) => {
 
   console.log(users);
 
-  res.status(StatusCodes.OK).json({ Users: users, nbhits: users.length });
+  res.status(StatusCodes.OK).json({ user: users, nbhits: users.length });
 };
 
 const getSingleUser = async (req, res) => {
