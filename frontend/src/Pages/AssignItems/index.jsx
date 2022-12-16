@@ -151,7 +151,7 @@ const AssignItem = () => {
             {filtered.map((item, index) => {
               return (
                 <tr key={index}>
-                  {columns.length > 0  && columns.map(({ fieldName, name, show }) => (
+                  {columns.length > 0  && columns.map(({ name, show }) => (
                     <td id={name} className={`${show ? "show" : "hide"} `}>
                       {item[name] || "---"}
                     </td>
@@ -163,27 +163,6 @@ const AssignItem = () => {
                       onClick={() => handleUnassignment(item._id)}
                     ></i>
                   </td>
-
-                  {/* <td id="firstName">{item.userFname}</td>
-                  <td id="lastName">{item.userLname}</td>
-                  <td id="email">{item.userEmail}</td>
-                  <td id="productType">{item.productType}</td>
-                  <td id="assignedBy">{item.assignBy}</td>
-                  <td id="assignedOn">{getDate(item.assignDate)}</td>
-                  <td id="userName">{item.userName || "---"}</td>
-                  <td id="productCategory">{item.productCategory || "---"}</td>
-                  <td id="systemName">{item.systemName || "---"}</td>
-                  <td id="systemModel">{item.systemModel || "---"}</td>
-                  <td id="systemBrand">{item.systemBrand || "---"}</td>
-                  <td id="cpu">{item.cpu || "---"}</td>
-                  <td id="ram">{item.ram || "---"}</td>
-                  <td id="storageCapacity">{item.storageCapacity || "---"}</td>
-                  <td id="os">{item.os || "---"}</td>
-                  <td id="macAddress">{item.macAddress || "---"}</td>
-                  <td id="productKey">{item.productKey || "---"}</td>
-                  <td id="serialNumber">{item.serialNumber || "---"}</td>
-                  <td id="storageType">{item.storageType || "---"}</td>
-                  <td id="productKey">{item.productKey || "---"}</td> */}
                 </tr>
               );
             })}
