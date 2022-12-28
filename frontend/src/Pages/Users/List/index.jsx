@@ -15,7 +15,7 @@ const ListUser = () => {
   const [search, setSearch] = useState("");
   const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 5;
+  const ITEMS_PER_PAGE = 10;
 
   const fetchUserDetails = async () => {
     axiosFetch({
@@ -57,14 +57,15 @@ const ListUser = () => {
     );
     fetchUserDetails();
   };
-
   const filtered = useMemo(() => {
-    let filteredResult = response?.user;
+    let filteredResult = response?.user?.sort((a, b) =>
+      a.fname.localeCompare(b.fname)
+    );
     setTotalItems(filteredResult?.length);
 
     if (search) {
-      filteredResult = filteredResult.filter((result) =>
-        result.fname.toLowerCase().includes(search.toLowerCase())
+      filteredResult = filteredResult.filter((currentItem) =>
+        currentItem.fname.toLowerCase().includes(search.toLowerCase()) || currentItem.username.toLowerCase().includes(search.toLowerCase())
       );
     }
     return filteredResult?.slice(
@@ -80,19 +81,19 @@ const ListUser = () => {
   return (
     <Container className="flex-grow-1">
       <div className="d-flex align-items-center justify-content-between">
-        <div className="col-9">
+        <div className="col-8">
           <h2 className="py-3">User Listing</h2>
         </div>
         <Form.Group
           as={Col}
-          md="2"
+          md="3"
           className="pe-3"
           controlId="validationCustom01"
         >
           <Form.Control
             onChange={handleSearch}
             type="text"
-            placeholder="Search User"
+            placeholder="Search with first name"
           />
         </Form.Group>
         <div style={{ width: "100px" }} className="col-1">
@@ -159,7 +160,7 @@ const ListUser = () => {
           </Table>
         </div>
       )}
-      <div className="d-flex justify-content-end me-3">
+      <div className="d-flex justify-content-end relative bottom-20 me-3">
         <PaginationComponent
           total={response?.user?.length}
           itemsPerPage={ITEMS_PER_PAGE}

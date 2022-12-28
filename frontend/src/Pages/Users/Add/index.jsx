@@ -17,6 +17,7 @@ const schema = yup.object().shape({
   password: yup.string().required("Password is required"),
   branch: yup.string().required("Branch is required"),
   email: yup.string().required("Email Address is required"),
+  username: yup.string().required("Username is required"),
 });
 
 const handleOnSubmit = (values) =>
@@ -28,6 +29,7 @@ const handleOnSubmit = (values) =>
       password: values.password,
       branch: values.branch,
       email: values.email,
+      username: values.username,
     },
     {
       headers: {
@@ -39,7 +41,9 @@ const handleOnSubmit = (values) =>
   );
 
 const AddUser = () => {
-  const [showToaster, setShowToaster] = useState(false);
+  const [showAddToaster, setShowAddToaster] = useState(false);
+  const [showErrorToaster, setShowErrorToaster] = useState(false);
+  const [error, setError] = useState("");
   return (
     <div className="flex-grow-1">
       <Formik
@@ -52,15 +56,17 @@ const AddUser = () => {
           userType: "",
           branch: "",
           status: "",
+          username:""
         }}
         onSubmit={async (values, { setSubmitting }) => {
           try {
             const response = await handleOnSubmit(values);
             if (response.status === 201) {
-              setShowToaster(true);
+              setShowAddToaster(true);
             }
           } catch (errorMsg) {
-            alert(errorMsg.response.data.msg);
+            setError(errorMsg.response.data.msg);
+            setShowErrorToaster(true);
           }
           setSubmitting(false);
         }}
@@ -160,6 +166,26 @@ const AddUser = () => {
                     </div>
                   </FloatingLabel>
                 </Col>
+                
+                <Col md={6} lg={6} xl={6}>
+                  <FloatingLabel
+                    controlId="floatingusername"
+                    label="Username"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="Username"
+                      name="username"
+                      onChange={handleChange}
+                      value={values["username"]}
+                      isInvalid={touched.username && !!errors.username}
+                    />
+                    <div className="invalid-feedback">
+                      {errors.username && touched.username && errors.username}
+                    </div>
+                  </FloatingLabel>
+                </Col>
 
                 <Col md={6} lg={6} xl={6}>
                   <FloatingLabel>
@@ -199,9 +225,16 @@ const AddUser = () => {
       <Toaster
         title="User added successfully"
         bg="success"
-        showToaster={showToaster}
-        setShowToaster={setShowToaster}
+        showToaster={showAddToaster}
+        setShowToaster={setShowAddToaster}
         to="user"
+      ></Toaster>
+      <Toaster
+        title={error}
+        bg="danger"
+        showToaster={showErrorToaster}
+        setShowToaster={setShowErrorToaster}
+        to="user/add"
       ></Toaster>
     </div>
   );

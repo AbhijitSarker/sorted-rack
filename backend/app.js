@@ -22,6 +22,7 @@ const morgan = require("morgan");
 // dataBase
 const connDb = require("./db/connect");
 
+
 // routes
 const authRoute = require("./routes/authRoute");
 const userRoute = require("./routes/userRote");
@@ -36,13 +37,14 @@ const errorHandlerMiddleware = require("./middleware/error-handler");
 app.set("trust proxy", 1);
 app.use(
   rateLimiter({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
   })
 );
 app.use(express.json());
+
 app.use(cors());
 app.use(helmet());
 app.use(xss());
@@ -51,6 +53,9 @@ app.use(morgan("tiny"));
 app.get("/", (req, res) => {
   res.send('<h1>Support Team api</h1><a href="/apiDocs">Documentation</a>');
 });
+
+app.get("/test", (req, res) => res.send("Test Route Response"));
+
 app.use("/apiDocs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use("/api/st/auth", authRoute);
@@ -62,13 +67,13 @@ app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
 const port = process.env.PORT || 4000;
-
+console.log(port, "port url");
 const start = async () => {
   try {
     await connDb(process.env.MONGO_URL);
-    app.listen(port, () => console.log(`app listening on port ${port}...`));
+    app.listen(port, () => console.log("SortedRack Backend Service is Runnning.."));
   } catch (error) {
-    console.log(error);
+    console.log(error, "MongoDB URL is invalid.");
   }
 };
 

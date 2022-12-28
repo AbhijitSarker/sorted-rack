@@ -2,6 +2,14 @@ const User = require("../models/user");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const { checkPermission, checkUserRole } = require("../utility");
+// const user = require("../models/user");
+const { json } = require("express");
+
+// const getAllUsers = async (req, res) => {
+//   const result = await User.find({}).select("-password");
+//   const user = result.filter((item) => item.role !== "superadmin");
+//   res.status(StatusCodes.OK).json({ user });
+// };
 
 // const getAllUsers = async (req, res) => {
 //   const result = await User.find({}).select("-password");
@@ -20,8 +28,14 @@ const getAllUsers = async (req, res) => {
   result = result.skip(skip).limit(limit);
 
   let finalUserList = await result;
+  let example = JSON.parse(JSON.stringify(finalUserList));
+  const users = example.map((u) => {
+    return { ...u, username: u?.username || "" };
+  });
 
-  res.status(StatusCodes.OK).json({ 'Users' : finalUserList , 'nbhits':finalUserList.length});
+  console.log(users);
+
+  res.status(StatusCodes.OK).json({ user: users, nbhits: users.length });
 };
 
 const getSingleUser = async (req, res) => {
@@ -90,9 +104,9 @@ const UpdateUserRole = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Depricated endPoint" });
 };
 
-const deleteAllUsers = async(req, res) => {
-  await User.deleteMany({role:'user'})
-  res.status(StatusCodes.OK).json({message:'All users deleated'})
+const deleteAllUsers = async (req, res) => {
+  await User.deleteMany({ role: "user" });
+  res.status(StatusCodes.OK).json({ message: "All users deleated" });
 };
 
 const UpdateUserPassword = (req, res) => {
