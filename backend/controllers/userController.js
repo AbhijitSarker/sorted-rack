@@ -27,9 +27,9 @@ const getAllUsers = async (req, res) => {
     return { ...u, username: u?.username || "" };
   });
 
-  console.log(users);
+  let count = await User.find({}).select("-password");
 
-  res.status(StatusCodes.OK).json({ user: users, nbhits: users.length });
+  res.status(StatusCodes.OK).json({ user: users, nbhits: count.length });
 };
 
 const getSingleUser = async (req, res) => {
