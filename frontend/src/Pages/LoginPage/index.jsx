@@ -19,7 +19,6 @@ const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showToster, setShowToster] = useState(false);
-  const [errMsg, setErrMsg] = useState("");
   const [userToken, setUserToken] = useState(null);
   // const [userData, error, loading, axiosFetch] = useAxios();
 
@@ -37,11 +36,7 @@ const LoginForm = () => {
       localStorage.userDetails = JSON.stringify(userDetails);
       navigate("/", { replace: true });
     }
-  }, [userToken]);
-
-  useEffect(() => {
-    setErrMsg("");
-  }, [email, password]);
+  }, [userToken, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,8 +52,8 @@ const LoginForm = () => {
   };
 
   return (
-    <div aria-live="polite" aria-atomic="true" className="position-relative">
-      {showToster ? (
+    <div aria-live="polite" aria-atomic="true" className="position-relative login-page">
+      {showToster && (
         <ToastContainer position="top-end" className="p-3">
           <Toast>
             <Toast.Header className="toaster-header">
@@ -70,65 +65,55 @@ const LoginForm = () => {
                 {/* <small className="text-muted">just now</small> */}
               </div>
             </Toast.Header>
-            {/* <Toast.Body>Invalid Credential</Toast.Body> */}
           </Toast>
         </ToastContainer>
-      ) : (
-        <></>
       )}
-      <div className="form-outer">
-        <div className="form-container">
-          <div className="form-inner">
-            <img src="https://www.crafted.email/wp-content/uploads/2022/09/Privacy-policy-rafiki.png" alt="" />
+      <div className="left-section">LEFT SECTION</div>
+      <div className="right-section">
+        <div className="form-signin">
+          <div>
+            <img alt="brand logo" src={logo} width="100" height="auto" />
           </div>
-          <div className="form-2">
-            <div className="form-signin">
-              <div className="form-logo">
-                <img alt="brand logo" src={logo} width="120px" height="100px" />
-              </div>
-              <h1 className="text-center" style={{"color": "red"}}>SIGN IN</h1>
-              <Form className="form" onSubmit={handleSubmit}>
-                <Form.Floating className="mb-3 ">
-                  <Form.Control
-                    id="floatingInputCustom"
-                    type="email"
-                    placeholder="name@example.com"
-                    ref={emailRef}
-                    autoComplete="off"
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                    }}
-                    value={email}
-                    required
-                  />
-                  <label htmlFor="floatingInputCustom">Email Address</label>
-                </Form.Floating>
-                <Form.Floating>
-                  <Form.Control
-                    id="floatingPasswordCustom"
-                    type="password"
-                    placeholder="Password"
-                    ref={passwordRef}
-                    autoComplete="off"
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                    }}
-                    value={password}
-                    required
-                  />
-                  <label htmlFor="floatingPasswordCustom">Password</label>
-                </Form.Floating>
-                <Form.Group controlId="formBasicCheckbox">
-                  <Form.Check type="checkbox" label="Remember me" />
-                </Form.Group>
-                <Button variant="primary" className="login-btn" type="submit">
-                  Login
-                </Button>
-              </Form>
-            </div>
-          </div>
+          <h1>LOGIN</h1>
+          <Form className="form" onSubmit={handleSubmit}>
+            <Form.Floating className="mb-3 ">
+              <Form.Control
+                id="floatingInputCustom"
+                type="email"
+                placeholder="name@example.com"
+                ref={emailRef}
+                autoComplete="off"
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+                value={email}
+                required
+              />
+              <label htmlFor="floatingInputCustom">Email Address</label>
+            </Form.Floating>
+            <Form.Floating>
+              <Form.Control
+                id="floatingPasswordCustom"
+                type="password"
+                placeholder="Password"
+                ref={passwordRef}
+                autoComplete="off"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+                value={password}
+                required
+              />
+              <label htmlFor="floatingPasswordCustom">Password</label>
+            </Form.Floating>
+            <Form.Group controlId="formBasicCheckbox">
+              <Form.Check type="checkbox" label="Remember me" />
+            </Form.Group>
+            <Button variant="primary" className="login-btn" type="submit">
+              Login
+            </Button>
+          </Form>
         </div>
-        <div className="bg"></div>
       </div>
     </div>
   );
