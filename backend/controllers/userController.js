@@ -12,7 +12,14 @@ const { json } = require("express");
 // };
 
 const getAllUsers = async (req, res) => {
-  let result = User.find({}).select("-password");
+  const { username } = req.query;
+  const queryObject = {};
+
+  if (username) {
+    queryObject.username = {$regex: username, $options: 'i'};
+  }
+
+  let result = User.find(queryObject).select("-password");
   // const users = result.filter((item) => item.role !== "superadmin");
 
   const page = Number(req.query.page) || 1;
