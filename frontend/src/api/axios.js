@@ -5,7 +5,7 @@ const axiosSecure = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    // 'Authorization': `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`
+    'Authorization': `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`
   }
 });
 
