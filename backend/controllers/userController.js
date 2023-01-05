@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const { StatusCodes } = require("http-status-codes");
+const { StatusCodes, OK } = require("http-status-codes");
 const CustomError = require("../errors");
 const { checkPermission, checkUserRole } = require("../utility");
 // const user = require("../models/user");
@@ -15,11 +15,18 @@ const getAllUsers = async (req, res) => {
   const { username } = req.query;
   const queryObject = {};
 
+  if(req.query.page==='-1'){
+    let users = await User.find({}).select('-password');
+    res.status(StatusCodes.OK).json({user : users, count: users.length})
+    return;
+  }
+
   if (username) {
     queryObject.username = {$regex: username, $options: 'i'};
   }
 
   let result = User.find(queryObject).select("-password");
+  const userCount = await User.countDocuments(queryObject);
   // const users = result.filter((item) => item.role !== "superadmin");
 
   const page = Number(req.query.page) || 1;
@@ -29,14 +36,8 @@ const getAllUsers = async (req, res) => {
   result = result.skip(skip).limit(limit);
 
   let finalUserList = await result;
-  let example = JSON.parse(JSON.stringify(finalUserList));
-  const users = example.map((u) => {
-    return { ...u, username: u?.username || "" };
-  });
-
-  let count = await User.find({}).select("-password");
-
-  res.status(StatusCodes.OK).json({ user: users, nbhits: count.length });
+  
+  res.status(StatusCodes.OK).json({ user: finalUserList, nbhits: userCount });
 };
 
 const getSingleUser = async (req, res) => {
