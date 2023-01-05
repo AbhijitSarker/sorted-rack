@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const { StatusCodes } = require("http-status-codes");
+const { StatusCodes, OK } = require("http-status-codes");
 const CustomError = require("../errors");
 const { checkPermission, checkUserRole } = require("../utility");
 // const user = require("../models/user");
@@ -14,6 +14,12 @@ const { json } = require("express");
 const getAllUsers = async (req, res) => {
   const { username } = req.query;
   const queryObject = {};
+
+  if(req.query.page==='-1'){
+    let users = await User.find({}).select('-password');
+    res.status(StatusCodes.OK).json({user : users, count: users.length})
+    return;
+  }
 
   if (username) {
     queryObject.username = {$regex: username, $options: 'i'};
