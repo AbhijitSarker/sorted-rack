@@ -9,7 +9,7 @@ import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import { MdAssignmentInd } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { axiosSecure } from "../../../api/axios";
+import { axiosSecure, getAuthorizationHeader } from "../../../api/axios";
 import useAxios from "../../../Hooks/useAxios";
 import Modal from "react-bootstrap/Modal";
 import { Typeahead } from "react-bootstrap-typeahead";
@@ -21,11 +21,7 @@ import { Toaster } from "../../../component/Toaster/Toaster";
 
 const deleteStock = (stockItemId) =>
   axiosSecure.delete(`/product/${stockItemId}`, {
-    headers: {
-      Authorization: `Bearer ${
-        localStorage.userDetails && JSON.parse(localStorage.userDetails).token
-      }`,
-    },
+    headers: { Authorization: getAuthorizationHeader() },
   });
 
 const ListStock = () => {
@@ -78,11 +74,17 @@ const ListStock = () => {
   const handleUserStockAssignment = async () => {
     const selectedUserId = userList.current.find((user) => user.email === selectedUserEmail[0])._id;
     setShowLoader(true);
-    await axiosSecure.post("/assignedProduct", {
-      branch: "Goa",
-      user: selectedUserId,
-      product: selectedStockId,
-    });
+    await axiosSecure.post(
+      "/assignedProduct",
+      {
+        branch: "Goa",
+        user: selectedUserId,
+        product: selectedStockId,
+      },
+      {
+        headers: { Authorization: getAuthorizationHeader() },
+      }
+    );
     setShowLoader(false);
     setRefresh(!refresh);
     handleAssignmentModal();
@@ -101,7 +103,9 @@ const ListStock = () => {
   };
 
   const fetchDevices = async () => {
-    const response = await axiosSecure.get(`/product`);
+    const response = await axiosSecure.get("/product", {
+      headers: { Authorization: getAuthorizationHeader() },
+    });
     const { products } = response?.data;
     const devicesList = products.filter(
       (product) => product.tag === "notassigned" && product.productCategory === deviceCategory
@@ -111,7 +115,9 @@ const ListStock = () => {
   };
 
   const fetchUsername = async () => {
-    const { data } = await axiosSecure.get("/user");
+    const { data } = await axiosSecure.get("/user", {
+      headers: { Authorization: getAuthorizationHeader() },
+    });
     userList.current = data.user.filter((usr) => usr.branch === "Goa" && usr.status === "active");
     const usersEmail = userList.current.map((user) => user.email);
     setEmailList(usersEmail);

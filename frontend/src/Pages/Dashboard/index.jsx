@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { axiosSecure } from "../../api/axios";
+import { axiosSecure, getAuthorizationHeader } from "../../api/axios";
 
 const Dashbaord = () => {
   const [dashboardStats, setDashboardStats] = useState({});
@@ -7,9 +7,7 @@ const Dashbaord = () => {
   useEffect(() => {
     (async () => {
       const response = await axiosSecure.get("/product", {
-        headers: {
-          Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
-        },
+        headers: { Authorization: getAuthorizationHeader() },
       });
       if (response?.data?.products) {
         const { products } = response.data;

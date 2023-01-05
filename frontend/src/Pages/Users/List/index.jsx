@@ -6,7 +6,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import { Link } from "react-router-dom";
 import Col from "react-bootstrap/Col";
-import { axiosSecure } from "../../../api/axios";
+import { axiosSecure, getAuthorizationHeader } from "../../../api/axios";
 import useAxios from "../../../Hooks/useAxios";
 import "./listUser.scss";
 import PaginationComponent from "../../../component/Pagination/Pagination";
@@ -21,7 +21,9 @@ const ListUser = () => {
   const [totalUserCount, setTotalUserCount] = useState(0);
 
   const fetchUserDetails = async (page) => {
-    const response = await axiosSecure.get(`/user?page=${page}`);
+    const response = await axiosSecure.get(`/user?page=${page}`, {
+      headers: { Authorization: getAuthorizationHeader() },
+    });
     setUserList(response?.data?.user);
     setTotalUserCount(response?.data?.nbhits);
     setLoading(false);
@@ -29,7 +31,9 @@ const ListUser = () => {
 
   const handleStatusToggle = async (user) => {
     const updatedStatus = { ...user, status: user.status === "active" ? "inactive" : "active" };
-    await axiosSecure.patch(`/user/updateuser/${user._id}`, updatedStatus);
+    await axiosSecure.patch(`/user/updateuser/${user._id}`, updatedStatus, {
+      headers: { Authorization: getAuthorizationHeader() },
+    });
     fetchUserDetails(currentPage);
   };
 
@@ -42,7 +46,9 @@ const ListUser = () => {
     const username = evt.target.value.toString();
     const url = username ? `/user?username=${username}` : `/user?page=1`;
     (async () => {
-          const response = await axiosSecure.get(url);
+          const response = await axiosSecure.get(url, {
+            headers: { Authorization: getAuthorizationHeader() },
+          });
           setUserList(response?.data?.user);
           setTotalUserCount(response?.data?.nbhits);
         })();

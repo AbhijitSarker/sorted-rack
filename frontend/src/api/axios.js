@@ -1,24 +1,25 @@
 import axios from "axios";
 
-const userToken = localStorage.userDetails && JSON.parse(localStorage.userDetails).token;
+export const getUserToken = () => localStorage.getItem("userDetails")
+  ? JSON.parse(localStorage.getItem("userDetails")).token
+  : null;
 
-const axiosSecure = axios.create({
+export const getAuthorizationHeader = () => `Bearer ${getUserToken()}`;
+
+debugger
+export const axiosSecure = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'Authorization': `Bearer ${userToken}`
+    'Authorization': getAuthorizationHeader()
   }
 });
 
-const axiosOpen = axios.create({
+export const axiosOpen = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   }
 });
-
-
-
-export { axiosSecure, axiosOpen };

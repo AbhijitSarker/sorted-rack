@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useMemo } from "react";
 import { BsGear } from 'react-icons/bs';
 import { BiCheckCircle } from "react-icons/bi";
 import { Form, Table, Toast, Container, Dropdown, Col } from "react-bootstrap";
-import { axiosSecure } from "../../api/axios";
+import { axiosSecure, getAuthorizationHeader } from "../../api/axios";
 import PaginationComponent from "../../component/Pagination/Pagination";
 import Columns from "../../constants/AssigmentColumns.json";
 
@@ -17,9 +17,7 @@ const AssignItem = () => {
 
   const getAssignedDeviceDetails = async () => {
     const response = await axiosSecure.get("/assignedProduct", {
-      headers: {
-        Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
-      },
+      headers: { Authorization: getAuthorizationHeader() },
     });
 
     setAssignedDeviceUserList(response?.data?.assignedDevices);
@@ -41,9 +39,7 @@ const AssignItem = () => {
           product: assignedDeviceDocId,
         },
         {
-          headers: {
-            Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
-          },
+          headers: { Authorization: getAuthorizationHeader() },
         }
       );
       if (response?.status === 200) {
