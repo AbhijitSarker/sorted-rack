@@ -115,7 +115,7 @@ const ListStock = () => {
   };
 
   const fetchUsername = async () => {
-    const { data } = await axiosSecure.get("/user", {
+    const { data } = await axiosSecure.get(`/user?page=-1`, {
       headers: { Authorization: getAuthorizationHeader() },
     });
     userList.current = data.user.filter((usr) => usr.branch === "Goa" && usr.status === "active");
