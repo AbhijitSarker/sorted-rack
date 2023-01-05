@@ -68,7 +68,9 @@ const LoginForm = () => {
           </Toast>
         </ToastContainer>
       )}
-      <div className="left-section">LEFT SECTION</div>
+      <div className="left-section">
+        {/* <img src="https://i.ibb.co/B60KTM7/sorted-rack-login.png" alt="sorted rack banner" width="100%" height="100%" /> */}
+      </div>
       <div className="right-section">
         <div className="form-signin">
           <div>

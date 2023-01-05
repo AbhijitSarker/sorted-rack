@@ -270,7 +270,7 @@ const SytemDetailsForm = () => {
                       </Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
-                  <Col md={6}>
+                  {/* <Col md={6}>
                     <FloatingLabel className="mb-3" label="Product Key">
                       <Form.Control
                         type="text"
@@ -284,7 +284,7 @@ const SytemDetailsForm = () => {
                         {errors.productKey}
                       </Form.Control.Feedback>
                     </FloatingLabel>
-                  </Col>
+                  </Col> */}
                   <Col md={6}>
                     <FloatingLabel className="mb-3" label="Serial Number">
                       <Form.Control
@@ -302,7 +302,7 @@ const SytemDetailsForm = () => {
                       </Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
-                  <Col md={6}>
+                  {/* <Col md={6}>
                     <FloatingLabel className="mb-3" label="Warranty Period">
                       <Form.Control
                         type="text"
@@ -318,8 +318,8 @@ const SytemDetailsForm = () => {
                         {errors.warrantyPeriod}
                       </Form.Control.Feedback>
                     </FloatingLabel>
-                  </Col>
-                  <Col md={6}>
+                  </Col> */}
+                  {/* <Col md={6}>
                     <FloatingLabel className="mb-3" label="Date Of Purchase">
                       <Form.Control
                         type="text"
@@ -339,7 +339,7 @@ const SytemDetailsForm = () => {
                           errors.dateOfPurchase}
                       </div>
                     </FloatingLabel>
-                  </Col>
+                  </Col> */}
                 </Row>
                 <Row>
                   <Col xl={12} className="mt-4">

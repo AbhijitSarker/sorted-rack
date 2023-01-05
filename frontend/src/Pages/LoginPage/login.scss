@@ -115,22 +115,18 @@
 }
 
 
-
-
-
-
-
-
 .login-page {
   max-width: 100%;
   width: 100%;
   height: 100vh;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr;
 }
 
 .left-section {
-  background-color: #293444;
+    background-image: url("https://i.ibb.co/B60KTM7/sorted-rack-login.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
 }
 
 .right-section {

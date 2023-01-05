@@ -105,7 +105,7 @@ const Sidebar = () => {
           </ul>
         </nav>
 
-        <hr />
+        {/* <hr />
         <div className="dropdown">
           <a
             href="#"
@@ -142,7 +142,7 @@ const Sidebar = () => {
               </a>
             </li>
           </ul>
-        </div>
+        </div> */}
       </div>
     </div>
   );

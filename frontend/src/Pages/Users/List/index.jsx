@@ -38,7 +38,15 @@ const ListUser = () => {
     setCurrentPage(page);
   };
 
-  const handleSearch = () => {};
+  const handleSearch = (evt) => {
+    const username = evt.target.value.toString();
+    const url = username ? `/user?username=${username}` : `/user?page=1`;
+    (async () => {
+          const response = await axiosSecure.get(url);
+          setUserList(response?.data?.user);
+          setTotalUserCount(response?.data?.nbhits);
+        })();
+  };
 
   useEffect(() => {
     fetchUserDetails(currentPage);
@@ -59,7 +67,7 @@ const ListUser = () => {
               <h2 className="py-3">User Listing</h2>
             </div>
             <Form.Group as={Col} md="3" className="pe-3" controlId="validationCustom01">
-              <Form.Control onChange={handleSearch} type="text" placeholder="Search with first name" />
+              <Form.Control onChange={handleSearch} type="text" placeholder="Search with username" />
             </Form.Group>
             <div style={{ width: "100px" }} className="col-1">
               <Link to="/user/add" replace className="btn btn-primary">

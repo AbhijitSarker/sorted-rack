@@ -13,7 +13,7 @@ const Layout = () => {
           <Sidebar />
           <div className="w-100 overflow-auto main-wrapper min-vh-100 d-flex flex-column">
             <Header />
-            <section style={{ minHeight: "85vh" }}>
+            <section>
               <Outlet />
             </section>
             <Footer />

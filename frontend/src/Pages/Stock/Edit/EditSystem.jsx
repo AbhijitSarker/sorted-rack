@@ -437,7 +437,7 @@ const EditSystemDetails = () => {
                           </Form.Control.Feedback>
                         </FloatingLabel>
                       </Col>
-                      <Col md={6}>
+                      {/* <Col md={6}>
                         <FloatingLabel className="mb-3" label="Product Key">
                           <Form.Control
                             type="text"
@@ -453,7 +453,7 @@ const EditSystemDetails = () => {
                             {errors.productKey}
                           </Form.Control.Feedback>
                         </FloatingLabel>
-                      </Col>
+                      </Col> */}
                       <Col md={6}>
                         <FloatingLabel className="mb-3" label="Serial Number">
                           <Form.Control
@@ -471,7 +471,7 @@ const EditSystemDetails = () => {
                           </Form.Control.Feedback>
                         </FloatingLabel>
                       </Col>
-                      <Col md={6}>
+                      {/* <Col md={6}>
                         <FloatingLabel className="mb-3" label="Warranty Period">
                           <Form.Control
                             type="text"
@@ -487,8 +487,8 @@ const EditSystemDetails = () => {
                             {errors.warrantyPeriod}
                           </Form.Control.Feedback>
                         </FloatingLabel>
-                      </Col>
-                      <Col md={6}>
+                      </Col> */}
+                      {/* <Col md={6}>
                         <FloatingLabel
                           className="mb-3"
                           label="Date Of Purchase"
@@ -509,7 +509,7 @@ const EditSystemDetails = () => {
                             {errors.dateOfPurchase}
                           </Form.Control.Feedback>
                         </FloatingLabel>
-                      </Col>
+                      </Col> */}
                     </Row>
                     <Row>
                       <Col xl={12} className=" mt-4">
