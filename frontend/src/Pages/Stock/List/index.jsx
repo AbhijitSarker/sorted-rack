@@ -118,7 +118,7 @@ const ListStock = () => {
     const { data } = await axiosSecure.get(`/user?page=-1`, {
       headers: { Authorization: getAuthorizationHeader() },
     });
-    userList.current = data.user.filter((usr) => usr.branch === "Goa" && usr.status === "active");
+    userList.current = data.user.filter((usr) => usr.status === "active" && usr.branch === "Goa" && usr.status === "active");
     const usersEmail = userList.current.map((user) => user.email);
     setEmailList(usersEmail);
   };

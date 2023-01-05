@@ -90,6 +90,7 @@ const ListUser = () => {
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Email</th>
+                    <th>Username</th>
                     <th>Branch</th>
                     <th>Type</th>
                     <th className="text-center">Action</th>
@@ -110,6 +111,7 @@ const ListUser = () => {
                         <td>{item.fname}</td>
                         <td>{item.lname}</td>
                         <td>{item.email}</td>
+                        <td>{item.username}</td>
                         <td>{item.branch}</td>
                         <td>{item.role}</td>
                         <td className="text-center">

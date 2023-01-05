@@ -6,7 +6,6 @@ export const getUserToken = () => localStorage.getItem("userDetails")
 
 export const getAuthorizationHeader = () => `Bearer ${getUserToken()}`;
 
-debugger
 export const axiosSecure = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
   headers: {
