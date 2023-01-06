@@ -336,7 +336,7 @@ const ListStock = () => {
         <></>
       )}
       <Toaster
-        title="user deleted successfully"
+        title="Device deleted successfully"
         bg="danger"
         showToaster={showToaster}
         setShowToaster={setShowToaster}

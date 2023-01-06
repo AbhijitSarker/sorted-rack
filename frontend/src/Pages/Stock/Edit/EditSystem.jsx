@@ -9,7 +9,7 @@ import Button from "react-bootstrap/Button";
 import * as yup from "yup";
 
 import { useParams, useNavigate } from "react-router-dom";
-import { axiosSecure } from "../../../api/axios";
+import { axiosSecure, getAuthorizationHeader } from "../../../api/axios";
 import useAxios from "../../../Hooks/useAxios";
 import { StockContext } from "../../../contexts/StockContext";
 
@@ -25,10 +25,10 @@ const EditSystemDetails = () => {
     storageCapacity: yup.string().required("Storage Capacity is required"),
     macAddress: yup.string().required("MAC Address is required"),
     ipAddress: yup.string().required("IP Address is required"),
-    productKey: yup.string().required("Product Key is required"),
+    // productKey: yup.string().required("Product Key is required"),
     serialNumber: yup.string().required("Serial number is required"),
-    dateOfPurchase: yup.date().required("Date Of Purchase is required"),
-    warrantyPeriod: yup.string().required("Warranty is required"),
+    // dateOfPurchase: yup.date().required("Date Of Purchase is required"),
+    // warrantyPeriod: yup.string().required("Warranty is required"),
   });
   const schemaAccessories = yup.object().shape({
     productType: yup.string().required("Product Type is required"),
@@ -42,65 +42,63 @@ const EditSystemDetails = () => {
   const navigate = useNavigate();
   const [initialValues, setInitialValues] = useState({});
   const productCategoryRef = useRef(null);
- const [response, error, loading, axiosFetch] = useAxios();
- const { setDeviceCategory } = useContext(StockContext);
+  const [response, error, loading, axiosFetch] = useAxios();
+  const { setDeviceCategory } = useContext(StockContext);
 
- const getDeviceDetails = () =>
-   axiosFetch({
-     axiosInstance: axiosSecure,
-     method: "GET",
-     url: `/product/${id}`,
-     requestConfig: [
-       {
-         headers: {
-           Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
-         },
-       },
-     ],
-   });
+  const getDeviceDetails = () =>
+    axiosFetch({
+      axiosInstance: axiosSecure,
+      method: "GET",
+      url: `/product/${id}`,
+      requestConfig: [
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
+          },
+        },
+      ],
+    });
 
- useEffect(() => {
-   getDeviceDetails();
- }, []);
+  useEffect(() => {
+    getDeviceDetails();
+  }, []);
 
- useEffect(() => {
-   if (response) {
-     const deviceDetails = response?.product || {};
-     if (Object.keys(deviceDetails).length > 0) {
-       productCategoryRef.current = deviceDetails.productCategory;
-       productCategoryRef.current === "Accessories"
-         ? setInitialValues({
-             accessoriesName: deviceDetails.accessoriesName,
-             dateOfPurchase: deviceDetails.dateOfPurchase?.split("T")[0] || "",
-             productType: deviceDetails.productType,
-             serialNumber: deviceDetails.serialNumber,
-             warrantyPeriod: deviceDetails.warrantyPeriod,
-           })
-         : setInitialValues({
-             systemBrand: deviceDetails.systemBrand,
-             systemModel: deviceDetails.systemModel,
-             systemName: deviceDetails.systemName,
-             os: deviceDetails.os,
-             cpu: deviceDetails.cpu,
-             ram: deviceDetails.ram,
-             storageType: deviceDetails.storageType,
-             storageCapacity: deviceDetails.storageCapacity,
-             macAddress: deviceDetails.macAddress,
-             ipAddress: deviceDetails.ipAddress,
-             productKey: deviceDetails.productKey,
-             serialNumber: deviceDetails.serialNumber,
-             dateOfPurchase: deviceDetails.dateOfPurchase?.split("T")[0] || "",
-             warrantyPeriod: deviceDetails.warrantyPeriod,
-           });
-     }
-   }
- }, [response]);
+  useEffect(() => {
+    if (response) {
+      const deviceDetails = response?.product || {};
+      if (Object.keys(deviceDetails).length > 0) {
+        productCategoryRef.current = deviceDetails.productCategory;
+        productCategoryRef.current === "Accessories"
+          ? setInitialValues({
+              accessoriesName: deviceDetails.accessoriesName,
+              dateOfPurchase: deviceDetails.dateOfPurchase?.split("T")[0] || "",
+              productType: deviceDetails.productType,
+              serialNumber: deviceDetails.serialNumber,
+              warrantyPeriod: deviceDetails.warrantyPeriod,
+            })
+          : setInitialValues({
+              systemBrand: deviceDetails.systemBrand,
+              systemModel: deviceDetails.systemModel,
+              systemName: deviceDetails.systemName,
+              os: deviceDetails.os,
+              cpu: deviceDetails.cpu,
+              ram: deviceDetails.ram,
+              storageType: deviceDetails.storageType,
+              storageCapacity: deviceDetails.storageCapacity,
+              macAddress: deviceDetails.macAddress,
+              ipAddress: deviceDetails.ipAddress,
+              //  productKey: deviceDetails.productKey,
+              serialNumber: deviceDetails.serialNumber,
+              //  dateOfPurchase: deviceDetails.dateOfPurchase?.split("T")[0] || "",
+              //  warrantyPeriod: deviceDetails.warrantyPeriod,
+            });
+      }
+    }
+  }, [response]);
 
- const handleUpdateStockDetails = async (values, setSubmitting) => {
+  const handleUpdateStockDetails = async (values, setSubmitting) => {
    const responseUpdated = await axiosSecure.patch(`/product/${id}`, values, {
-     headers: {
-       Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
-     },
+     headers: { Authorization: getAuthorizationHeader() },
    });
 
    setSubmitting(false);
