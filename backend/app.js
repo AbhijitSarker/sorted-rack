@@ -4,7 +4,7 @@ require("express-async-errors");
 const helmet = require("helmet");
 const cors = require("cors");
 const xss = require("xss-clean");
-const rateLimiter = require("express-rate-limit");
+// const rateLimiter = require("express-rate-limit");
 
 // Swagger
 const swaggerUI = require("swagger-ui-express");
@@ -35,14 +35,14 @@ const errorHandlerMiddleware = require("./middleware/error-handler");
 // const req = require("express/lib/request");
 
 app.set("trust proxy", 1);
-app.use(
-  rateLimiter({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-    standardHeaders: true,
-    legacyHeaders: false,
-  })
-);
+// app.use(
+//   rateLimiter({
+//     windowMs: 15 * 60 * 1000,
+//     max: 100,
+//     standardHeaders: true,
+//     legacyHeaders: false,
+//   })
+// );
 app.use(express.json());
 
 app.use(cors());
