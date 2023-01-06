@@ -143,7 +143,7 @@ const AssignItem = () => {
           </tr>
         </thead>
         <tbody className="table-group-divider">
-          {filtered.lenght > 0 ? (
+          {filtered.length > 0 ? (
             filtered.map((item, index) => {
               return (
                 <tr key={index}>
