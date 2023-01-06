@@ -130,28 +130,29 @@ const AssignItem = () => {
         </Toast.Header>
       </Toast>
 
-      {filtered?.length > 0 ? (
-        <Table striped hover responsive>
-          <thead>
-            <tr>
-              {columns.length > 0  && columns.map(({ id, fieldName, name, show }) => (
+      <Table striped hover responsive>
+        <thead>
+          <tr>
+            {columns.length > 0 &&
+              columns.map(({ id, fieldName, name, show }) => (
                 <th id={name} className={`${show ? "show" : "hide"} `} key={id}>
                   {fieldName}
                 </th>
               ))}
-
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody className="table-group-divider">
-            {filtered.map((item, index) => {
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody className="table-group-divider">
+          {filtered.lenght > 0 ? (
+            filtered.map((item, index) => {
               return (
                 <tr key={index}>
-                  {columns.length > 0  && columns.map(({ name, show }) => (
-                    <td id={name} className={`${show ? "show" : "hide"} `}>
-                      {item[name] || "---"}
-                    </td>
-                  ))}
+                  {columns.length > 0 &&
+                    columns.map(({ name, show }) => (
+                      <td id={name} className={`${show ? "show" : "hide"} `}>
+                        {item[name] || "---"}
+                      </td>
+                    ))}
                   <td id="actions" className="text-center">
                     <i
                       className="bi bi-person-dash-fill px-1"
@@ -161,20 +162,20 @@ const AssignItem = () => {
                   </td>
                 </tr>
               );
-            })}
-          </tbody>
-        </Table>
-      ) : (
-        <h4 className="ms-3 mt-3">no devices found....</h4>
-      )}
-      <div className="d-flex justify-content-end me-3">
-        <PaginationComponent
+            })
+          ) : (
+            <tr>
+              <td>No Records..</td>
+            </tr>
+          )}
+        </tbody>
+      </Table>
+      {/* <PaginationComponent
           total={totalItems}
           itemsPerPage={ITEMS_PER_PAGE}
           currentPage={currentPage}
           onPageChange={(page) => setCurrentPage(page)}
-        />
-      </div>
+        /> */}
     </Container>
   );
 };

@@ -1,6 +1,6 @@
 import React from "react";
 import { Toast, ToastContainer } from "react-bootstrap";
-import { BiCheckCircle } from "react-icons/bi";
+import { BiCheckCircle, BiErrorCircle } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 export const Toaster = ({ title, bg, showToaster, setShowToaster, to }) => {
   const navigate = useNavigate();
@@ -18,7 +18,11 @@ export const Toaster = ({ title, bg, showToaster, setShowToaster, to }) => {
       >
         <div className="info-container d-flex align-items-center">
           &nbsp;
-          <BiCheckCircle className="info-icon ms-3 text-white fs-5" />
+          {bg === "success" ? (
+            <BiCheckCircle className="info-icon ms-3 text-white fs-5" />
+          ) : (
+            <BiErrorCircle className="info-icon ms-3 text-white fs-5" />
+          )}
           <Toast.Body className={`${bg} text-white`}>{title}</Toast.Body>
         </div>
       </Toast>

@@ -1,20 +1,18 @@
 import React, { useState, useContext } from "react";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
+import * as yup from "yup";
 import { Formik } from "formik";
 import Spinner from "react-bootstrap/Spinner";
-import * as yup from "yup";
+import { Row, Col, Form, Button, FloatingLabel } from "react-bootstrap";
 import "./accessoriesFormContainer.scss";
-import { axiosSecure } from "../../../../api/axios";
+import { axiosSecure, getAuthorizationHeader } from "../../../../api/axios";
 import { StockContext } from "../../../../contexts/StockContext";
 import { Toaster } from "../../../../component/Toaster/Toaster";
+
 const AccessoriesFormContainer = () => {
   const [showToaster, setShowToaster] = useState(false);
   const [loadingBtn, setLoadingBtn] = useState(false);
   const { setDeviceCategory } = useContext(StockContext);
+  const [successToaster, setSuccessToaster] = useState(false);
   const [count, setCount] = useState([1]);
   const handleCloseOption = () => {
     if (count.length > 1) {
@@ -32,7 +30,7 @@ const AccessoriesFormContainer = () => {
     <>
       <Row>
         <Col xl={12}>
-          <h4 className="fw-bold fs-5 my-4">Additional Accessories</h4>
+          <h4 className="fw-bold fs-5 my-4">ACCESSORIES DETAILS</h4>
         </Col>
       </Row>
       <Row>
@@ -49,7 +47,7 @@ const AccessoriesFormContainer = () => {
             onSubmit={(values, { setSubmitting }) => {
               (async () => {
                 try {
-                  const response = await axiosSecure.post(
+                  const { status } = await axiosSecure.post(
                     "/product",
                     {
                       productCategory: "Accessories",
@@ -61,33 +59,23 @@ const AccessoriesFormContainer = () => {
                       warrantyPeriod: values.warrantyPeriod,
                     },
                     {
-                      headers: {
-                        Authorization: `Bearer ${
-                          localStorage.userDetails &&
-                          JSON.parse(localStorage.userDetails).token
-                        }`,
-                      },
+                      headers: { Authorization: getAuthorizationHeader() },
                     }
                   );
-                  if (response.status === 201) {
+                  if (status === 201) {
+                    setSubmitting(false);
+                    successToaster(true);
                     setShowToaster(true);
                     setDeviceCategory("Accessories");
                   }
-                } catch (errorMsg) {
-                  alert(errorMsg.response.data.msg);
+                } catch (error) {
+                  successToaster(false);
+                  setShowToaster(true);
                 }
-                setSubmitting(false);
               })();
             }}
           >
-            {({
-              handleSubmit,
-              handleChange,
-              values,
-              touched,
-              isValid,
-              errors,
-            }) => (
+            {({ handleSubmit, handleChange, values, touched, isValid, errors }) => (
               <Form onSubmit={handleSubmit}>
                 <Row>
                   <Col xl={6}>
@@ -97,9 +85,7 @@ const AccessoriesFormContainer = () => {
                         name="accessoriesType"
                         value={values.accessoriesType}
                         onChange={handleChange}
-                        isInvalid={
-                          !!touched.accessoriesType && !!errors.accessoriesType
-                        }
+                        isInvalid={!!touched.accessoriesType && !!errors.accessoriesType}
                         aria-label="Default select example"
                       >
                         <option value="" disabled hidden>
@@ -111,9 +97,7 @@ const AccessoriesFormContainer = () => {
                         <option value="Keyboard">Keyboard</option>
                         <option value="USBDongle">USB Dongle</option>
                       </Form.Select>
-                      <div className="invalid-feedback">
-                        {touched.accessoriesType && errors.accessoriesType}
-                      </div>
+                      <div className="invalid-feedback">{touched.accessoriesType && errors.accessoriesType}</div>
                     </FloatingLabel>
                   </Col>
                   <Col xl={6}>
@@ -124,13 +108,9 @@ const AccessoriesFormContainer = () => {
                         placeholder="Accessories Name"
                         value={values.accessoriesName}
                         onChange={handleChange}
-                        isInvalid={
-                          touched.accessoriesName && !!errors.accessoriesName
-                        }
+                        isInvalid={touched.accessoriesName && !!errors.accessoriesName}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        {errors.accessoriesName}
-                      </Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">{errors.accessoriesName}</Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
                   <Col xl={6}>
@@ -141,13 +121,9 @@ const AccessoriesFormContainer = () => {
                         placeholder="Serial Number"
                         value={values.serialNumber}
                         onChange={handleChange}
-                        isInvalid={
-                          touched.serialNumber && !!errors.serialNumber
-                        }
+                        isInvalid={touched.serialNumber && !!errors.serialNumber}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        {errors.serialNumber}
-                      </Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">{errors.serialNumber}</Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
                   <Col xl={6}>
@@ -158,13 +134,9 @@ const AccessoriesFormContainer = () => {
                         placeholder="Serial Number"
                         value={values.warrantyPeriod}
                         onChange={handleChange}
-                        isInvalid={
-                          touched.warrantyPeriod && !!errors.warrantyPeriod
-                        }
+                        isInvalid={touched.warrantyPeriod && !!errors.warrantyPeriod}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        {errors.warrantyPeriod}
-                      </Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">{errors.warrantyPeriod}</Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
                   <Col md={6}>
@@ -177,13 +149,9 @@ const AccessoriesFormContainer = () => {
                         placeholder="Date Of Purchase"
                         value={values.dateOfPurchase}
                         onChange={handleChange}
-                        isInvalid={
-                          touched.dateOfPurchase && !!errors.dateOfPurchase
-                        }
+                        isInvalid={touched.dateOfPurchase && !!errors.dateOfPurchase}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        {errors.dateOfPurchase}
-                      </Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">{errors.dateOfPurchase}</Form.Control.Feedback>
                     </FloatingLabel>
                   </Col>
                 </Row>
@@ -191,11 +159,7 @@ const AccessoriesFormContainer = () => {
                   <Col xl={12} className="mt-4">
                     <Button style={{ width: "150px" }} type="submit">
                       {" "}
-                      {loadingBtn ? (
-                        <Spinner size="sm" animation="border" role="status" />
-                      ) : (
-                        "Add Accessory"
-                      )}{" "}
+                      {loadingBtn ? <Spinner size="sm" animation="border" role="status" /> : "Add Accessory"}{" "}
                     </Button>
                   </Col>
                 </Row>
@@ -205,8 +169,8 @@ const AccessoriesFormContainer = () => {
         </Col>
       </Row>
       <Toaster
-        title="Accessories added successfully"
-        bg="success"
+        title={successToaster ? "Device Added Successfully" : "Oops something went wrong."}
+        bg={successToaster ? "success" : "danger"}
         showToaster={showToaster}
         setShowToaster={setShowToaster}
         to="stock"

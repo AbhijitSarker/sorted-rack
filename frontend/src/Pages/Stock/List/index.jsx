@@ -60,8 +60,9 @@ const ListStock = () => {
       const response = await deleteStock(removeDeviceIdRef.current);
       response && setShowLoader(false);
       handleRemoveDeviceModal();
-      setRefresh(!refresh);
+      // setRefresh(!refresh);
       setShowToaster(true);
+      fetchDevices();
     })();
   };
 
@@ -94,10 +95,10 @@ const ListStock = () => {
   const handleProductCategorySelect = (evt) => setDeviceCategory(evt);
 
   const handlePagination = (currentPageNo = 1) => {
-    const updatedDevicesList = devices.length > 0 ? devices.slice(
-      (currentPageNo - 1) * ITEMS_PER_PAGE,
-      (currentPageNo - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
-    ) : [];
+    const updatedDevicesList =
+      devices.length > 0
+        ? devices.slice((currentPageNo - 1) * ITEMS_PER_PAGE, (currentPageNo - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE)
+        : [];
     setCurrentPage(currentPageNo);
     setPaginatedDevices(updatedDevicesList);
   };
@@ -118,7 +119,9 @@ const ListStock = () => {
     const { data } = await axiosSecure.get(`/user?page=-1`, {
       headers: { Authorization: getAuthorizationHeader() },
     });
-    userList.current = data.user.filter((usr) => usr.status === "active" && usr.branch === "Goa" && usr.status === "active");
+    userList.current = data.user.filter(
+      (usr) => usr.status === "active" && usr.branch === "Goa" && usr.status === "active"
+    );
     const usersEmail = userList.current.map((user) => user.email);
     setEmailList(usersEmail);
   };
@@ -138,9 +141,9 @@ const ListStock = () => {
 
   useEffect(() => handlePagination(), [devices]);
 
-  const showDeviceDetails = () =>
+  const StockTable = () =>
     deviceCategory === "System" ? (
-      <Table className="mt-4" striped hover>
+      <Table className="mt-4" striped hover responsive>
         <thead>
           <tr>
             <th className="stock-brand">System Brand</th>
@@ -160,7 +163,7 @@ const ListStock = () => {
           </tr>
         </thead>
         <tbody className="table-group-divider">
-          {paginatedDevices.length > 0 &&
+          {paginatedDevices.length > 0 ?
             paginatedDevices.map((item, index) => (
               <tr key={index}>
                 <td className="stock-brand"> {item?.systemBrand} </td>
@@ -198,11 +201,11 @@ const ListStock = () => {
                   ></i>
                 </td>
               </tr>
-            ))}
+            )) : (<tr><td>No Records</td></tr>)}
         </tbody>
       </Table>
     ) : (
-      <Table className="mt-4" striped hover>
+      <Table className="mt-4" striped hover responsive>
         <thead>
           <tr>
             <th>Accessories Type</th>
@@ -214,7 +217,7 @@ const ListStock = () => {
           </tr>
         </thead>
         <tbody className="table-group-divider">
-          {paginatedDevices.length > 0 &&
+          {paginatedDevices.length > 0 ?
             paginatedDevices.map((item, index) => (
               <tr key={index}>
                 <td> {item?.productType} </td>
@@ -235,7 +238,7 @@ const ListStock = () => {
                   <MdAssignmentInd onClick={() => handleUserSelection(item._id)} />
                 </td>
               </tr>
-            ))}
+            )) : <tr><td>No Records</td></tr>}
         </tbody>
       </Table>
     );
@@ -313,8 +316,7 @@ const ListStock = () => {
           </Link>
         </div>
       </div>
-
-      <div style={{ width: "100%", overflow: "auto" }}>{showDeviceDetails()}</div>
+      <StockTable />
       {loading && (
         <div className="d-flex justify-content-center">
           <div className="spinner-border" role="status">
@@ -323,18 +325,16 @@ const ListStock = () => {
         </div>
       )}
       {!loading && error && <p className="error-msg">{error}</p>}
-      <div className="d-flex justify-content-end me-3 mt-3">
-        {devicesCount ? (
-          <PaginationComponent
-            total={devicesCount}
-            itemsPerPage={ITEMS_PER_PAGE}
-            currentPage={currentPage}
-            onPageChange={handlePagination}
-          />
-        ) : (
-          <></>
-        )}
-      </div>
+      {devicesCount ? (
+        <PaginationComponent
+          total={devicesCount}
+          itemsPerPage={ITEMS_PER_PAGE}
+          currentPage={currentPage}
+          onPageChange={handlePagination}
+        />
+      ) : (
+        <></>
+      )}
       <Toaster
         title="user deleted successfully"
         bg="danger"
