@@ -11,22 +11,26 @@ import useAxios from "../../../Hooks/useAxios";
 import "./listUser.scss";
 import PaginationComponent from "../../../component/Pagination/Pagination";
 const ListUser = () => {
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
+  const [pageLoader, setPageLoader] = useState(true);
   const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [dataLoader, setDataLoader] = useState(false);
   const ITEMS_PER_PAGE = 10;
 
   const [userList, setUserList] = useState(null);
   const [totalUserCount, setTotalUserCount] = useState(0);
 
   const fetchUserDetails = async (page) => {
+    if (!pageLoader) {
+      setDataLoader(true);
+    }
     const response = await axiosSecure.get(`/user?page=${page}`, {
       headers: { Authorization: getAuthorizationHeader() },
     });
     setUserList(response?.data?.user);
     setTotalUserCount(response?.data?.nbhits);
-    setLoading(false);
+    setPageLoader(false);
+    setDataLoader(false);
   };
 
   const handleStatusToggle = async (user) => {
@@ -46,21 +50,23 @@ const ListUser = () => {
     const username = evt.target.value.toString();
     const url = username ? `/user?username=${username}` : `/user?page=1`;
     (async () => {
-          const response = await axiosSecure.get(url, {
-            headers: { Authorization: getAuthorizationHeader() },
-          });
-          setUserList(response?.data?.user);
-          setTotalUserCount(response?.data?.nbhits);
-        })();
+      const response = await axiosSecure.get(url, {
+        headers: { Authorization: getAuthorizationHeader() },
+      });
+
+      setUserList(response?.data?.user);
+      setTotalUserCount(response?.data?.nbhits);
+    })();
   };
 
   useEffect(() => {
+    setPageLoader(true);
     fetchUserDetails(currentPage);
   }, []);
 
   return (
     <>
-      {loading ? (
+      {pageLoader ? (
         <div className="d-flex justify-content-center align-items-center h-100">
           <div className="spinner-border" role="status">
             <span className="visually-hidden">Loading...</span>
@@ -97,14 +103,20 @@ const ListUser = () => {
                   </tr>
                 </thead>
                 <tbody className="table-group-divider">
-                  {!loading &&
+                  {dataLoader ? (
+                    <div className="d-flex justify-content-center align-items-center h-100">
+                      <div className="spinner-border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </div>
+                    </div>
+                  ) : (
                     userList.map((item, index) => (
                       <tr key={index}>
                         <td className="text-center">
                           <Form.Check
                             type="switch"
-                            id="custom-switch"
-                            defaultChecked={item.status === "active" ? true : false}
+                            id={index}
+                            defaultChecked={Boolean(item.status === "active")}
                             onClick={() => handleStatusToggle(item)}
                           />
                         </td>
@@ -126,7 +138,8 @@ const ListUser = () => {
                           </OverlayTrigger>
                         </td>
                       </tr>
-                    ))}
+                    ))
+                  )}
                 </tbody>
               </Table>
             </div>
