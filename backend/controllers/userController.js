@@ -12,31 +12,39 @@ const { json } = require("express");
 // };
 
 const getAllUsers = async (req, res) => {
-  const { username } = req.query;
+  const { username, email } = req.query;
   const queryObject = {};
 
-  if(req.query.page==='-1'){
-    let users = await User.find({}).select('-password');
-    res.status(StatusCodes.OK).json({user : users, count: users.length})
-    return;
+  if (req.query.page === '-1') {
+    if (req.user.role === 'superadmin') {
+      const users = await User.find({}, '-password').lean();
+      res.status(StatusCodes.OK).json({ user: users, count: users.length });
+      return;
+    } else if (req.user.role === 'admin') {
+      queryObject.branch = req.user.branch;
+    }
+  } else if (req.user.role === 'admin') {
+    queryObject.branch = req.user.branch;
   }
 
   if (username) {
-    queryObject.username = {$regex: username, $options: 'i'};
+    queryObject.username = { $regex: username, $options: 'i' };
   }
 
-  let result = User.find(queryObject).select("-password");
-  const userCount = await User.countDocuments(queryObject);
-  // const users = result.filter((item) => item.role !== "superadmin");
+  if (email) {
+    queryObject.email = { $regex: email, $options: 'i' };
+  }
 
+  const userCount = await User.countDocuments(queryObject);
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
   const skip = (page - 1) * limit;
 
-  result = result.skip(skip).limit(limit);
+  const finalUserList = await User.find(queryObject, '-password')
+    .lean()
+    .skip(skip)
+    .limit(limit);
 
-  let finalUserList = await result;
-  
   res.status(StatusCodes.OK).json({ user: finalUserList, nbhits: userCount });
 };
 
@@ -45,6 +53,12 @@ const getSingleUser = async (req, res) => {
   const user = await User.findOne({ _id: userId }).select("-password");
   if (!user) {
     throw new CustomError.NotFoundError(`no user found with id ${userId}`);
+  }
+  // check for admin branch
+  if (req.user.role === 'admin') {
+    if (req.user.branch !== user.branch) {
+      throw new CustomError.UnauthorizedError("Not authorize to perform this task");
+    }
   }
   checkPermission(req.user, user._id);
   res.status(StatusCodes.OK).json({ user });
