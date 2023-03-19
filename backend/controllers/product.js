@@ -12,74 +12,74 @@ const createProduct = async (req, res) => {
 };
 
 const getAllProduct = async (req, res) => {
-  const { branch, productCategory, productType, systemName, systemModel, systemBrand, cpu, ram, storageType, storageCapacity, os, macAddress, ipAddress, tag } = req.query; // for future search query
-  const queryObject = {};
+  const { branch, productCategory, productType, systemName, systemModel, systemBrand, cpu, ram, storageType, storageCapacity, os, macAddress, ipAddress, tag } = req.body; // for future search query
+  const bodyObject = {};
 
   if (req.user.role === "admin") {
-    queryObject["branch"] = req.user.branch;
+    bodyObject["branch"] = req.user.branch;
   } else if (req.user.role === "superadmin") {
     if (branch) {
-      queryObject["branch"] = branch;
+      bodyObject["branch"] = branch;
     }
   }
 
   if (productCategory) {
-    queryObject["productCategory"] = productCategory;
+    bodyObject["productCategory"] = productCategory;
   }
 
   if (productType) {
-    queryObject["productType"] = productType;
+    bodyObject["productType"] = productType;
   }
 
   if (systemName) {
-    queryObject.systemName = { $regex: systemName, $options: 'i' };
+    bodyObject.systemName = { $regex: systemName, $options: 'i' };
   }
 
   if (systemModel) {
-    queryObject.systemModel = { $regex: systemModel, $options: 'i' };
+    bodyObject.systemModel = { $regex: systemModel, $options: 'i' };
   }
 
   if (systemBrand) {
-    queryObject.systemBrand = { $regex: systemBrand, $options: 'i' };
+    bodyObject.systemBrand = { $regex: systemBrand, $options: 'i' };
   }
 
   if (cpu) {
-    queryObject.cpu = { $regex: cpu, $options: 'i' };
+    bodyObject.cpu = { $regex: cpu, $options: 'i' };
   }
 
   if (ram) {
-    queryObject.ram = { $regex: ram, $options: 'i' };
+    bodyObject.ram = { $regex: ram, $options: 'i' };
   }
 
   if (storageType) {
-    queryObject.storageType = { $regex: storageType, $options: 'i' };
+    bodyObject.storageType = { $regex: storageType, $options: 'i' };
   }
 
   if (storageCapacity) {
-    queryObject.storageCapacity = { $regex: storageCapacity, $options: 'i' };
+    bodyObject.storageCapacity = { $regex: storageCapacity, $options: 'i' };
   }
 
   if (os) {
-    queryObject.os = { $regex: os, $options: 'i' };
+    bodyObject.os = { $regex: os, $options: 'i' };
   }
 
   if (macAddress) {
-    queryObject.macAddress = { $regex: macAddress, $options: 'i' };
+    bodyObject.macAddress = { $regex: macAddress, $options: 'i' };
   }
 
   if (ipAddress) {
-    queryObject.ipAddress = { $regex: ipAddress, $options: 'i' };
+    bodyObject.ipAddress = { $regex: ipAddress, $options: 'i' };
   }
 
   if (tag) {
-    queryObject["tag"] = tag;
+    bodyObject["tag"] = tag;
   }
-  // console.log('queryObject', queryObject);
+  // console.log('bodyObject', bodyObject);
   // res.status(StatusCodes.OK).send('ok');
   // return;
 
   const count = await Product.aggregate([
-    { $match: queryObject },
+    { $match: bodyObject },
     { $count: "total" }
   ]);
 
@@ -87,14 +87,19 @@ const getAllProduct = async (req, res) => {
   const limit = Number(req.query.limit) || 10;
   const skip = (page - 1) * limit;
 
-  const productList = await Product.find(queryObject)
+  const productList = await Product.find(bodyObject)
     .skip(skip)
     .limit(limit)
     .lean();
 
   const total = count.length ? count[0].total : 0;
 
-  res.status(StatusCodes.OK).json({ products: productList, nbhits: total });
+  res.status(StatusCodes.OK).json({
+    products: productList,
+    totalCount: total,
+    totalPages: Math.ceil(total / limit),
+    currentPage: page
+  });
 };
 
 const getSingleProduct = async (req, res) => {

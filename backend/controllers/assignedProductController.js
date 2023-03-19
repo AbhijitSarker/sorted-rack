@@ -141,9 +141,9 @@ const getAllAssignedProduct = async (req, res) => {
 
   res.status(StatusCodes.OK).json({
     assignedDevices: assignedDevicesList,
-    totalCount
-    // totalPages: Math.ceil(totalCount / limit),
-    // currentPage: page,
+    totalCount,
+    totalPages: Math.ceil(totalCount / limit),
+    currentPage: page,
   });
 };
 
