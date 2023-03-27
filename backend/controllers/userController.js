@@ -45,7 +45,12 @@ const getAllUsers = async (req, res) => {
     .skip(skip)
     .limit(limit);
 
-  res.status(StatusCodes.OK).json({ user: finalUserList, nbhits: userCount });
+  res.status(StatusCodes.OK).json({ 
+    user: finalUserList, 
+    totalCount: userCount,
+    totalPages : Math.ceil(userCount / limit),
+    currentPage: page
+  });
 };
 
 const getSingleUser = async (req, res) => {
