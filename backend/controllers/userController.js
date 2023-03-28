@@ -12,7 +12,7 @@ const { json } = require("express");
 // };
 
 const getAllUsers = async (req, res) => {
-  const { username, email } = req.query;
+  const { username, email , branch } = req.query;
   const queryObject = {};
 
   if (req.query.page === '-1') {
@@ -20,11 +20,16 @@ const getAllUsers = async (req, res) => {
       const users = await User.find({}, '-password').lean();
       res.status(StatusCodes.OK).json({ user: users, count: users.length });
       return;
-    } else if (req.user.role === 'admin') {
-      queryObject.branch = req.user.branch;
-    }
-  } else if (req.user.role === 'admin') {
-    queryObject.branch = req.user.branch;
+    }}
+    
+  //   else if (req.user.role === 'admin') {
+  //     queryObject.branch = req.user.branch;
+  //   }
+  // } else if (req.user.role === 'admin') {
+  //   queryObject.branch = req.user.branch;
+  // }
+  if(branch) {
+    req.user.role === 'superadmin' ? queryObject.branch = branch : queryObject.branch = req.user.branch;
   }
 
   if (username) {
