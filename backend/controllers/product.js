@@ -23,6 +23,10 @@ const getAllProduct = async (req, res) => {
     }
   }
 
+  if(branch) {
+    req.user.role === 'superadmin' ? queryObject.branch = branch : queryObject.branch = req.user.branch;
+  }
+
   if (productCategory) {
     bodyObject["productCategory"] = productCategory;
   }

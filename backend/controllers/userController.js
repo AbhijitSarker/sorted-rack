@@ -28,8 +28,14 @@ const getAllUsers = async (req, res) => {
   // } else if (req.user.role === 'admin') {
   //   queryObject.branch = req.user.branch;
   // }
+
+
   if(branch) {
     req.user.role === 'superadmin' ? queryObject.branch = branch : queryObject.branch = req.user.branch;
+  }
+  
+  if (req.user.role === 'admin') {
+    queryObject.branch = req.user.branch;
   }
 
   if (username) {
