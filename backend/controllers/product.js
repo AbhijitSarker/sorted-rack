@@ -15,17 +15,17 @@ const getAllProduct = async (req, res) => {
   const { cpu, ram, branch, storageCapacity, macAddress, os, ipAddress, systemName, antivirusStatus, brand, model, dop, tag } = req.body; // for future search query
   const bodyObject = {};
 
-  // if (req.user.role === "admin") {
-  //   bodyObject["branch"] = req.user.branch;
-  // } else if (req.user.role === "superadmin") {
-  //   if (branch) {
-  //     bodyObject["branch"] = branch;
-  //   }
-  // }
-
-  if (branch) {
-    req.user.role === 'superadmin' ? bodyObject.branch = branch : bodyObject.branch = req.user.branch;
+  if (req.user.role === "admin") {
+    bodyObject["branch"] = req.user.branch;
+  } else if (req.user.role === "superadmin") {
+    if (branch) {
+      bodyObject["branch"] = branch;
+    }
   }
+
+  // if (branch) {
+  //   req.user.role === 'superadmin' ? bodyObject.branch = branch : bodyObject.branch = req.user.branch;
+  // }
 
   if (cpu) {
     bodyObject.cpu = { $regex: cpu, $options: 'i' };
