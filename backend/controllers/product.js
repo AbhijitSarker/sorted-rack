@@ -12,39 +12,19 @@ const createProduct = async (req, res) => {
 };
 
 const getAllProduct = async (req, res) => {
-  const { branch, productCategory, productType, systemName, systemModel, systemBrand, cpu, ram, storageType, storageCapacity, os, macAddress, ipAddress, tag } = req.body; // for future search query
+  const { cpu, ram, branch, storageCapacity, macAddress, os, ipAddress, systemName, antivirusStatus, brand, model, dop, tag } = req.body; // for future search query
   const bodyObject = {};
 
-  if (req.user.role === "admin") {
-    bodyObject["branch"] = req.user.branch;
-  } else if (req.user.role === "superadmin") {
-    if (branch) {
-      bodyObject["branch"] = branch;
-    }
-  }
+  // if (req.user.role === "admin") {
+  //   bodyObject["branch"] = req.user.branch;
+  // } else if (req.user.role === "superadmin") {
+  //   if (branch) {
+  //     bodyObject["branch"] = branch;
+  //   }
+  // }
 
-  if(branch) {
-    req.user.role === 'superadmin' ? queryObject.branch = branch : queryObject.branch = req.user.branch;
-  }
-
-  if (productCategory) {
-    bodyObject["productCategory"] = productCategory;
-  }
-
-  if (productType) {
-    bodyObject["productType"] = productType;
-  }
-
-  if (systemName) {
-    bodyObject.systemName = { $regex: systemName, $options: 'i' };
-  }
-
-  if (systemModel) {
-    bodyObject.systemModel = { $regex: systemModel, $options: 'i' };
-  }
-
-  if (systemBrand) {
-    bodyObject.systemBrand = { $regex: systemBrand, $options: 'i' };
+  if (branch) {
+    req.user.role === 'superadmin' ? bodyObject.branch = branch : bodyObject.branch = req.user.branch;
   }
 
   if (cpu) {
@@ -55,25 +35,42 @@ const getAllProduct = async (req, res) => {
     bodyObject.ram = { $regex: ram, $options: 'i' };
   }
 
-  if (storageType) {
-    bodyObject.storageType = { $regex: storageType, $options: 'i' };
-  }
-
   if (storageCapacity) {
     bodyObject.storageCapacity = { $regex: storageCapacity, $options: 'i' };
-  }
-
-  if (os) {
-    bodyObject.os = { $regex: os, $options: 'i' };
   }
 
   if (macAddress) {
     bodyObject.macAddress = { $regex: macAddress, $options: 'i' };
   }
 
+  if (os) {
+    bodyObject.os = { $regex: os, $options: 'i' };
+  }
+
   if (ipAddress) {
     bodyObject.ipAddress = { $regex: ipAddress, $options: 'i' };
   }
+
+  if (systemName) {
+    bodyObject.systemName = { $regex: systemName, $options: 'i' };
+  }
+
+  if (antivirusStatus) {
+    bodyObject.antivirusStatus = { $regex: antivirusStatus, $options: 'i' };
+  }
+
+  if (brand) {
+    bodyObject.brand = { $regex: brand, $options: 'i' };
+  }
+
+  if (model) {
+    bodyObject.model = { $regex: model, $options: 'i' };
+  }
+
+  if (dop) {
+    bodyObject.dop = { $regex: dop, $options: 'i' };
+  }
+
 
   if (tag) {
     bodyObject["tag"] = tag;
