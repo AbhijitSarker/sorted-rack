@@ -40,10 +40,6 @@ const getAllProduct = async (req, res) => {
     bodyObject.storageCapacity = { $regex: storageCapacity, $options: 'i' };
   }
 
-  // if (macAddress) {
-  //   bodyObject.macAddress = { $regex: macAddress, $options: 'i' };
-  // }
-
   if (os) {
     bodyObject.os = { $regex: os, $options: 'i' };
   }

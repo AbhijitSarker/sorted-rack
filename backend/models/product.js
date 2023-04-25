@@ -60,7 +60,7 @@ const productSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    model: {
+    modal: {
       type: String,
       trim: true,
     },
