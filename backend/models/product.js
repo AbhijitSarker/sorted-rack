@@ -36,6 +36,18 @@ const productSchema = new mongoose.Schema(
       trim: true,
       default: true,
     },
+    productType: {
+      type: String,
+      trim: true,
+    },
+    storageType : {
+      type: String,
+      trim: true,
+    },
+    serialNumber  : {
+      type: String,
+      trim: true,
+    },
 
 
     branch: {

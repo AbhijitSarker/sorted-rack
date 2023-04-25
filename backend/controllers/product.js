@@ -12,7 +12,8 @@ const createProduct = async (req, res) => {
 };
 
 const getAllProduct = async (req, res) => {
-  const { cpu, ram, branch, storageCapacity, macAddress, os, ipAddress, systemName, antivirusStatus, brand, model, dop, tag } = req.body; // for future search query
+  // const { cpu, ram, branch, storageCapacity, macAddress, os, ipAddress, systemName, antivirusStatus, brand, model, dop, tag } = req.body; // for future search query
+  const { productType, branch, ram, storageCapacity, storageType, os, cpu, antivirusStatus } = req.body; // for future search query
   const bodyObject = {};
 
   if (req.user.role === "admin") {
@@ -47,28 +48,16 @@ const getAllProduct = async (req, res) => {
     bodyObject.os = { $regex: os, $options: 'i' };
   }
 
-  if (ipAddress) {
-    bodyObject.ipAddress = { $regex: ipAddress, $options: 'i' };
+  if (productType) {
+    bodyObject.productType = { $regex: productType, $options: 'i' };
   }
 
-  if (systemName) {
-    bodyObject.systemName = { $regex: systemName, $options: 'i' };
+  if (storageType) {
+    bodyObject.storageType = { $regex: storageType, $options: 'i' };
   }
 
   if (antivirusStatus) {
     bodyObject.antivirusStatus = { $regex: antivirusStatus, $options: 'i' };
-  }
-
-  if (brand) {
-    bodyObject.brand = { $regex: brand, $options: 'i' };
-  }
-
-  if (model) {
-    bodyObject.model = { $regex: model, $options: 'i' };
-  }
-
-  if (dop) {
-    bodyObject.dop = { $regex: dop, $options: 'i' };
   }
 
 
