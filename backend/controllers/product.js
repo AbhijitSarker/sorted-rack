@@ -13,7 +13,7 @@ const createProduct = async (req, res) => {
 
 const getAllProduct = async (req, res) => {
   // const { cpu, ram, branch, storageCapacity, macAddress, os, ipAddress, systemName, antivirusStatus, brand, model, dop, tag } = req.body; // for future search query
-  const { productType, branch, ram, storageCapacity, storageType, os, cpu, antivirusStatus } = req.body; // for future search query
+  const { productType, branch, ram, storageCapacity, storageType, os, cpu, antivirusStatus, tag } = req.body; // for future search query
   const bodyObject = {};
 
   if (req.user.role === "admin") {
@@ -40,9 +40,9 @@ const getAllProduct = async (req, res) => {
     bodyObject.storageCapacity = { $regex: storageCapacity, $options: 'i' };
   }
 
-  if (macAddress) {
-    bodyObject.macAddress = { $regex: macAddress, $options: 'i' };
-  }
+  // if (macAddress) {
+  //   bodyObject.macAddress = { $regex: macAddress, $options: 'i' };
+  // }
 
   if (os) {
     bodyObject.os = { $regex: os, $options: 'i' };
