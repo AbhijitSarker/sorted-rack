@@ -3,7 +3,7 @@ import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import { MdAssignmentInd } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { axiosSecure } from "../../../api/axios";
+import { axiosOpen, axiosSecure, axiosInstance } from "../../../api/axios";
 import useAxios from "../../../Hooks/useAxios";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { convertDate } from "../../../Utility/utility";
@@ -193,17 +193,40 @@ const ListStock = () => {
   }
 
   useEffect(() => {
-    let filteredData = [];
-    if(advanceFilter.ram.length > 0) {
-      filteredData = devicesDetails.filter((item) => {
-        if(advanceFilter.ram.includes(item.ram.replace(/\s/g, ""))) {
-          return item;
-        }
-      });
-      setDevicesDetails(filteredData);
-    } else {
-      getAllStockDetails();
-    }
+
+    (async() => {
+      let filteredData = [];
+      const { data } = await axiosInstance.get("/product");
+      const products = data.products;
+      if(advanceFilter.ram.length > 0 || advanceFilter.processor.length > 0) {
+        products.forEach((item) => {
+         advanceFilter.processor.forEach((itm) => {
+           const regexExpression = new RegExp(itm.replace(/\s/g, "").toLowerCase(), "ig");
+           if(item.cpu.match(regexExpression)) {
+             filteredData.push(item)
+           } else {
+             filteredData = [...filteredData];
+           }
+         });
+       });
+       if(filteredData.length > 0) {
+         const temp = [...filteredData];
+         temp.forEach((item) => {
+           advanceFilter.ram.forEach((itm) => {
+             const regexExpression = new RegExp(itm.replace(/\s/g, "").toLowerCase(), "ig");
+             if(item.ram.match(regexExpression)) {
+               filteredData.push(item)
+             } else {
+               filteredData = [...filteredData];
+             }
+           });
+         });
+       }
+       setDevicesDetails(filteredData);
+     } else {
+      setDevicesDetails(products);
+     }
+    })();
 
   }, [updateData])
 
@@ -427,7 +450,52 @@ const ListStock = () => {
         <Row>
           <Col>
             <Card body>
-                <Stack direction="horizontal" className="align-items-center" gap={3}>
+              <Container>
+                <Row>
+                  <Col xs="2" sm="2" md="2" lg="2" xl="2" xxl="2">
+                    <label className="fw-bold">Processor:</label>
+                  </Col>
+                  <Col xs="10" sm="" md="10" lg="10" xl="10" xxl="10">
+                    {
+                        ["intel", "amd"].map((item) => (
+                          <Form.Check
+                              inline
+                              label={item}
+                              name="processor-filter"
+                              type={"checkbox"}
+                              id={`processor-${item}`}
+                              onChange={advanceFilterHandler}
+                            />
+                        ))
+                    }
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs="2" sm="2" md="2" lg="2" xl="2" xxl="2">
+                  <label className="fw-bold">RAM:</label>
+                  </Col>
+                  <Col xs="10" sm="10" md="10" lg="10" xl="10" xxl="10">
+                    {
+                        ["4GB", "8GB", "16GB", "32GB", "64GB", "128GB"].map((item) => (
+                          <Form.Check
+                              inline
+                              label={item}
+                              name="ram-filter"
+                              type={"checkbox"}
+                              id={`ram-${item}`}
+                              onChange={advanceFilterHandler}
+                            />
+                        ))
+                    }
+                  </Col>
+                </Row>
+              </Container>
+
+
+
+
+
+                {/* <Stack direction="horizontal" className="align-items-center" gap={3}>
                   <label className="fw-bold">Processor:</label>
                   <div>
                     <Form.Check
@@ -462,7 +530,7 @@ const ListStock = () => {
                       ))
                     }
                   </div>
-                </Stack>
+                </Stack> */}
 
             </Card>
           </Col>
