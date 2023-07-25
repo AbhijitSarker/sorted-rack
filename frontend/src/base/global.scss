@@ -154,16 +154,10 @@ td {
   display: none;
 }
 
-// .show {
-//   border: 0;
-//   border-radius: 10px;
-// }
-
-.table-responsive {
-  height: 60vh;
-  margin-bottom: 20px;
+.accordion-collapse.collapse.show{
+  display: block;
 }
 
-.pagination {
-  justify-content: end;
+.primary-custom-btn, .primary-custom-btn > button {
+  height: 50px;
 }

@@ -1,0 +1,72 @@
+[
+  {
+    "label": "System Name",
+    "name": "systemName",
+    "type": "text"
+  },
+  {
+    "label": "CPU",
+    "name": "cpu",
+    "type": "text"
+  },
+  {
+    "label": "RAM",
+    "name": "ram",
+    "type": "text"
+  },
+  {
+    "label": "Storage Capacity",
+    "name": "storageCapacity",
+    "type": "text"
+  },
+  {
+    "label": "System Brand",
+    "name": "brand",
+    "type": "text"
+  },
+  {
+    "label": "Operating System",
+    "name": "os",
+    "type": "text"
+  },
+  {
+    "label": "IP Address",
+    "name": "ipAddress",
+    "type": "text"
+  },
+  {
+    "label": "MAC Address",
+    "name": "macAddress",
+    "type": "text"
+  },
+  {
+    "label": "Storage Type",
+    "name": "storageType",
+    "type": "text"
+  },
+  {
+    "label": "Serial Number",
+    "name": "serialNumber",
+    "type": "text"
+  },
+  {
+    "label": "Antivirus Status",
+    "name": "antivirusStatus",
+    "type": "text"
+  },
+  {
+    "label": "Warranty Period",
+    "name": "warrantyPeriod",
+    "type": "text"
+  },
+  {
+    "label": "Date of Purchase",
+    "name": "dop",
+    "type": "date"
+  }, 
+  {
+    "label": "System Modal",
+    "name": "modal",
+    "type": "text"
+  }
+]

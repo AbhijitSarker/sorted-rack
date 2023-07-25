@@ -16,7 +16,7 @@ const Layout = () => {
             <section>
               <Outlet />
             </section>
-            <Footer />
+            {/* <Footer /> */}
           </div>
         </main>
       </SidebarContextProvider>
