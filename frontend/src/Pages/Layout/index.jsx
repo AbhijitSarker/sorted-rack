@@ -7,7 +7,7 @@ const Layout = () => {
   const location = useLocation();
   const { role } = getUserDetails();
   return isLoggedIn() ? (
-    role === "superadmin" ? (
+    [ "superadmin", "admin", "user" ].includes(role) ? (
       <SidebarContextProvider>
         <main className="d-flex flex-nowrap">
           <Sidebar />

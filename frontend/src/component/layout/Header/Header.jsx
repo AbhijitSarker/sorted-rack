@@ -10,9 +10,13 @@ import locations from "../../../constants/Locations.json";
 
 
 const Header = () => {
+
+  const userDetails = localStorage.userDetails ? JSON.parse(localStorage.userDetails) : null;
+  const isSuperAdmin = userDetails.role === "superadmin";
+  const userLocation = userDetails ? userDetails.branch : null;
   const { activeMenu, setActiveMenu } = useContext(SidebarContext);
   const { branch, setBranch } = useContext(BranchContext);
-  const selectedLocation = useRef('All');
+  const selectedLocation = useRef(isSuperAdmin ? "All" : userLocation);
 
   const navigate = useNavigate();
 
@@ -39,7 +43,9 @@ const Header = () => {
             <form role="search" className="ms-auto pe-2">
               {/* <input className="form-control" type="search" placeholder="Search" aria-label="Search" /> */}
             </form>
-            <Dropdown className="mx-3">
+            {
+              isSuperAdmin && (
+                <Dropdown className="mx-3">
                 <Dropdown.Toggle variant="success" id="dropdown-basic">
                     {branch}
                 </Dropdown.Toggle>
@@ -58,7 +64,15 @@ const Header = () => {
                       })
                     }
                 </Dropdown.Menu>
-              </Dropdown>
+            </Dropdown>
+
+              )
+            }
+
+            {
+              !isSuperAdmin && (<label className="mx-5 text-white">{userLocation}</label>)
+            }
+
             <button onClick={handleLogout} type="button" className="btn btn-outline-light">
               Logout
             </button>

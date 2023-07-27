@@ -197,35 +197,40 @@ const ListStock = () => {
     (async() => {
       let filteredData = [];
       const { data } = await axiosInstance.get("/product");
+      debugger
       const products = data.products;
-      if(advanceFilter.ram.length > 0 || advanceFilter.processor.length > 0) {
+
+
+      if(advanceFilter.processor.length > 0) {
         products.forEach((item) => {
-         advanceFilter.processor.forEach((itm) => {
-           const regexExpression = new RegExp(itm.replace(/\s/g, "").toLowerCase(), "ig");
-           if(item.cpu.match(regexExpression)) {
-             filteredData.push(item)
-           } else {
-             filteredData = [...filteredData];
-           }
-         });
+          advanceFilter.processor.forEach((itm) => {
+            const regexExpression = new RegExp(itm.replace(/\s/g, "").toLowerCase(), "ig");
+            if(item.cpu.match(regexExpression)) {
+              filteredData.push(item)
+            } else {
+              filteredData = [...filteredData];
+            }
+          });
        });
-       if(filteredData.length > 0) {
-         const temp = [...filteredData];
-         temp.forEach((item) => {
-           advanceFilter.ram.forEach((itm) => {
-             const regexExpression = new RegExp(itm.replace(/\s/g, "").toLowerCase(), "ig");
-             if(item.ram.match(regexExpression)) {
-               filteredData.push(item)
-             } else {
-               filteredData = [...filteredData];
-             }
-           });
-         });
-       }
-       setDevicesDetails(filteredData);
-     } else {
-      setDevicesDetails(products);
-     }
+      } else {
+        filteredData = [...products];
+      }
+
+      if(advanceFilter.ram.length > 0) {
+        const temp = [...filteredData];
+        temp.forEach((item) => {
+          advanceFilter.ram.forEach((itm) => {
+            const regexExpression = new RegExp(itm.replace(/\s/g, "").toLowerCase(), "ig");
+            if(item.ram.match(regexExpression)) {
+              filteredData.push(item)
+            } else {
+              filteredData = [...filteredData];
+            }
+          });
+        });
+      }
+      setDevicesDetails(filteredData);
+     
     })();
 
   }, [updateData])
