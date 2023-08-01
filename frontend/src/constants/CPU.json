@@ -1,0 +1,6 @@
+[
+  { "id": "0", "label": "Intel Core i3", "value": "i3" },
+  { "id": "1", "label": "Intel Core i5", "value": "i5" },
+  { "id": "2", "label": "Intel Core i7", "value": "i7" },
+  { "id": "3", "label": "Intel Core i9", "value": "i9" }
+]

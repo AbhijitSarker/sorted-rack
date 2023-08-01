@@ -1,0 +1,6 @@
+[
+  { "id": "0", "label": "256 GB", "value": 256 },
+  { "id": "1", "label": "512 GB", "value": 512 },
+  { "id": "2", "label": "1 TB", "value": 1024 },
+  { "id": "3", "label": "2 TB", "value": 2048 }
+]
