@@ -284,8 +284,10 @@ const ListStock = () => {
   async function getAvailableDevice() {
     const { data: { products } } = await axiosSecure.get("/product");
     if(branch !== "All") {
+      debugger
       setAvailableDevice(products.filter(product => product.branch.toLowerCase() === branch.toLowerCase() && product.tag !== "assigned"));
     } else {
+      debugger
       setAvailableDevice(products.filter(product => product.tag !== "assigned"));
     }
   }
