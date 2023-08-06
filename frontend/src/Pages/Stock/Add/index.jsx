@@ -36,7 +36,7 @@ const AddStock = () => {
             >
               <SytemDetailsForm />
             </Tab>
-            <Tab
+            {/* <Tab
               className="tab"
               eventKey={"Accessories"}
               title={
@@ -47,7 +47,7 @@ const AddStock = () => {
               }
             >
               <AccessoriesFormContainer />
-            </Tab>
+            </Tab> */}
           </Tabs>
         </Col>
       </Row>

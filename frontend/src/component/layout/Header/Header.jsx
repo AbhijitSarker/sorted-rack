@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../../service";
 import { SidebarContext } from "../../../contexts/SidebarContext";
@@ -17,7 +17,6 @@ const Header = () => {
   const { activeMenu, setActiveMenu } = useContext(SidebarContext);
   const { branch, setBranch } = useContext(BranchContext);
   const selectedLocation = useRef(isSuperAdmin ? "All" : userLocation);
-
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -30,6 +29,14 @@ const Header = () => {
     setBranch(branchName);
   }
 
+
+  useEffect(() => {
+    if(userLocation !== "All") {
+      debugger
+      setBranch(userLocation)
+    }
+  
+  }, []);
 
   return (
     <>

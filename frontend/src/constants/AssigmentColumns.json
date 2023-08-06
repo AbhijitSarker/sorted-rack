@@ -37,108 +37,78 @@
   },
   {
     "id": 7,
-    "fieldName": "Product Category",
-    "name": "productCategory",
-    "show": false
-  },
-  {
-    "id": 8,
     "fieldName": "System Name",
     "name": "systemName",
     "show": false
   },
   {
-    "id": 9,
-    "fieldName": "System Model",
-    "name": "systemModel",
-    "show": false
-  },
-  {
-    "id": 10,
+    "id": 8,
     "fieldName": "Product Type",
     "name": "productType",
     "show": false
   },
   {
-    "id": 11,
+    "id": 9,
     "fieldName": "System Brand",
     "name": "systemBrand",
     "show": false
   },
   {
-    "id": 12,
+    "id": 10,
     "fieldName": "CPU",
     "name": "cpu",
     "show": false
   },
   {
-    "id": 13,
+    "id": 11,
     "fieldName": "RAM",
     "name": "ram",
     "show": false
   },
   {
-    "id": 14,
+    "id": 12,
     "fieldName": "Storage Capacity",
     "name": "storageCapacity",
     "show": false
   },
   {
-    "id": 15,
+    "id": 13,
     "fieldName": "OS",
     "name": "os",
     "show": false
   },
   {
-    "id": 16,
+    "id": 14,
     "fieldName": "MAC Address",
     "name": "macAddress",
     "show": false
   },
   {
-    "id": 17,
-    "fieldName": "Product name",
-    "name": "productname",
-    "show": false
-  },
-  {
-    "id": 18,
+    "id": 15,
     "fieldName": "Serial Number",
     "name": "serialNumber",
     "show": false
   },
   {
-    "id": 19,
-    "fieldName": "Accessories Name",
-    "name": "accessoriesName",
-    "show": false
-  },
-  {
-    "id": 20,
-    "fieldName": "Network Device",
-    "name": "networkDeviceName",
-    "show": false
-  },
-  {
-    "id": 21,
+    "id": 16,
     "fieldName": "TAG",
     "name": "tag",
     "show": false
   },
   {
-    "id": 22,
+    "id": 17,
     "fieldName": "Storage Type",
     "name": "storageType",
     "show": false
   },
   {
-    "id": 23,
+    "id": 18,
     "fieldName": "Assign By",
     "name": "assignBy",
     "show": false
   },
   {
-    "id": 24,
+    "id": 19,
     "fieldName": "Assign Date",
     "name": "assignDate",
     "show": false

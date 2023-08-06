@@ -1,12 +1,14 @@
-import React, { useRef, useState, useEffect, useMemo } from "react";
+import React, { useContext, useState, useEffect, useMemo } from "react";
 import { BsGear } from 'react-icons/bs';
 import { BiCheckCircle } from "react-icons/bi";
 import { Form, Table, Toast, Container, Dropdown, Col } from "react-bootstrap";
-import { axiosSecure, getAuthorizationHeader } from "../../api/axios";
+import { axiosSecure, getAuthorizationHeader, axiosInstance } from "../../api/axios";
 import PaginationComponent from "../../component/Pagination/Pagination";
 import Columns from "../../constants/AssigmentColumns.json";
+import BranchContext  from "../../contexts/BranchContext";
 
 const AssignItem = () => {
+  const { branch, setBranch } = useContext(BranchContext);
   const [columns, setColumns] = useState(Columns);
   const [assignedDeviceUserList, setAssignedDeviceUserList] = useState([]);
   const [search, setSearch] = useState("");
@@ -16,10 +18,7 @@ const AssignItem = () => {
   const [showToaster, setShowToaster] = useState(false);
 
   const getAssignedDeviceDetails = async () => {
-    const response = await axiosSecure.get("/assignedProduct", {
-      headers: { Authorization: getAuthorizationHeader() },
-    });
-
+    const response = await axiosInstance.get("/assignedProduct");
     setAssignedDeviceUserList(response?.data?.assignedDevices);
   };
 
@@ -165,8 +164,8 @@ const AssignItem = () => {
             })
           ) : (
             <tr>
-              <td>No Records..</td>
-            </tr>
+            <td colSpan="12" className="text-center">No Data Found</td>
+          </tr>
           )}
         </tbody>
       </Table>

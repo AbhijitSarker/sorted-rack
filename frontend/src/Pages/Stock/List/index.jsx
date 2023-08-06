@@ -163,80 +163,13 @@ const ListStock = () => {
     processor: [],
     ram: [],
   });
-  const [updateData, setUpdateData] = useState(false);
-
-  function advanceFilterHandler(event) {
-    debugger
-    const { name, value } = event.target;
-    const checkbox = event.target;
-    const label = document.querySelector(`label[for=${checkbox.id}]`);
-    const labelContent = label.textContent;
-    if (checkbox.checked) {
-      if(name === "processor-filter") {
-        setAdvanceFilter({...advanceFilter, processor: [...advanceFilter.processor, labelContent]})
-      } 
-      if(name === "ram-filter") {
-        setAdvanceFilter({...advanceFilter, ram: [...advanceFilter.ram, labelContent]})
-      }
-
-    } else {
-      debugger
-      if(name === "processor-filter") {
-        setAdvanceFilter({...advanceFilter, processor: advanceFilter.processor.filter((item) => item !== labelContent)})
-      } 
-      if(name === "ram-filter") {
-        setAdvanceFilter({...advanceFilter, ram: advanceFilter.ram.filter((item) => item !== labelContent)})
-      }
-    }
-
-    setUpdateData(value => !value)
-  }
-
-  useEffect(() => {
-
-    (async() => {
-      let filteredData = [];
-      const { data } = await axiosInstance.get("/product");
-      debugger
-      const products = data.products;
 
 
-      if(advanceFilter.processor.length > 0) {
-        products.forEach((item) => {
-          advanceFilter.processor.forEach((itm) => {
-            const regexExpression = new RegExp(itm.replace(/\s/g, "").toLowerCase(), "ig");
-            if(item.cpu.match(regexExpression)) {
-              filteredData.push(item)
-            } else {
-              filteredData = [...filteredData];
-            }
-          });
-       });
-      } else {
-        filteredData = [...products];
-      }
-
-      if(advanceFilter.ram.length > 0) {
-        const temp = [...filteredData];
-        temp.forEach((item) => {
-          advanceFilter.ram.forEach((itm) => {
-            const regexExpression = new RegExp(itm.replace(/\s/g, "").toLowerCase(), "ig");
-            if(item.ram.match(regexExpression)) {
-              filteredData.push(item)
-            } else {
-              filteredData = [...filteredData];
-            }
-          });
-        });
-      }
-      setDevicesDetails(filteredData);
-     
-    })();
-
-  }, [updateData])
 
   const handleAssignmentModal = () =>
     setShowAssignmentModal(!showAssignmentModal);
+
+
   const handleRemoveDeviceModal = () => {
     setShowRemoveDeviceModal(!showRemoveDeviceModal);
     setCurrentPage(1);
@@ -271,18 +204,10 @@ const ListStock = () => {
     });
 
   const getAllUsers = async () => {
-    const { data } = await axiosSecure.get("/user", {
-      headers: {
-        Authorization: `Bearer ${
-          localStorage.userDetails && JSON.parse(localStorage.userDetails).token
-        }`,
-      },
-    });
-    userList.current = data.user.filter(
-      (usr) => usr.branch === "Goa" && usr.status === "active"
-    );
-    const usersEmail = userList.current.map((user) => user.email);
-    setEmailList(usersEmail);
+    const { data } = await axiosInstance.get("/user");
+    userList.current = data.user;
+    const usersList = data?.user.filter((user) => user.branch.toLowerCase() === branch.toLowerCase() && user.status === "active").map(user => user.email);
+    setEmailList(usersList);
   };
 
   const handleUserSelection = (stockId) => {
@@ -295,24 +220,8 @@ const ListStock = () => {
     const selectedUserId = userList.current.find(
       (user) => user.email === selectedUserEmail[0]
     )._id;
-
     setShowLoader(true);
-    await axiosSecure.post(
-      "/assignedProduct",
-      {
-        branch: "Goa",
-        user: selectedUserId,
-        product: selectedStockId,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${
-            localStorage.userDetails &&
-            JSON.parse(localStorage.userDetails).token
-          }`,
-        },
-      }
-    );
+    await axiosInstance.post("/assignedProduct", { branch, user: selectedUserId, product: selectedStockId });
     setShowLoader(false);
     setRefresh(!refresh);
     handleAssignmentModal();
@@ -324,16 +233,17 @@ const ListStock = () => {
     setCurrentPage(1);
   };
 
-  useEffect(() => {
-    if (response?.products?.length > 0) {
-      const products = response?.products;
-      let filteredProducts = [...products];
-      if(branch !== "All") {
-        filteredProducts = products.filter((product) => product.branch.toLowerCase() === branch.toLowerCase())
-      }
-      setDevicesDetails(filteredProducts);
-    }
-  }, [response, branch]);
+  // useEffect(() => {
+  //   if (response?.products?.length > 0) {
+  //     const products = response?.products;
+  //     let filteredProducts = [...products];
+  //     if(branch !== "All") {
+  //       filteredProducts = products.filter((product) => product.branch.toLowerCase() === branch.toLowerCase() && product.tag !== "assigned")
+  //     }
+  //     debugger
+  //     setDevicesDetails(filteredProducts);
+  //   }
+  // }, [response, branch]);
 
   const filtered = useMemo(() => {
     let filteredResult = devicesDetails;
@@ -362,8 +272,93 @@ const ListStock = () => {
 
   useEffect(() => {
     getAllStockDetails();
-    getAllUsers();
   }, [refresh, deviceCategory]);
+
+
+
+
+
+  const [ availableDevice, setAvailableDevice ] = useState([]);
+  const [updateData, setUpdateData] = useState(null);
+  
+  async function getAvailableDevice() {
+    const { data: { products } } = await axiosSecure.get("/product");
+    if(branch !== "All") {
+      setAvailableDevice(products.filter(product => product.branch.toLowerCase() === branch.toLowerCase() && product.tag !== "assigned"));
+    } else {
+      setAvailableDevice(products.filter(product => product.tag !== "assigned"));
+    }
+  }
+
+  async function getFilterAvailableDevice() {
+    let filteredData = [];
+    const { data } = await axiosInstance.get("/product");
+    const products = data.products;
+    if(advanceFilter.processor.length > 0) {
+      products.forEach((item) => {
+        advanceFilter.processor.forEach((itm) => {
+          const regexExpression = new RegExp(itm.replace(/\s/g, "").toLowerCase(), "ig");
+          if(item.cpu.match(regexExpression)) {
+            filteredData.push(item)
+          } else {
+            filteredData = [...filteredData];
+          }
+        });
+     });
+    } else {
+      filteredData = [...products];
+    }
+
+    if(advanceFilter.ram.length > 0) {
+      const temp = [...filteredData];
+      filteredData = [];
+      temp.forEach((item) => {
+        advanceFilter.ram.forEach((itm) => {
+          const regexExpression = new RegExp(itm.replace(/\s/g, "").toLowerCase(), "ig");
+          if(item.ram.replace(" ", "").match(regexExpression)) {
+            filteredData.push(item)
+          }
+        });
+      });
+    }
+    setAvailableDevice(filteredData);
+  }
+
+  function advanceFilterHandler(event) {
+    const { name, value } = event.target;
+    const checkbox = event.target;
+    const label = document.querySelector(`label[for=${checkbox.id}]`);
+    const labelContent = label.textContent;
+    if (checkbox.checked) {
+      if(name === "processor-filter") {
+        setAdvanceFilter({...advanceFilter, processor: [...advanceFilter.processor, labelContent]})
+      } 
+      if(name === "ram-filter") {
+        setAdvanceFilter({...advanceFilter, ram: [...advanceFilter.ram, labelContent]})
+      }
+
+    } else {
+      if(name === "processor-filter") {
+        setAdvanceFilter({...advanceFilter, processor: advanceFilter.processor.filter((item) => item !== labelContent)})
+      } 
+      if(name === "ram-filter") {
+        setAdvanceFilter({...advanceFilter, ram: advanceFilter.ram.filter((item) => item !== labelContent)})
+      }
+    }
+    setUpdateData(value => !value)
+  }
+
+  useEffect(() => {
+    if(updateData !== null) {
+      setAvailableDevice([]);
+      getFilterAvailableDevice();
+    }
+  }, [updateData])
+
+  useEffect(() => {
+    getAllUsers();
+    getAvailableDevice();
+  }, [branch])
 
   return (
     <div className="flex-grow-1 mt-3 h-100 w-100 px-4">
@@ -433,7 +428,7 @@ const ListStock = () => {
           <FloatingLabel controlId="searchFloatingInput" label="Search" className="m-0 primary-custom-btn">
             <Form.Control type="text" placeholder="Search System" style={{ minHeight: "50px", maxHeight: "50px" }} />
           </FloatingLabel>
-          <DropdownButton
+          {/* <DropdownButton
             id="dropdown-basic-button"
             className="primary-custom-btn m-0"
             title={deviceCategory}
@@ -441,13 +436,12 @@ const ListStock = () => {
           >
             <Dropdown.Item eventKey="System">System</Dropdown.Item>
             <Dropdown.Item eventKey="Accessories">Accessories</Dropdown.Item>
-          </DropdownButton>
+          </DropdownButton> */}
           <Link to="/stock/add" className="primary-custom-btn">
             <Button variant="primary mb-2 float-right">
               Add {deviceCategory}
             </Button>
           </Link>
-          <Button className="primary-custom-btn">Advance Filter</Button>
         </Stack>
         
       </Stack>
@@ -544,7 +538,7 @@ const ListStock = () => {
 
       <div style={{ width: "100%", overflow: "auto" }}>
         <ShowDeviceDetails 
-          filtered={devicesDetails}
+          filtered={availableDevice}
           handleRemoveDeviceModal={handleRemoveDeviceModal}
           handleUserSelection={handleUserSelection}
           deviceCategory={deviceCategory}
@@ -559,14 +553,14 @@ const ListStock = () => {
         </div>
       )}
       {!loading && error && <p className="error-msg">{error}</p>}
-      <div className="d-flex justify-content-end me-3 mt-3">
+      {/* <div className="d-flex justify-content-end me-3 mt-3">
         <PaginationComponent
           total={devicesDetails?.length}
           itemsPerPage={ITEMS_PER_PAGE}
           currentPage={currentPage}
           onPageChange={(page) => setCurrentPage(page)}
         />
-      </div>
+      </div> */}
       <Toaster
         title="user deleted successfully"
         bg="danger"
