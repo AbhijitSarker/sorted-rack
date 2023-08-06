@@ -20,19 +20,19 @@ const createAssignedProduct = async (req, res) => {
   if (verifyuser.branch !== branch) {
     throw new CustomError.BadRequestError("User needs to be from same branch");
   }
-  if (verifyuser.role === "superadmin" && req.user.role === "admin") {
-    throw new CustomError.UnauthorizedError(
-      "Not authorize to proceed with this task"
-    );
-  }
+  // if (verifyuser.role === "superadmin" && req.user.role === "admin") {
+  //   throw new CustomError.UnauthorizedError(
+  //     "Not authorize to proceed with this task"
+  //   );
+  // }
   if (verifyuser.status !== "active") {
     throw new CustomError.BadRequestError("User is not active");
   }
-  if (verifyuser.role === "admin" && req.user.role === "admin") {
-    throw new CustomError.UnauthorizedError(
-      "Not authorize to proceed with this task"
-    );
-  }
+  // if (verifyuser.role === "admin" && req.user.role === "admin") {
+  //   throw new CustomError.UnauthorizedError(
+  //     "Not authorize to proceed with this task"
+  //   );
+  // }
 
   const product = await Product.findOne({ _id: productId });
   if (!product) {
