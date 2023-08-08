@@ -32,7 +32,6 @@ const Header = () => {
 
   useEffect(() => {
     if(userLocation !== "All") {
-      debugger
       setBranch(userLocation)
     }
   

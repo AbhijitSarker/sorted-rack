@@ -164,10 +164,10 @@ const ListStock = () => {
     ram: [],
   });
 
-
-
-  const handleAssignmentModal = () =>
+  const handleAssignmentModal = () => {
     setShowAssignmentModal(!showAssignmentModal);
+    getAvailableDevice();
+  }
 
 
   const handleRemoveDeviceModal = () => {
@@ -240,7 +240,6 @@ const ListStock = () => {
   //     if(branch !== "All") {
   //       filteredProducts = products.filter((product) => product.branch.toLowerCase() === branch.toLowerCase() && product.tag !== "assigned")
   //     }
-  //     debugger
   //     setDevicesDetails(filteredProducts);
   //   }
   // }, [response, branch]);
@@ -284,10 +283,8 @@ const ListStock = () => {
   async function getAvailableDevice() {
     const { data: { products } } = await axiosSecure.get("/product");
     if(branch !== "All") {
-      debugger
       setAvailableDevice(products.filter(product => product.branch.toLowerCase() === branch.toLowerCase() && product.tag !== "assigned"));
     } else {
-      debugger
       setAvailableDevice(products.filter(product => product.tag !== "assigned"));
     }
   }
@@ -295,7 +292,7 @@ const ListStock = () => {
   async function getFilterAvailableDevice() {
     let filteredData = [];
     const { data } = await axiosInstance.get("/product");
-    const products = data.products;
+    const products = data.products.filter(product => product.tag !== "assigned" && product.branch.toLowerCase() === branch.toLowerCase());
     if(advanceFilter.processor.length > 0) {
       products.forEach((item) => {
         advanceFilter.processor.forEach((itm) => {
@@ -397,30 +394,41 @@ const ListStock = () => {
           )}
         </Modal>
         <Modal show={showAssignmentModal} onHide={handleAssignmentModal}>
-          <Modal.Header closeButton>
-            <Modal.Title>Please select the user</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Typeahead
-              id="basic-example"
-              onChange={setSelectedUserEmail}
-              options={emailList}
-              placeholder="Choose user email.."
-              selected={selectedUserEmail}
-            />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleAssignmentModal}>
-              Cancel
-            </Button>
-            <Button
-              variant="primary"
-              disabled={showLoader}
-              onClick={handleUserStockAssignment}
-            >
-              {showLoader ? "Assigning..." : "Assign"}
-            </Button>
-          </Modal.Footer>
+
+          {
+            branch === "All" ? (
+            <Modal.Body>
+              <p className="text-center m-0 fw-bold">You need to select an office location.</p>
+            </Modal.Body>
+            ) : (
+              <>
+                <Modal.Header closeButton>
+                  <Modal.Title>Please select the user</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <Typeahead
+                    id="basic-example"
+                    onChange={setSelectedUserEmail}
+                    options={emailList}
+                    placeholder="Choose user email.."
+                    selected={selectedUserEmail}
+                  />
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={handleAssignmentModal}>
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="primary"
+                    disabled={showLoader}
+                    onClick={handleUserStockAssignment}
+                  >
+                    {showLoader ? "Assigning..." : "Assign"}
+                  </Button>
+                </Modal.Footer>
+              </>
+            )
+          }
         </Modal>
       </div>
 
@@ -547,14 +555,6 @@ const ListStock = () => {
           removeDeviceIdRef={removeDeviceIdRef}
         />
       </div>
-      {loading && (
-        <div className="d-flex justify-content-center">
-          <div className="spinner-border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      )}
-      {!loading && error && <p className="error-msg">{error}</p>}
       {/* <div className="d-flex justify-content-end me-3 mt-3">
         <PaginationComponent
           total={devicesDetails?.length}
