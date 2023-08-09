@@ -10,6 +10,7 @@ import "./users.scss";
 import { axiosSecure } from "../../../api/axios";
 import * as yup from "yup";
 import { Toaster } from "../../../component/Toaster/Toaster";
+import { Card } from "react-bootstrap";
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First Name is required"),
@@ -33,9 +34,7 @@ const handleOnSubmit = (values) =>
     },
     {
       headers: {
-        Authorization: `Bearer ${
-          localStorage.userDetails && JSON.parse(localStorage.userDetails).token
-        }`,
+        Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
       },
     }
   );
@@ -46,196 +45,149 @@ const AddUser = () => {
   const [error, setError] = useState("");
   return (
     <div className="flex-grow-1">
-      <Formik
-        validationSchema={schema}
-        initialValues={{
-          firstName: "",
-          lastName: "",
-          email: "",
-          password: "",
-          userType: "",
-          branch: "",
-          status: "",
-          username:""
-        }}
-        onSubmit={async (values, { setSubmitting }) => {
-          try {
-            const response = await handleOnSubmit(values);
-            if (response.status === 201) {
-              setShowAddToaster(true);
-            }
-          } catch (errorMsg) {
-            setError(errorMsg.response.data.msg);
-            setShowErrorToaster(true);
-          }
-          setSubmitting(false);
-        }}
-      >
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-          /* and other goodies */
-        }) => (
-          <Form onSubmit={handleSubmit}>
-            <Container className="add-user-page d-flex flex-column justify-content-center">
-              <h2 className=" mb-4 ">Add User</h2>
-              <h5 className="fw-bold mb-3">User Details</h5>
-              <Row>
-                <Col md={6} lg={6} xl={6}>
-                  <FloatingLabel
-                    controlId="floatingFirstName"
-                    label="First Name"
-                    className="mb-3"
-                  >
-                    <Form.Control
-                      type="text"
-                      placeholder="First Name"
-                      name="firstName"
-                      value={values["firstName"]}
-                      onChange={handleChange}
-                      isInvalid={touched.firstName && !!errors.firstName}
-                    />
-                    <div className="invalid-feedback">
-                      {errors.firstName &&
-                        touched.firstName &&
-                        errors.firstName}
-                    </div>
-                  </FloatingLabel>
-                </Col>
-
-                <Col md={6} lg={6} xl={6}>
-                  <FloatingLabel
-                    controlId="floatingLastName"
-                    label="Last Name"
-                    className="mb-3"
-                  >
-                    <Form.Control
-                      type="text"
-                      placeholder="Last Name"
-                      name="lastName"
-                      onChange={handleChange}
-                      value={values["lastName"]}
-                      isInvalid={touched.lastName && !!errors.lastName}
-                    />
-                    <div className="invalid-feedback">
-                      {errors.lastName && touched.lastName && errors.lastName}
-                    </div>
-                  </FloatingLabel>
-                </Col>
-
-                <Col md={6} lg={6} xl={6}>
-                  <FloatingLabel
-                    controlId="floatingEmail"
-                    label="Email"
-                    className="mb-3"
-                  >
-                    <Form.Control
-                      type="text"
-                      placeholder="Email"
-                      name="email"
-                      onChange={handleChange}
-                      value={values["email"]}
-                      isInvalid={touched.email && !!errors.email}
-                    />
-                    <div className="invalid-feedback">
-                      {errors.email && touched.email && errors.email}
-                    </div>
-                  </FloatingLabel>
-                </Col>
-
-                <Col md={6} lg={6} xl={6}>
-                  <FloatingLabel
-                    controlId="floatingLastName"
-                    label="Password"
-                    className="mb-3"
-                  >
-                    <Form.Control
-                      type="password"
-                      placeholder="Password"
-                      name="password"
-                      onChange={handleChange}
-                      value={values["password"]}
-                      isInvalid={touched.password && !!errors.password}
-                    />
-                    <div className="invalid-feedback">
-                      {errors.password && touched.password && errors.password}
-                    </div>
-                  </FloatingLabel>
-                </Col>
-                
-                <Col md={6} lg={6} xl={6}>
-                  <FloatingLabel
-                    controlId="floatingusername"
-                    label="Username"
-                    className="mb-3"
-                  >
-                    <Form.Control
-                      type="text"
-                      placeholder="Username"
-                      name="username"
-                      onChange={handleChange}
-                      value={values["username"]}
-                      isInvalid={touched.username && !!errors.username}
-                    />
-                    <div className="invalid-feedback">
-                      {errors.username && touched.username && errors.username}
-                    </div>
-                  </FloatingLabel>
-                </Col>
-
-                <Col md={6} lg={6} xl={6}>
-                  <FloatingLabel>
-                    <Form.Select
-                      className="form-select"
-                      type="text"
-                      name="branch"
-                      aria-label="Select a branch"
-                      isInvalid={!!touched.branch && !!errors.branch}
-                      value={values.branch}
-                      onChange={handleChange}
-                    >
-                      <option value="" disabled hidden>
-                        Select
-                      </option>
-                      <option value="Dhaka">Dhaka</option>
-                      <option value="Goa">Goa</option>
-                      <option value="Sylhet">Sylhet</option>
-                    </Form.Select>
-                    <label htmlFor="floatingSelect">Select a branch</label>
-                    <div className="invalid-feedback">
-                      {touched.branch && errors.branch}
-                    </div>
-                  </FloatingLabel>
-                </Col>
-              </Row>
-              <Row></Row>
-              <Col md={12} lg={12} xl={12} className="mt-4 mb-4 ">
-                <Button type="submit" disabled={isSubmitting}>
-                  CREATE USER
-                </Button>
-              </Col>
-            </Container>
-          </Form>
-        )}
-      </Formik>
-      <Toaster
-        title="User added successfully"
-        bg="success"
-        showToaster={showAddToaster}
-        setShowToaster={setShowAddToaster}
-        to="user"
-      ></Toaster>
-      <Toaster
-        title={error}
-        bg="danger"
-        showToaster={showErrorToaster}
-        setShowToaster={setShowErrorToaster}
-        to="user/add"
-      ></Toaster>
+      <Card style={{ maxWidth: "600px", width: "100%", margin: "60px auto" }}>
+        <Card.Header className="fw-bold text-center">ADD USER</Card.Header>
+        <Card.Body>
+          <Formik
+            validationSchema={schema}
+            initialValues={{
+              firstName: "",
+              lastName: "",
+              email: "",
+              password: "",
+              userType: "",
+              branch: "",
+              status: "",
+              username: "",
+            }}
+            onSubmit={async (values, { setSubmitting }) => {
+              try {
+                const response = await handleOnSubmit(values);
+                if (response.status === 201) {
+                  setShowAddToaster(true);
+                }
+              } catch (errorMsg) {
+                setError(errorMsg.response.data.msg);
+                setShowErrorToaster(true);
+              }
+              setSubmitting(false);
+            }}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleSubmit,
+              isSubmitting,
+              /* and other goodies */
+            }) => (
+              <Form onSubmit={handleSubmit}>
+                <Container className="add-user-page d-flex flex-column justify-content-center">
+                  <Row>
+                    <Col>
+                      <FloatingLabel controlId="floatingFirstName" label="First Name" className="mb-3">
+                        <Form.Control
+                          type="text"
+                          placeholder="First Name"
+                          name="firstName"
+                          value={values["firstName"]}
+                          onChange={handleChange}
+                          isInvalid={touched.firstName && !!errors.firstName}
+                        />
+                        <div className="invalid-feedback">{errors.firstName && touched.firstName && errors.firstName}</div>
+                      </FloatingLabel>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <FloatingLabel controlId="floatingLastName" label="Last Name" className="mb-3">
+                        <Form.Control
+                          type="text"
+                          placeholder="Last Name"
+                          name="lastName"
+                          onChange={handleChange}
+                          value={values["lastName"]}
+                          isInvalid={touched.lastName && !!errors.lastName}
+                        />
+                        <div className="invalid-feedback">{errors.lastName && touched.lastName && errors.lastName}</div>
+                      </FloatingLabel>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <FloatingLabel controlId="floatingEmail" label="Email" className="mb-3">
+                        <Form.Control type="text" placeholder="Email" name="email" onChange={handleChange} value={values["email"]} isInvalid={touched.email && !!errors.email} />
+                        <div className="invalid-feedback">{errors.email && touched.email && errors.email}</div>
+                      </FloatingLabel>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <FloatingLabel controlId="floatingLastName" label="Password" className="mb-3">
+                        <Form.Control
+                          type="password"
+                          placeholder="Password"
+                          name="password"
+                          onChange={handleChange}
+                          value={values["password"]}
+                          isInvalid={touched.password && !!errors.password}
+                        />
+                        <div className="invalid-feedback">{errors.password && touched.password && errors.password}</div>
+                      </FloatingLabel>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <FloatingLabel controlId="floatingusername" label="Username" className="mb-3">
+                        <Form.Control
+                          type="text"
+                          placeholder="Username"
+                          name="username"
+                          onChange={handleChange}
+                          value={values["username"]}
+                          isInvalid={touched.username && !!errors.username}
+                        />
+                        <div className="invalid-feedback">{errors.username && touched.username && errors.username}</div>
+                      </FloatingLabel>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <Form.Select
+                        className="form-select mb-3"
+                        type="text"
+                        name="branch"
+                        aria-label="Select a branch"
+                        isInvalid={!!touched.branch && !!errors.branch}
+                        value={values.branch}
+                        onChange={handleChange}
+                        style={{ height: "58px" }}
+                      >
+                        <option value="" disabled hidden>
+                          Select
+                        </option>
+                        <option value="Dhaka">Dhaka</option>
+                        <option value="Goa">Goa</option>
+                        <option value="Sylhet">Sylhet</option>
+                      </Form.Select>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col className="my-3 text-center">
+                      <Button type="submit" disabled={isSubmitting}>
+                        CREATE USER
+                      </Button>
+                    </Col>
+                  </Row>
+                </Container>
+              </Form>
+            )}
+          </Formik>
+        </Card.Body>
+      </Card>
+      <Toaster title="User added successfully" bg="success" showToaster={showAddToaster} setShowToaster={setShowAddToaster} to="user"></Toaster>
+      <Toaster title={error} bg="danger" showToaster={showErrorToaster} setShowToaster={setShowErrorToaster} to="user/add"></Toaster>
     </div>
   );
 };

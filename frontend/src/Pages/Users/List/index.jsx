@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
 import { Container, Dropdown, Table, Form, OverlayTrigger, Tooltip, Row, Col, Button, FloatingLabel  } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { axiosSecure } from "../../../api/axios";
 // import useAxios from "../../../Hooks/useAxios";
 import "./listUser.scss";
@@ -15,6 +15,7 @@ const ListUser = () => {
   const selectedLocation = useRef('All');
   const [users, setUsers] = useState([]);
   const totalCount = useRef(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setUsers([]);
@@ -67,15 +68,10 @@ const ListUser = () => {
       <Row>
         <Col sm={12} md={12} lg={12} xl={12}>
           <Container>
-            <Row className="my-3">
-              <Col sm={12} md={4} xl={4} className="d-flex align-items-center">
-                <h3>USERS:</h3>
-              </Col>
-              <Col sm={12} md={4} xl={4} className="d-flex align-items-center">
-                  <input type="text" placeholder="Enter username" className="w-100"/>
-              </Col>
-              <Col sm={12} md={2} xl={2} className="d-flex justify-content-center align-items-center">
-                <Button variant="primary">ADD USER</Button>
+            <Row>
+              <Col className="d-flex justify-content-between my-4">
+                <h4>USERS:</h4>
+                <Button variant="primary" onClick={() => navigate("/user/add", { replace: true })}>ADD USER</Button>
               </Col>
             </Row>
           </Container>
