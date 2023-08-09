@@ -22,7 +22,7 @@ const deleteStock = (stockItemId) =>
     },
 });
 
-const ShowDeviceDetails = ({ filtered, handleRemoveDeviceModal, handleUserSelection, deviceCategory, removeDeviceIdRef }) => {
+const ShowDeviceDetails = ({ filtered, handleRemoveDeviceModal, handleUserSelection, deviceCategory, removeDeviceIdRef, isLoading }) => {
   return (<>
     {
       deviceCategory === "System" ? (
@@ -45,53 +45,61 @@ const ShowDeviceDetails = ({ filtered, handleRemoveDeviceModal, handleUserSelect
           </thead>
           <tbody className="table-group-divider">
             {
-              filtered.length === 0 ? (
-              <tr>
-                <td colSpan="12" className="text-center">No Data Found</td>
-              </tr>) :(
+              isLoading ? (<tr>
+                <td colSpan="12" className="text-center">Loading..</td>
+              </tr>) : (
                 <>
-                {
-                  filtered.map((item, index) => (
-                    <tr key={index}>
-                      <td className="stock-brand"> {item?.brand} </td>
-                      <td className="stock-model"> {item.modal} </td>
-                      <td className="stock-name"> {item.systemName} </td>
-                      <td className="stock-os"> {item.os} </td>
-                      <td className="stock-cpu"> {item.cpu} </td>
-                      <td className="stock-ram"> {item.ram} </td>
-                      <td className="stock-capacity"> {item.storageCapacity} </td>
-                      <td className="stock-mac"> {item.macAddress} </td>
-                      <td className="stock-serial"> {item.serialNumber} </td>
-                      <td className="stock-date">
-                        {convertDate(item.dop || "")}
-                      </td>
-                      <td className="stock-warranty"> {item.warrantyPeriod} </td>
-                      <td className="text-center table-action">
-                        <Link
-                          to={`/stock/edit/${item._id}`}
-                          title="Edit"
-                          className="px-1"
-                          replace
-                        >
-                          <i className="bi bi-pencil-square"></i>
-                        </Link>
-                        <i
-                          className="bi bi-trash-fill px-1"
-                          title="Delete"
-                          onClick={() => {
-                            handleRemoveDeviceModal();
-                            removeDeviceIdRef.current = item._id;
-                          }}
-                        ></i>
-                        <i
-                          title="Assign"
-                          className="bi bi-person-check-fill px-1"
-                          onClick={() => handleUserSelection(item._id)}
-                        ></i>
-                      </td>
-                    </tr>
-                  ))} 
-                
+                  {
+                    filtered.length === 0 ? (
+                    <tr>
+                      <td colSpan="12" className="text-center">No Data Found</td>
+                    </tr>) :(
+                      <>
+                      {
+                        filtered.map((item, index) => (
+                          <tr key={index}>
+                            <td className="stock-brand"> {item?.brand} </td>
+                            <td className="stock-model"> {item.modal} </td>
+                            <td className="stock-name"> {item.systemName} </td>
+                            <td className="stock-os"> {item.os} </td>
+                            <td className="stock-cpu"> {item.cpu} </td>
+                            <td className="stock-ram"> {item.ram} </td>
+                            <td className="stock-capacity"> {item.storageCapacity} </td>
+                            <td className="stock-mac"> {item.macAddress} </td>
+                            <td className="stock-serial"> {item.serialNumber} </td>
+                            <td className="stock-date">
+                              {convertDate(item.dop || "")}
+                            </td>
+                            <td className="stock-warranty"> {item.warrantyPeriod} </td>
+                            <td className="text-center table-action">
+                              <Link
+                                to={`/stock/edit/${item._id}`}
+                                title="Edit"
+                                className="px-1"
+                                replace
+                              >
+                                <i className="bi bi-pencil-square"></i>
+                              </Link>
+                              <i
+                                className="bi bi-trash-fill px-1"
+                                title="Delete"
+                                onClick={() => {
+                                  handleRemoveDeviceModal();
+                                  removeDeviceIdRef.current = item._id;
+                                }}
+                              ></i>
+                              <i
+                                title="Assign"
+                                className="bi bi-person-check-fill px-1"
+                                onClick={() => handleUserSelection(item._id)}
+                              ></i>
+                            </td>
+                          </tr>
+                        ))} 
+                      
+                      </>
+                    )
+                  }
                 </>
               )
             }
@@ -165,6 +173,7 @@ const ListStock = () => {
   });
 
   const handleAssignmentModal = () => {
+    setIsLoading(true);
     setShowAssignmentModal(!showAssignmentModal);
     getAvailableDevice();
   }
@@ -273,10 +282,7 @@ const ListStock = () => {
     getAllStockDetails();
   }, [refresh, deviceCategory]);
 
-
-
-
-
+  const [isLoading, setIsLoading] = useState(true);
   const [ availableDevice, setAvailableDevice ] = useState([]);
   const [updateData, setUpdateData] = useState(null);
   
@@ -287,6 +293,7 @@ const ListStock = () => {
     } else {
       setAvailableDevice(products.filter(product => product.tag !== "assigned"));
     }
+    setIsLoading(false);
   }
 
   async function getFilterAvailableDevice() {
@@ -553,6 +560,8 @@ const ListStock = () => {
           handleUserSelection={handleUserSelection}
           deviceCategory={deviceCategory}
           removeDeviceIdRef={removeDeviceIdRef}
+          isLoading={isLoading}
+
         />
       </div>
       {/* <div className="d-flex justify-content-end me-3 mt-3">

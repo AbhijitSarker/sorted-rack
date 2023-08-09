@@ -1,11 +1,11 @@
 import React, { useContext, useState, useEffect, useMemo } from "react";
-import { BsGear } from 'react-icons/bs';
+import { BsGear } from "react-icons/bs";
 import { BiCheckCircle } from "react-icons/bi";
 import { Form, Table, Toast, Container, Dropdown, Col } from "react-bootstrap";
 import { axiosSecure, getAuthorizationHeader, axiosInstance } from "../../api/axios";
 import PaginationComponent from "../../component/Pagination/Pagination";
 import Columns from "../../constants/AssigmentColumns.json";
-import BranchContext  from "../../contexts/BranchContext";
+import BranchContext from "../../contexts/BranchContext";
 
 const AssignItem = () => {
   const { branch, setBranch } = useContext(BranchContext);
@@ -16,10 +16,12 @@ const AssignItem = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
   const [showToaster, setShowToaster] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const getAssignedDeviceDetails = async () => {
     const response = await axiosInstance.get("/assignedProduct");
     setAssignedDeviceUserList(response?.data?.assignedDevices);
+    setLoading(false);
   };
 
   const getDate = (date) => {
@@ -65,21 +67,20 @@ const AssignItem = () => {
     if (search) {
       filteredResult = filteredResult.filter((result) => result.userFname.toLowerCase().includes(search.toLowerCase()));
     }
-    return filteredResult?.slice(
-      (currentPage - 1) * ITEMS_PER_PAGE,
-      (currentPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
-    );
+    return filteredResult?.slice((currentPage - 1) * ITEMS_PER_PAGE, (currentPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE);
   }, [currentPage, assignedDeviceUserList, search]);
 
   const handlerCheckbox = (e) => {
     const checkboxStatus = e.target.checked;
     const name = e.target.name;
-    const updatedColumns = columns.length > 0  && columns.map((column) => {
-      if (column.name === name) {
-        column.show = !column.show;
-      }
-      return column;
-    });
+    const updatedColumns =
+      columns.length > 0 &&
+      columns.map((column) => {
+        if (column.name === name) {
+          column.show = !column.show;
+        }
+        return column;
+      });
     setColumns(updatedColumns);
     setTimeout(() => (document.querySelectorAll(`input[name=${name}]`)[0].checked = checkboxStatus), 500);
   };
@@ -111,13 +112,7 @@ const AssignItem = () => {
         </Dropdown>
       </div>
 
-      <Toast
-        className="toaster-position"
-        onClose={() => setShowToaster(!showToaster)}
-        show={showToaster}
-        delay={2000}
-        autohide
-      >
+      <Toast className="toaster-position" onClose={() => setShowToaster(!showToaster)} show={showToaster} delay={2000} autohide>
         <Toast.Header>
           <div className="info-container">
             <BiCheckCircle className="info-icon" />
@@ -142,30 +137,39 @@ const AssignItem = () => {
           </tr>
         </thead>
         <tbody className="table-group-divider">
-          {filtered.length > 0 ? (
-            filtered.map((item, index) => {
-              return (
-                <tr key={index}>
-                  {columns.length > 0 &&
-                    columns.map(({ name, show }) => (
-                      <td id={name} className={`${show ? "show" : "hide"} `}>
-                        {item[name] || "---"}
+          {loading && (
+            <tr>
+              <td colSpan="12" className="text-center">
+                Loading...
+              </td>
+            </tr>
+          )}
+          {!loading && (
+            <>
+              {filtered.length > 0 ? (
+                filtered.map((item, index) => {
+                  return (
+                    <tr key={index}>
+                      {columns.length > 0 &&
+                        columns.map(({ name, show }) => (
+                          <td id={name} className={`${show ? "show" : "hide"} `}>
+                            {item[name] || "---"}
+                          </td>
+                        ))}
+                      <td id="actions" className="text-center">
+                        <i className="bi bi-person-dash-fill px-1" title="Un Assign" onClick={() => handleUnassignment(item._id)}></i>
                       </td>
-                    ))}
-                  <td id="actions" className="text-center">
-                    <i
-                      className="bi bi-person-dash-fill px-1"
-                      title="Un Assign"
-                      onClick={() => handleUnassignment(item._id)}
-                    ></i>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan="12" className="text-center">
+                    No Data Found
                   </td>
                 </tr>
-              );
-            })
-          ) : (
-            <tr>
-            <td colSpan="12" className="text-center">No Data Found</td>
-          </tr>
+              )}
+            </>
           )}
         </tbody>
       </Table>
