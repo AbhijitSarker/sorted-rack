@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema(
     branch: {
       type: String,
       required: [true, "please provide a branch name"],
-      enum: ["Goa", "Dhaka", "Sylhet"],
+      enum: ["Goa", "Dhaka", "Sylhet", "New York"],
       default: "Goa",
     },
     email: {
