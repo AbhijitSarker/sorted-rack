@@ -82,9 +82,9 @@ const getAllAssignedProduct = async (req, res) => {
     queryObject.name = { $regex: name, $options: 'i' };
   }
 
-  if (req.user.role === "admin") {
-    filter.branch = req.user.branch;
-  } 
+  // if (req.user.role === "admin") {
+  //   filter.branch = req.user.branch;
+  // } 
   console.log(queryObject);
   // return;
   const [assignedProducts, totalCount] = await Promise.all([
@@ -110,33 +110,33 @@ const getAllAssignedProduct = async (req, res) => {
   ]);
 
   const assignedDevicesList = assignedProducts.map((item) => ({
-    _id: item._id,
-    firstName: item.user.fname,
-    lastName: item.user.lname,
-    email: item.user.email,
-    username: item.user.username,
-    branch: item.product.branch,
-    warrantyPeriod: item.product.warrantyPeriod,
-    productCategory: item.product.productCategory,
-    systemName: item.product.systemName,
-    systemModel: item.product.systemModel,
-    productType: item.product.productType,
-    systemBrand: item.product.systemBrand,
-    cpu: item.product.cpu,
-    ram: item.product.ram,
-    storageCapacity: item.product.storageCapacity,
-    os: item.product.os,
-    macAddress: item.product.macAddress,
-    productKey: item.product.productKey,
-    serialNumber: item.product.serialNumber,
+    _id: item?._id,
+    firstName: item?.user?.fname,
+    lastName: item?.user?.lname,
+    email: item?.user?.email,
+    username: item?.user?.username,
+    branch: item?.product?.branch,
+    warrantyPeriod: item?.product?.warrantyPeriod,
+    productCategory: item?.product?.productCategory,
+    systemName: item?.product?.systemName,
+    systemModel: item?.product?.systemModel,
+    productType: item?.product?.productType,
+    systemBrand: item?.product?.systemBrand,
+    cpu: item?.product?.cpu,
+    ram: item?.product?.ram,
+    storageCapacity: item?.product?.storageCapacity,
+    os: item?.product?.os,
+    macAddress: item?.product?.macAddress,
+    productKey: item?.product?.productKey,
+    serialNumber: item?.product?.serialNumber,
     accessoriesName:
       item?.product?.accessoriesName == undefined ? "--" : item?.product?.accessoriesName,
     networkDeviceName:
       item?.product?.networkDeviceName == undefined ? "--" : item?.product?.networkDeviceName,
-    tag: item.product.tag,
-    storageType: item.product.storageType,
-    assignBy: item.assignedBy.email,
-    assignDate: item.createdAt,
+    tag: item?.product?.tag,
+    storageType: item?.product?.storageType,
+    assignBy: item?.assignedBy?.email,
+    assignDate: item?.createdAt,
   }));
 
   res.status(StatusCodes.OK).json({
