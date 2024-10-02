@@ -35,8 +35,9 @@ const ListUser = () => {
     });
   };
 
+console.log(totalItems);
   useEffect(() => {
-    fetchUserDetails();
+     fetchUserDetails();
   }, []);
 
   const handleStatusToggle = async (user) => {
@@ -73,6 +74,8 @@ const ListUser = () => {
       (currentPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
     );
   }, [currentPage, response, search]);
+
+  console.log("filtered data:",filtered);
 
   const handleSearch = (e) => {
     setSearch(e.target.value);

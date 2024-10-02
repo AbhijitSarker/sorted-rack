@@ -45,12 +45,13 @@ const Dashbaord = () => {
     })();
   }, []);
 
+  console.log(dashboardStats);
   return (
     <div className="stock-main-body container">
       <h2 className="py-3">My Stock</h2>
       <div className="row">
-        {dashboardStats.length > 0 &&
-          dashboardStats.map((stock, index) => (
+        {dashboardStats?.length > 0 &&
+          dashboardStats?.map((stock, index) => (
             <div className="col-xl-3 col-lg-3 col-md-6" key={index}>
               <div className="single-stock rounded-3 shadow text-center pt-5 mr-3 mb-3">
                 <h1 className="pb-3 fw-normal ">{stock.assignedDevicesCount}</h1>

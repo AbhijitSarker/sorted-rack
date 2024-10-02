@@ -172,6 +172,8 @@ const ListStock = () => {
     setSearch(e.target.value);
   };
 
+  console.log('filteredResult', filtered);
+
   const showDeviceDetails = () =>
     deviceCategory === "System" ? (
       <Table className="mt-4" striped hover>
@@ -194,7 +196,7 @@ const ListStock = () => {
           </tr>
         </thead>
         <tbody className="table-group-divider">
-          {filtered.map((item, index) => (
+          {filtered?.map((item, index) => (
             <tr key={index}>
               <td className="stock-brand"> {item?.systemBrand} </td>
               <td className="stock-model"> {item.systemModel} </td>
@@ -252,13 +254,13 @@ const ListStock = () => {
           </tr>
         </thead>
         <tbody className="table-group-divider">
-          {filtered.map((item, index) => (
+          {filtered?.map((item, index) => (
             <tr key={index}>
               <td> {item?.productType} </td>
               <td> {item?.accessoriesName} </td>
               <td> {convertDate(item.dateOfPurchase || "")} </td>
-              <td> {item.serialNumber} </td>
-              <td> {item.warrantyPeriod} </td>
+              <td> {item?.serialNumber} </td>
+              <td> {item?.warrantyPeriod} </td>
               <td>
                 <Link to={`/stock/edit/${item._id}`} replace>
                   <BiEdit />
