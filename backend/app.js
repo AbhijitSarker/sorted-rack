@@ -67,11 +67,10 @@ app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
 const port = process.env.PORT || 4000;
-console.log(port, "port url");
 const start = async () => {
   try {
     await connDb(process.env.MONGO_URL);
-    app.listen(port, () => console.log("SortedRack Backend Service is Runnning.."));
+    app.listen(port, () => console.log(`SortedRack Backend Service is Runnning at ${port} `));
   } catch (error) {
     console.log(error, "MongoDB URL is invalid.");
   }
