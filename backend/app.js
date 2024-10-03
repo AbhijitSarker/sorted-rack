@@ -35,14 +35,14 @@ const errorHandlerMiddleware = require("./middleware/error-handler");
 // const req = require("express/lib/request");
 
 app.set("trust proxy", 1);
-// app.use(
-//   rateLimiter({
-//     windowMs: 15 * 60 * 1000,
-//     max: 100,
-//     standardHeaders: true,
-//     legacyHeaders: false,
-//   })
-// );
+app.use(
+  rateLimiter({
+    windowMs: 15 * 60 * 1000,
+    max: 500,
+    standardHeaders: true,
+    legacyHeaders: false,
+  })
+);
 app.use(express.json());
 
 app.use(cors());
@@ -67,11 +67,10 @@ app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
 const port = process.env.PORT || 4000;
-console.log(port, "port url");
 const start = async () => {
   try {
     await connDb(process.env.MONGO_URL);
-    app.listen(port, () => console.log("SortedRack Backend Service is Runnning.."));
+    app.listen(port, () => console.log(`SortedRack Backend Service is Runnning at ${port} `));
   } catch (error) {
     console.log(error, "MongoDB URL is invalid.");
   }

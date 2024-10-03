@@ -11,50 +11,26 @@ const { json } = require("express");
 //   res.status(StatusCodes.OK).json({ user });
 // };
 
+// const getAllUsers = async (req, res) => {
+//   const result = await User.find({}).select("-password");
+//   const user = result.filter((item) => item.role !== "superadmin");
+//   res.status(StatusCodes.OK).json({ user });
+// };
+
 const getAllUsers = async (req, res) => {
-  const { username, email , branch } = req.query;
-  const queryObject = {};
-
-  if (req.query.page === '-1') {
-    if (req.user.role === 'superadmin') {
-      const users = await User.find({}, '-password').lean();
-      res.status(StatusCodes.OK).json({ user: users, count: users.length });
-      return;
-    }}
-    
-  //   else if (req.user.role === 'admin') {
-  //     queryObject.branch = req.user.branch;
-  //   }
-  // } else if (req.user.role === 'admin') {
-  //   queryObject.branch = req.user.branch;
-  // }
-
-
-  if(branch) {
-    req.user.role === 'superadmin' ? queryObject.branch = branch : queryObject.branch = req.user.branch;
-  }
-  
-  if (req.user.role === 'admin') {
-    queryObject.branch = req.user.branch;
-  }
-
-  if (username) {
-    queryObject.username = { $regex: username, $options: 'i' };
-  }
-
-  if (email) {
-    queryObject.email = { $regex: email, $options: 'i' };
-  }
-
-  const userCount = await User.countDocuments(queryObject);
+  let result = User.find({}).select("-password");
+  // const users = result.filter((item) => item.role !== "superadmin");
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
   const skip = (page - 1) * limit;
-
-  const finalUserList = await User.find(queryObject, '-password')
-    .lean()
-    .skip(skip)
-    .limit(limit);
+  
+  result = result.skip(skip).limit(limit);
+  
+  let finalUserList = await result;
+  let example = JSON.parse(JSON.stringify(finalUserList));
+  const users = example.map((u) => {
+    return { ...u, username: u?.username || "" };
+  });
 
   res.status(StatusCodes.OK).json({ 
     user: finalUserList, 

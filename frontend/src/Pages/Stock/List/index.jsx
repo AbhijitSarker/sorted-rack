@@ -278,6 +278,115 @@ const ListStock = () => {
     setSearch(e.target.value);
   };
 
+  console.log('filteredResult', filtered);
+
+  const showDeviceDetails = () =>
+    deviceCategory === "System" ? (
+      <Table className="mt-4" striped hover>
+        <thead>
+          <tr>
+            <th className="stock-brand">System Brand</th>
+            <th className="stock-model">System Model</th>
+            <th className="stock-name">System Name</th>
+            <th className="stock-os">OS</th>
+            <th className="stock-cpu">CPU</th>
+            <th className="stock-ram">RAM</th>
+            <th className="stock-storage">Storage Type</th>
+            <th className="stock-capacity">Storage Capacity</th>
+            <th className="stock-mac">MAC Address</th>
+            <th className="stock-key">Product Key</th>
+            <th className="stock-serial">Serial Number</th>
+            <th className="stock-date">Date OF Purchase</th>
+            <th className="stock-warranty">Warranty Period</th>
+            <th className="text-center table-action">Action</th>
+          </tr>
+        </thead>
+        <tbody className="table-group-divider">
+          {filtered?.map((item, index) => (
+            <tr key={index}>
+              <td className="stock-brand"> {item?.systemBrand} </td>
+              <td className="stock-model"> {item.systemModel} </td>
+              <td className="stock-name"> {item.systemName} </td>
+              <td className="stock-os"> {item.os} </td>
+              <td className="stock-cpu"> {item.cpu} </td>
+              <td className="stock-ram"> {item.ram} </td>
+              <td className="stock-storage"> {item.storageType} </td>
+              <td className="stock-capacity"> {item.storageCapacity} </td>
+              <td className="stock-mac"> {item.macAddress} </td>
+              <td className="stock-key"> {item.productKey} </td>
+              <td className="stock-serial"> {item.serialNumber} </td>
+              <td className="stock-date">
+                {" "}
+                {convertDate(item.dateOfPurchase || "")}{" "}
+              </td>
+              <td className="stock-warranty"> {item.warrantyPeriod} </td>
+              <td className="text-center table-action">
+                <Link
+                  to={`/stock/edit/${item._id}`}
+                  title="Edit"
+                  className="px-1"
+                  replace
+                >
+                  <i className="bi bi-pencil-square"></i>
+                </Link>
+                <i
+                  className="bi bi-trash-fill px-1"
+                  title="Delete"
+                  onClick={() => {
+                    handleRemoveDeviceModal();
+                    removeDeviceIdRef.current = item._id;
+                  }}
+                ></i>
+                <i
+                  title="Assign"
+                  className="bi bi-person-check-fill px-1"
+                  onClick={() => handleUserSelection(item._id)}
+                ></i>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    ) : (
+      <Table className="mt-4" striped hover>
+        <thead>
+          <tr>
+            <th>Accessories Type</th>
+            <th>Accessories Name</th>
+            <th>Date Of Purchase</th>
+            <th>Serial Number</th>
+            <th>Warranty</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody className="table-group-divider">
+          {filtered?.map((item, index) => (
+            <tr key={index}>
+              <td> {item?.productType} </td>
+              <td> {item?.accessoriesName} </td>
+              <td> {convertDate(item.dateOfPurchase || "")} </td>
+              <td> {item?.serialNumber} </td>
+              <td> {item?.warrantyPeriod} </td>
+              <td>
+                <Link to={`/stock/edit/${item._id}`} replace>
+                  <BiEdit />
+                </Link>
+                <AiFillDelete
+                  onClick={() => {
+                    handleRemoveDeviceModal();
+                    removeDeviceIdRef.current = item._id;
+                  }}
+                />
+                <MdAssignmentInd
+                  onClick={() => handleUserSelection(item._id)}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    );
+
   useEffect(() => {
     getAllStockDetails();
   }, [refresh, deviceCategory]);

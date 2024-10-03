@@ -35,9 +35,12 @@ const ListUser = () => {
         }`,
       },
     });
-    setUsers(data.user);
-    totalCount.current = data.totalCount;
-  }
+  };
+
+console.log(totalItems);
+  useEffect(() => {
+     fetchUserDetails();
+  }, []);
 
   const handleStatusToggle = async (user) => {
     await axiosSecure.patch(
@@ -55,97 +58,121 @@ const ListUser = () => {
         },
       }
     );
+    fetchUserDetails();
+  };
+  const filtered = useMemo(() => {
+    let filteredResult = response?.user?.sort((a, b) =>
+      a.fname.localeCompare(b.fname)
+    );
+    setTotalItems(filteredResult?.length);
+
+    if (search) {
+      filteredResult = filteredResult.filter((currentItem) =>
+        currentItem.fname.toLowerCase().includes(search.toLowerCase()) || currentItem.username.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    return filteredResult?.slice(
+      (currentPage - 1) * ITEMS_PER_PAGE,
+      (currentPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
+    );
+  }, [currentPage, response, search]);
+
+  console.log("filtered data:",filtered);
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
   };
 
-  function handlePagination(page) {
-    currentPage.current = page;
-    getUser();
-  }
-
-
-  return(
-    <Container>
-      <Row>
-        <Col sm={12} md={12} lg={12} xl={12}>
-          <Container>
-            <Row>
-              <Col className="d-flex justify-content-between my-4">
-                <h4>USERS:</h4>
-                <Button variant="primary" onClick={() => navigate("/user/add", { replace: true })}>ADD USER</Button>
-              </Col>
-            </Row>
-          </Container>
-        </Col>
-      </Row>
-      <Row>
-        <Col sm={12} md={12} lg={12} xl={12}>
-          <div className="user-table">
-            <Table striped hover responsive>
-                  <thead>
-                    <tr>
-                      <th>Status</th>
-                      <th>First Name</th>
-                      <th>Last Name</th>
-                      <th>Email</th>
-                      <th>Branch</th>
-                      <th>Type</th>
-                      <th className="text-center">Action</th>
-                    </tr>
-                  </thead>
-                  {
-                    users.length > 0 && (
-                    <tbody className="table-group-divider">
-                      {
-                        users.map((item, index) => (<tr key={index}>
-                          <td className="text-center">
-                            <Form.Check
-                              type="switch"
-                              id="custom-switch"
-                              defaultChecked={item.status === "active" ? true : false}
-                              onClick={() => handleStatusToggle(item)}
-                            />
-                          </td>
-                          <td>{item.fname}</td>
-                          <td>{item.lname}</td>
-                          <td>{item.email}</td>
-                          <td>{item.branch}</td>
-                          <td>{item.role}</td>
-                          <td className="text-center">
-                            <OverlayTrigger
-                              key={item._id}
-                              placement="bottom"
-                              overlay={
-                                <Tooltip id={`tooltip-${item._id}`}>Edit User</Tooltip>
-                              }
-                            >
-                              <Link to={`/user/edit/${item._id}`} replace>
-                                <i className="bi bi-pencil-square"></i>
-                              </Link>
-                            </OverlayTrigger>
-                          </td>
-                        </tr>))
-                      }
-                    </tbody>
-                    )
-                  }
-
-                  {
-                    users.length === 0 && (<tbody style={{backgroundColor: "#dddddd"}}><tr><td></td><td></td><td></td><td>No Data Available</td><td></td><td></td><td></td></tr></tbody>)
-                  }
-            </Table>
-          </div>
-        </Col>
-        {
-          users.length > 0 && (<Col className="d-flex justify-content-end w-100 my-2">
-          <PaginationComponent
-            total={totalCount.current}
-            itemsPerPage={10}
-            currentPage={currentPage.current}
-            onPageChange={(page) => handlePagination(page)}
+  return (
+    <Container className="flex-grow-1">
+      <div className="d-flex align-items-center justify-content-between">
+        <div className="col-8">
+          <h2 className="py-3">User Listing</h2>
+        </div>
+        <Form.Group
+          as={Col}
+          md="3"
+          className="pe-3"
+          controlId="validationCustom01"
+        >
+          <Form.Control
+            onChange={handleSearch}
+            type="text"
+            placeholder="Search with first name"
           />
-        </Col>)
-        }
-      </Row>
+        </Form.Group>
+        <div style={{ width: "100px" }} className="col-1">
+          <Link to="/user/add" replace className="btn btn-primary">
+            Add User
+          </Link>
+        </div>
+      </div>
+      {loading && (
+        <div className="d-flex justify-content-center">
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      )}
+      {!loading && error && <p classname="error-msg">{error}</p>}
+
+      {totalItems && (
+        <div className="user-table">
+          <Table striped hover>
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Branch</th>
+                <th>Type</th>
+                <th className="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody className="table-group-divider">
+              {filtered?.map((item, index) => (
+                <tr key={index}>
+                  <td className="text-center">
+                    <Form.Check
+                      type="switch"
+                      id="custom-switch"
+                      defaultChecked={item.status === "active" ? true : false}
+                      onClick={() => handleStatusToggle(item)}
+                    />
+                  </td>
+                  <td>{item.fname}</td>
+                  <td>{item.lname}</td>
+                  <td>{item.email}</td>
+                  <td>{item.branch}</td>
+                  <td>{item.role}</td>
+                  <td className="text-center">
+                    <OverlayTrigger
+                      key={item._id}
+                      placement="bottom"
+                      overlay={
+                        <Tooltip id={`tooltip-${item._id}`}>Edit User</Tooltip>
+                      }
+                    >
+                      <Link to={`/user/edit/${item._id}`} replace>
+                        <i className="bi bi-pencil-square"></i>
+                      </Link>
+                    </OverlayTrigger>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+      )}
+      <div className="d-flex justify-content-end relative bottom-20 me-3">
+        <PaginationComponent
+          total={response?.user?.length}
+          itemsPerPage={ITEMS_PER_PAGE}
+          currentPage={currentPage}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
+      </div>
     </Container>
   );
 
