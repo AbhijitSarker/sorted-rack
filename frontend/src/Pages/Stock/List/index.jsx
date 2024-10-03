@@ -57,20 +57,21 @@ const ShowDeviceDetails = ({ filtered, handleRemoveDeviceModal, handleUserSelect
                       <>
                       {
                         filtered.map((item, index) => (
+                          
                           <tr key={index}>
                             <td className="stock-brand"> {item?.brand} </td>
-                            <td className="stock-model"> {item.modal} </td>
-                            <td className="stock-name"> {item.systemName} </td>
-                            <td className="stock-os"> {item.os} </td>
-                            <td className="stock-cpu"> {item.cpu} </td>
-                            <td className="stock-ram"> {item.ram} </td>
-                            <td className="stock-capacity"> {item.storageCapacity} </td>
-                            <td className="stock-mac"> {item.macAddress} </td>
-                            <td className="stock-serial"> {item.serialNumber} </td>
+                            <td className="stock-model"> {item?.modal} </td>
+                            <td className="stock-name"> {item?.systemName} </td>
+                            <td className="stock-os"> {item?.os} </td>
+                            <td className="stock-cpu"> {item?.cpu} </td>
+                            <td className="stock-ram"> {item?.ram} </td>
+                            <td className="stock-capacity"> {item?.storageCapacity} </td>
+                            <td className="stock-mac"> {item?.macAddress} </td>
+                            <td className="stock-serial"> {item?.serialNumber} </td>
                             <td className="stock-date">
-                              {convertDate(item.dop || "")}
+                              {convertDate(item?.dop || "")}
                             </td>
-                            <td className="stock-warranty"> {item.warrantyPeriod} </td>
+                            <td className="stock-warranty"> {item?.warrantyPeriod} </td>
                             <td className="text-center table-action">
                               <Link
                                 to={`/stock/edit/${item._id}`}
@@ -215,7 +216,7 @@ const ListStock = () => {
   const getAllUsers = async () => {
     const { data } = await axiosInstance.get("/user");
     userList.current = data.user;
-    const usersList = data?.user.filter((user) => user.branch.toLowerCase() === branch.toLowerCase() && user.status === "active").map(user => user.email);
+    const usersList = data?.user?.filter((user) => user.branch.toLowerCase() === branch.toLowerCase() && user.status === "active").map(user => user.email);
     setEmailList(usersList);
   };
 
@@ -242,16 +243,16 @@ const ListStock = () => {
     setCurrentPage(1);
   };
 
-  // useEffect(() => {
-  //   if (response?.products?.length > 0) {
-  //     const products = response?.products;
-  //     let filteredProducts = [...products];
-  //     if(branch !== "All") {
-  //       filteredProducts = products.filter((product) => product.branch.toLowerCase() === branch.toLowerCase() && product.tag !== "assigned")
-  //     }
-  //     setDevicesDetails(filteredProducts);
-  //   }
-  // }, [response, branch]);
+  useEffect(() => {
+    if (response?.products?.length > 0) {
+      const products = response?.products;
+      let filteredProducts = [...products];
+      if(branch !== "All") {
+        filteredProducts = products.filter((product) => product.branch.toLowerCase() === branch.toLowerCase() && product.tag !== "assigned")
+      }
+      setDevicesDetails(filteredProducts);
+    }
+  }, [response, branch]);
 
   const filtered = useMemo(() => {
     let filteredResult = devicesDetails;
@@ -259,11 +260,11 @@ const ListStock = () => {
 
     if (search) {
       if (deviceCategory === "System") {
-        filteredResult = filteredResult.filter((result) =>
+        filteredResult = filteredResult?.filter((result) =>
           result.systemName.toLowerCase().includes(search.toLowerCase())
         );
       } else {
-        filteredResult = filteredResult.filter((result) =>
+        filteredResult = filteredResult?.filter((result) =>
           result.accessoriesName.toLowerCase().includes(search.toLowerCase())
         );
       }
@@ -398,9 +399,9 @@ const ListStock = () => {
   async function getAvailableDevice() {
     const { data: { products } } = await axiosInstance.get("/product");
     if(branch !== "All") {
-      setAvailableDevice(products.filter(product => product.branch.toLowerCase() === branch.toLowerCase() && product.tag !== "assigned"));
+      setAvailableDevice(products?.filter(product => product.branch.toLowerCase() === branch.toLowerCase() && product.tag !== "assigned"));
     } else {
-      setAvailableDevice(products.filter(product => product.tag !== "assigned"));
+      setAvailableDevice(products?.filter(product => product.tag !== "assigned"));
     }
     setIsLoading(false);
   }
@@ -408,7 +409,7 @@ const ListStock = () => {
   async function getFilterAvailableDevice() {
     let filteredData = [];
     const { data } = await axiosInstance.get("/product");
-    const products = data.products.filter(product => product.tag !== "assigned" && product.branch.toLowerCase() === branch.toLowerCase());
+    const products = data.products?.filter(product => product.tag !== "assigned" && product.branch.toLowerCase() === branch.toLowerCase());
     if(advanceFilter.processor.length > 0) {
       products.forEach((item) => {
         advanceFilter.processor.forEach((itm) => {
@@ -554,7 +555,7 @@ const ListStock = () => {
           <FloatingLabel controlId="searchFloatingInput" label="Search" className="m-0 primary-custom-btn">
             <Form.Control type="text" placeholder="Search System" style={{ minHeight: "50px", maxHeight: "50px" }} />
           </FloatingLabel>
-          {/* <DropdownButton
+          <DropdownButton
             id="dropdown-basic-button"
             className="primary-custom-btn m-0"
             title={deviceCategory}
@@ -562,7 +563,7 @@ const ListStock = () => {
           >
             <Dropdown.Item eventKey="System">System</Dropdown.Item>
             <Dropdown.Item eventKey="Accessories">Accessories</Dropdown.Item>
-          </DropdownButton> */}
+          </DropdownButton>
           <Link to="/stock/add" className="primary-custom-btn">
             <Button variant="primary mb-2 float-right">
               Add {deviceCategory}
@@ -620,7 +621,7 @@ const ListStock = () => {
 
 
 
-                {/* <Stack direction="horizontal" className="align-items-center" gap={3}>
+                <Stack direction="horizontal" className="align-items-center" gap={3}>
                   <label className="fw-bold">Processor:</label>
                   <div>
                     <Form.Check
@@ -655,7 +656,7 @@ const ListStock = () => {
                       ))
                     }
                   </div>
-                </Stack> */}
+                </Stack>
 
             </Card>
           </Col>

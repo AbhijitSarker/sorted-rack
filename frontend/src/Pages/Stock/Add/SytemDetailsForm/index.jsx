@@ -77,12 +77,12 @@ const SytemDetailsForm = () => {
           headers: { Authorization: getAuthorizationHeader() },
         }
       );
-      // if (status === 201) {
-      //   setSubmitting(false);
-      //   setDeviceCategory("System");
-      //   setSuccessToaster(true);
-      //   setShowToaster(true);
-      // }
+      if (status === 201) {
+        setSubmitting(false);
+        setDeviceCategory("System");
+        setSuccessToaster(true);
+        setShowToaster(true);
+      }
     } catch (error) {
       setSuccessToaster(true);
       setShowToaster(true);

@@ -6,28 +6,39 @@ const { checkPermission, checkUserRole } = require("../utility");
 const { json } = require("express");
 
 const getAllUsers = async (req, res) => {
-  let result = User.find({}).select("-password");
-  // const users = result.filter((item) => item.role !== "superadmin");
-  const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
-  
-  result = result.skip(skip).limit(limit);
-  
-  let finalUserList = await result;
-  let example = JSON.parse(JSON.stringify(finalUserList));
-  const users = example.map((u) => {
-    return { ...u, username: u?.username || "" };
-  });
+  try {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-  res.status(StatusCodes.OK).json({ 
-    user: finalUserList, 
-    totalCount: userCount,
-    totalPages : Math.ceil(userCount / limit),
-    currentPage: page
-  });
+    // Count total users (excluding superadmins)
+    const userCount = await User.countDocuments({ role: { $ne: "superadmin" } });
+
+    // Find users with pagination (excluding superadmins and password)
+    const users = await User.find({ role: { $ne: "superadmin" } })
+      .select("-password")
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    // Add username field if it doesn't exist
+    const finalUserList = users.map(user => ({
+      ...user,
+      username: user.username || ""
+    }));
+
+    res.status(StatusCodes.OK).json({ 
+      users: finalUserList, 
+      totalCount: userCount,
+      totalPages: Math.ceil(userCount / limit),
+      currentPage: page
+    });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ 
+      error: "An error occurred while fetching users" 
+    });
+  }
 };
-
 const getSingleUser = async (req, res) => {
   const { id: userId } = req.params;
   const user = await User.findOne({ _id: userId }).select("-password");
