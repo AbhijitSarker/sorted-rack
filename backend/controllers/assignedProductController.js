@@ -110,10 +110,10 @@ const getAllAssignedProduct = async (req, res) => {
         item?.product?.networkDeviceName == undefined
           ? "--"
           : item?.product?.networkDeviceName;
-      assignedDevicesList.tag = item.product.tag;
-      assignedDevicesList.storageType = item.product.storageType;
-      assignedDevicesList.assignBy = item.assignedBy.email;
-      assignedDevicesList.assignDate = item.createdAt;
+      assignedDevicesList.tag = item?.product?.tag;
+      assignedDevicesList.storageType = item?.product?.storageType;
+      assignedDevicesList.assignBy = item?.assignedBy?.email;
+      assignedDevicesList.assignDate = item?.createdAt;
       return assignedDevicesList;
     });
     // console.log("finalResponse", finalResponse);
@@ -135,24 +135,24 @@ const getAllAssignedProduct = async (req, res) => {
     const finalResponse = response.map((item) => {
       const assignedDevicesList = {};
       assignedDevicesList._id = item._id;
-      assignedDevicesList.firstname = item.user.fname;
-      assignedDevicesList.lastName = item.user.lname;
-      assignedDevicesList.email = item.user.email;
-      assignedDevicesList.username = item.user.userName;
-      assignedDevicesList.branch = item.product.branch;
-      assignedDevicesList.warrantyPeriod = item.product.warrantyPeriod;
-      assignedDevicesList.productCategory = item.product.productCategory;
-      assignedDevicesList.systemName = item.product.systemName;
-      assignedDevicesList.systemModel = item.product.systemModel;
-      assignedDevicesList.productType = item.product.productType;
-      assignedDevicesList.systemBrand = item.product.systemBrand;
-      assignedDevicesList.cpu = item.product.cpu;
-      assignedDevicesList.ram = item.product.ram;
-      assignedDevicesList.storageCapacity = item.product.storageCapacity;
-      assignedDevicesList.os = item.product.os;
-      assignedDevicesList.macAddress = item.product.macAddress;
-      assignedDevicesList.productKey = item.product.productKey;
-      assignedDevicesList.serialNumber = item.product.serialNumber;
+      assignedDevicesList.firstname = item?.user?.fname;
+      assignedDevicesList.lastName = item?.user?.lname;
+      assignedDevicesList.email = item?.user?.email;
+      assignedDevicesList.username = item?.user?.userName;
+      assignedDevicesList.branch = item?.product?.branch;
+      assignedDevicesList.warrantyPeriod = item?.product?.warrantyPeriod;
+      assignedDevicesList.productCategory = item?.product?.productCategory;
+      assignedDevicesList.systemName = item?.product?.systemName;
+      assignedDevicesList.systemModel = item?.product?.systemModel;
+      assignedDevicesList.productType = item?.product?.productType;
+      assignedDevicesList.systemBrand = item?.product?.systemBrand;
+      assignedDevicesList.cpu = item?.product?.cpu;
+      assignedDevicesList.ram = item?.product?.ram;
+      assignedDevicesList.storageCapacity = item?.product?.storageCapacity;
+      assignedDevicesList.os = item?.product?.os;
+      assignedDevicesList.macAddress = item?.product?.macAddress;
+      assignedDevicesList.productKey = item?.product?.productKey;
+      assignedDevicesList.serialNumber = item?.product?.serialNumber;
       assignedDevicesList.accessoriesName =
         item?.product?.accessoriesName == undefined
           ? "--"
