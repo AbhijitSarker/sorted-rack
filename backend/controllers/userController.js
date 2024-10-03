@@ -5,18 +5,6 @@ const { checkPermission, checkUserRole } = require("../utility");
 // const user = require("../models/user");
 const { json } = require("express");
 
-// const getAllUsers = async (req, res) => {
-//   const result = await User.find({}).select("-password");
-//   const user = result.filter((item) => item.role !== "superadmin");
-//   res.status(StatusCodes.OK).json({ user });
-// };
-
-// const getAllUsers = async (req, res) => {
-//   const result = await User.find({}).select("-password");
-//   const user = result.filter((item) => item.role !== "superadmin");
-//   res.status(StatusCodes.OK).json({ user });
-// };
-
 const getAllUsers = async (req, res) => {
   let result = User.find({}).select("-password");
   // const users = result.filter((item) => item.role !== "superadmin");
