@@ -17,6 +17,8 @@ import {
 } from "./Pages";
 
 import AssignItem from "./Pages/AssignItems";
+import MyTickets from "./Pages/MyTickets";
+import CreateTicket from "./Pages/CreateTicket";
 
 function App() {
   return (
@@ -33,6 +35,8 @@ function App() {
           <Route path="user" element={<ListUser />} />
           <Route path="user/edit/:id" element={<EditUser />} />
           <Route path="assigned/" element={<AssignItem />} />
+          <Route path="myTickets/" element={<MyTickets />} />
+          <Route path="createTicket/" element={<CreateTicket />} />
         </Route>
 
         <Route path="login" element={<LoginForm />} />

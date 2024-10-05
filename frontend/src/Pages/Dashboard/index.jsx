@@ -45,7 +45,6 @@ const Dashbaord = () => {
     })();
   }, []);
 
-  console.log(dashboardStats);
   return (
     <div className="stock-main-body container">
       <h2 className="py-3">My Stock</h2>

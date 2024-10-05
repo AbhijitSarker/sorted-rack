@@ -135,7 +135,7 @@ const AssignItem = () => {
       </Toast>
 
       {filtered?.length > 0 ? (
-        <Table striped hover responsive>
+        <Table striped hover responsive bordered>
           <thead>
             <tr>
               {columns.length > 0  && columns.map(({ id, fieldName, name, show }) => (
@@ -150,9 +150,9 @@ const AssignItem = () => {
           <tbody className="table-group-divider">
             {filtered.map((item, index) => {
               return (
-                <tr key={index}>
-                  {columns.length > 0  && columns.map(({ name, show }) => (
-                    <td id={name} className={`${show ? "show" : "hide"} `}>
+                <tr key={item._id || index}>
+                  {columns.length > 0 && columns.map(({ name, show }) => (
+                    <td key={name} id={name} className={`${show ? "show" : "hide"}`}>
                       {item[name] || "---"}
                     </td>
                   ))}

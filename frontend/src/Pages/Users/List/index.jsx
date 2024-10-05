@@ -35,7 +35,6 @@ const ListUser = () => {
     });
   };
 
-console.log(totalItems);
   useEffect(() => {
      fetchUserDetails();
   }, []);
@@ -74,8 +73,6 @@ console.log(totalItems);
       (currentPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
     );
   }, [currentPage, response, search]);
-
-  console.log("filtered data:",filtered);
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
@@ -116,7 +113,7 @@ console.log(totalItems);
 
       {totalItems && (
         <div className="user-table">
-          <Table striped hover>
+          <Table striped hover bordered responsive>
             <thead>
               <tr>
                 <th>Status</th>

@@ -172,11 +172,9 @@ const ListStock = () => {
     setSearch(e.target.value);
   };
 
-  console.log('filteredResult', filtered);
-
   const showDeviceDetails = () =>
     deviceCategory === "System" ? (
-      <Table className="mt-4" striped hover>
+      <Table className="mt-4" striped hover bordered>
         <thead>
           <tr>
             <th className="stock-brand">System Brand</th>
@@ -242,7 +240,7 @@ const ListStock = () => {
         </tbody>
       </Table>
     ) : (
-      <Table className="mt-4" striped hover>
+        <Table className="mt-4" striped hover bordered>
         <thead>
           <tr>
             <th>Accessories Type</th>
