@@ -9,6 +9,7 @@ import Col from "react-bootstrap/Col";
 import { axiosSecure } from "../../api/axios";
 import PaginationComponent from "../../component/Pagination/Pagination";
 import useAxios from "../../Hooks/useAxios";
+import { Button } from "react-bootstrap";
 
 const AllTickets = () => {
   const [response, error, loading, axiosFetch] = useAxios();
@@ -146,17 +147,9 @@ const AllTickets = () => {
                   <td>hello</td>
                   <td>{new Date(item.createdAt).toLocaleString()}</td>
                   <td className="text-center">
-                    <OverlayTrigger
-                      key={item._id}
-                      placement="bottom"
-                      overlay={
-                        <Tooltip id={`tooltip-${item._id}`}>Edit Ticket</Tooltip>
-                      }
-                    >
-                      <Link to={`/tickets/edit/${item._id}`} replace>
-                        <i className="bi bi-pencil-square"></i>
-                      </Link>
-                    </OverlayTrigger>
+                    <Link to={`/ticket/${item._id}`} replace>
+                      <Button variant="primary">View Details </Button>
+                    </Link>
                   </td>
                 </tr>
               ))}
