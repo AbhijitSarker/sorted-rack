@@ -4,7 +4,7 @@ import PageNotFound from "./PageNotFound";
 import Dashboard from "./Dashboard";
 import ListStock from "./Stock/List";
 import AddStock from "./Stock/Add";
-import Allitems from "./Allitems";
+import AllTickets from "./AllTickets";
 import EditSystemDetails from "./Stock/Edit/EditSystem";
 import Request from "./Request";
 import AddUser from "./Users/Add";
@@ -17,7 +17,7 @@ export {
   PageNotFound,
   ListStock,
   AddStock,
-  Allitems,
+  AllTickets,
   Request,
   Dashboard,
   AddUser,

@@ -28,12 +28,13 @@ const CreateTicket = () => {
         setSuccess(false);
 
         try {
-            const response = await fetch('https://api.example.com/tickets', {
+            // TODO: remove this 
+            const response = await fetch('http://localhost:4000/api/st/ticket', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     // Add any authentication headers if required
-                    // 'Authorization': 'Bearer YOUR_TOKEN'
+                     'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmZmMjQ1NDAwNzIxNjlkY2VhNGM5YzMiLCJlbWFpbCI6ImFiaGlqaXQuc2Fya2VyQHNqaW5ub3ZhdGlvbi5jb20iLCJyb2xlIjoic3VwZXJhZG1pbiIsImJyYW5jaCI6IlN5bGhldCIsImlhdCI6MTcyODI3NzU2MywiZXhwIjoxNzI4Mjc3NjUzfQ.2pd3kfeQadTzKxUuS3cOSkW7GpSfmCKJ5jH5ioWdkTg'
                 },
                 body: JSON.stringify(ticket)
             });

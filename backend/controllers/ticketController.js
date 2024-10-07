@@ -72,15 +72,13 @@ const updateTicket = async (req, res) => {
 const deleteTicket = async (req, res) => {
     const { id: ticketId } = req.params;
 
-    const ticket = await Ticket.findOne({ _id: ticketId });
+    const ticket = await Ticket.findOneAndDelete({ _id: ticketId });
 
     if (!ticket) {
         throw new CustomError.NotFoundError(`No ticket found with id ${ticketId}`);
     }
 
-    await ticket.remove();
-
-    res.status(StatusCodes.OK).json({ msg: "Ticket removed" });
+    res.status(StatusCodes.OK).json({ msg: "Ticket removed", ticket });
 };
 
 const getCurrentUserTickets = async (req, res) => {

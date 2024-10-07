@@ -6,7 +6,7 @@ import {
   LoginForm,
   PageNotFound,
   Dashboard,
-  Allitems,
+  AllTickets,
   Request,
   AddUser,
   ListUser,
@@ -29,7 +29,7 @@ function App() {
           <Route path="stock" element={<ListStock />} />
           <Route path="stock/add" element={<AddStock />} />
           <Route path="stock/edit/:id" element={<EditSystemDetails />} />
-          <Route path="allitems" element={<Allitems />} />
+          <Route path="tickets" element={<AllTickets />} />
           <Route path="request" element={<Request />} />
           <Route path="user/add" element={<AddUser />} />
           <Route path="user" element={<ListUser />} />
