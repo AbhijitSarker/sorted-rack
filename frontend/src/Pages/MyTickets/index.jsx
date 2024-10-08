@@ -140,7 +140,7 @@ const MyTickets = () => {
                                     <td>{new Date(item.createdAt).toLocaleString()}</td>
                                     <td className="text-center">
                                         <Link to={`/ticket/${item._id}`} replace>
-                                            <Button size="sm" variant="outline-info">View Details </Button>
+                                            <Button size="sm" variant="outline-primary">View Details </Button>
                                         </Link>
                                     </td>
                                 </tr>
