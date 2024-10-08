@@ -99,7 +99,7 @@ const TicketDetails = () => {
                             <h4>{ticket.title}</h4>
                             <p><strong>Category:</strong> {ticket.category}</p>
                             <p><strong>Priority:</strong> {ticket.priority}</p>
-                            <p><strong>Created By:</strong> {ticket.createdBy?.fname || 'Unknown'}</p>
+                            <p><strong>Created By:</strong> {`${ticket.createdBy.fname} ${ticket.createdBy.lname}` || 'Unknown'}</p>
                             <p><strong>Created At:</strong> {ticket.createdAt ? new Date(ticket.createdAt).toLocaleString() : 'Unknown'}</p>
                         </Col>
                         <Col md={6}>
