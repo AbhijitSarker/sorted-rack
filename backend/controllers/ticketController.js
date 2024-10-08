@@ -86,6 +86,26 @@ const getCurrentUserTickets = async (req, res) => {
     res.status(StatusCodes.OK).json({ tickets, count: tickets.length });
 };
 
+// In your ticketController.js
+const getTicketStats = async (req, res) => {
+    const totalTickets = await Ticket.countDocuments();
+    const openTickets = await Ticket.countDocuments({ status: 'Open' });
+    const closedTickets = await Ticket.countDocuments({ status: 'Closed' });
+    const inProgressTickets = await Ticket.countDocuments({ status: 'In Progress' });
+    const resolvedTickets = await Ticket.countDocuments({ status: 'Resolved' });
+
+    // Calculate average resolution time (this is a simplified example)
+    const closedTicketsWithDuration = await Ticket.find({ status: 'closed' });
+   
+    res.json({
+        totalTickets,
+        openTickets,
+        closedTickets,
+        inProgressTickets,
+        resolvedTickets
+    });
+};
+
 module.exports = {
     createTicket,
     getAllTickets,
@@ -93,4 +113,5 @@ module.exports = {
     updateTicket,
     deleteTicket,
     getCurrentUserTickets,
+    getTicketStats
 };

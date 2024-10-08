@@ -1,5 +1,5 @@
 // controllers/commentController.js
-const Comment = require("../models/comment");
+const Comment = require("../models/commnt");
 const Ticket = require("../models/ticket");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
