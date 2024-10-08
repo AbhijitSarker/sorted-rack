@@ -18,7 +18,7 @@ router.route("/myTickets").get(authenticateUser, getCurrentUserTickets);
 router
     .route("/:id")
     .get(authenticateUser, getSingleTicket)
-    .patch(authenticateUser, updateTicket)
+    .patch([authenticateUser, authorizeRoles("superadmin", "admin")],  updateTicket)
     .delete([authenticateUser, authorizeRoles("superadmin", "admin")], deleteTicket);
 
 module.exports = router;

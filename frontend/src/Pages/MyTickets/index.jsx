@@ -103,7 +103,7 @@ const MyTickets = () => {
                     />
                 </Form.Group>
                 <div style={{ width: "100px" }} className="col-1">
-                    <Link to="/tickets/create" replace className="btn btn-primary">
+                    <Link to="/createTicket" replace className="btn btn-primary">
                         Create Ticket
                     </Link>
                 </div>
@@ -136,17 +136,7 @@ const MyTickets = () => {
                                     <td>{item.title}</td>
                                     <td>{item.category}</td>
                                     <td>{item.priority}</td>
-                                    <td>
-                                        <Form.Select
-                                            value={item.status}
-                                            onChange={(e) => handleStatusChange(item, e.target.value)}
-                                        >
-                                            <option value="Open">Open</option>
-                                            <option value="In Progress">In Progress</option>
-                                            <option value="Resolved">Resolved</option>
-                                            <option value="Closed">Closed</option>
-                                        </Form.Select>
-                                    </td>
+                                    <td>{item.status}</td>
                                     <td>{new Date(item.createdAt).toLocaleString()}</td>
                                     <td className="text-center">
                                         <Link to={`/ticket/${item._id}`} replace>

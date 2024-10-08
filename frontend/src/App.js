@@ -20,13 +20,15 @@ import AssignItem from "./Pages/AssignItems";
 import MyTickets from "./Pages/MyTickets";
 import CreateTicket from "./Pages/CreateTicket";
 import TicketDetails from "./Pages/Ticket/TicketDeatils";
+import HomeRoute from "./Pages/HomeRoute";
 
 function App() {
   return (
     <StockProvider>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Dashboard />} />
+          <Route index element={<HomeRoute />} />
+          <Route path="dashboard" element={<Dashboard />} /> 
           <Route path="stock" element={<ListStock />} />
           <Route path="stock/add" element={<AddStock />} />
           <Route path="stock/edit/:id" element={<EditSystemDetails />} />

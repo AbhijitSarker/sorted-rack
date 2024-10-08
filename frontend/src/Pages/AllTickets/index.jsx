@@ -99,7 +99,7 @@ const AllTickets = () => {
           />
         </Form.Group>
         <div style={{ width: "100px" }} className="col-1">
-          <Link to="/tickets/create" replace className="btn btn-primary">
+          <Link to="/createTicket" replace className="btn btn-primary">
             Create Ticket
           </Link>
         </div>

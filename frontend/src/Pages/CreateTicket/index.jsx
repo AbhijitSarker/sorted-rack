@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
+import { axiosSecure } from '../../api/axios';
 
 const CreateTicket = () => {
     const [ticket, setTicket] = useState({
@@ -9,7 +10,7 @@ const CreateTicket = () => {
         category: '',
     });
 
-    const [isLoading, setIsLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
 
@@ -23,36 +24,29 @@ const CreateTicket = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsLoading(true);
+        setLoading(true);
         setError(null);
         setSuccess(false);
 
         try {
-            // TODO: remove this 
-            const response = await fetch('http://localhost:4000/api/st/ticket', {
-                method: 'POST',
+            const response = await axiosSecure.post('/ticket', ticket, {
                 headers: {
-                    'Content-Type': 'application/json',
-                    // Add any authentication headers if required
-                     'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmZmMjQ1NDAwNzIxNjlkY2VhNGM5YzMiLCJlbWFpbCI6ImFiaGlqaXQuc2Fya2VyQHNqaW5ub3ZhdGlvbi5jb20iLCJyb2xlIjoic3VwZXJhZG1pbiIsImJyYW5jaCI6IlN5bGhldCIsImlhdCI6MTcyODI3NzU2MywiZXhwIjoxNzI4Mjc3NjUzfQ.2pd3kfeQadTzKxUuS3cOSkW7GpSfmCKJ5jH5ioWdkTg'
+                    Authorization: `Bearer ${localStorage.userDetails &&
+                        JSON.parse(localStorage.userDetails).token
+                    }`,
                 },
-                body: JSON.stringify(ticket)
             });
-
-            if (!response.ok) {
-                throw new Error('Failed to create ticket');
-            }
-
-            const data = await response.json();
-            console.log('Ticket created:', data);
+            console.log('Ticket created:', response.data);
             setSuccess(true);
-            setTicket({ title: '', description: '', priority: 'Low', category: '' });
-        } catch (err) {
-            setError(err.message);
+            setTicket({ title: '', description: '', priority: 'Normal', category: '' });
+        } catch (error) {
+            console.error("Error creating ticket:", error);
+            setError("Failed to create ticket. Please try again.");
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     };
+
 
     return (
         <Container>
@@ -113,15 +107,15 @@ const CreateTicket = () => {
                         value={ticket.priority}
                         onChange={handleChange}
                     >
-                        <option>Low</option>
+                        <option>Normal</option>
                         <option>Medium</option>
                         <option>High</option>
                         <option>Urgent</option>
                     </Form.Control>
                 </Form.Group>
 
-                <Button variant="primary" type="submit" disabled={isLoading}>
-                    {isLoading ? 'Creating...' : 'Create Ticket'}
+                <Button variant="primary" type="submit" disabled={loading}>
+                    {loading ? 'Creating...' : 'Create Ticket'}
                 </Button>
             </Form>
         </Container>

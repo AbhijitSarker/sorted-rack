@@ -11,7 +11,7 @@ const Sidebar = () => {
   const { activeMenu, setActiveMenu } = useContext(SidebarContext);
   const user = getUserDetails()
 
-  const navLinks = [
+  const allNavLinks = [
     {
       to: "/",
       icon: (
@@ -172,6 +172,14 @@ const Sidebar = () => {
 
   ];
 
+  // Filter nav links based on user role
+ const navLinks =
+ user.role === 'user'
+   ? allNavLinks.filter(link =>
+       link.label === 'My tickets' || link.label === 'Create Ticket')
+   : allNavLinks;
+
+   
   return (
     <div className={activeMenu ? "sidebar d-flex bg-dark hide" : "sidebar d-flex bg-dark"}>
       <div className="d-flex flex-column flex-shrink-0 px-3 text-white w-100">

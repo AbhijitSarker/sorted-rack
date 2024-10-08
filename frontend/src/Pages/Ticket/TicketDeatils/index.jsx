@@ -99,22 +99,11 @@ const TicketDetails = () => {
                             <h4>{ticket.title}</h4>
                             <p><strong>Category:</strong> {ticket.category}</p>
                             <p><strong>Priority:</strong> {ticket.priority}</p>
-                            <p><strong>Created By:</strong> {ticket.createdBy?.email || 'Unknown'}</p>
+                            <p><strong>Created By:</strong> {ticket.createdBy?.fname || 'Unknown'}</p>
                             <p><strong>Created At:</strong> {ticket.createdAt ? new Date(ticket.createdAt).toLocaleString() : 'Unknown'}</p>
                         </Col>
                         <Col md={6}>
-                            <Form.Group className="mb-3">
-                                <Form.Label><strong>Status</strong></Form.Label>
-                                <Form.Select
-                                    value={ticket.status || ''}
-                                    onChange={(e) => handleStatusChange(e.target.value)}
-                                >
-                                    <option value="Open">Open</option>
-                                    <option value="In Progress">In Progress</option>
-                                    <option value="Resolved">Resolved</option>
-                                    <option value="Closed">Closed</option>
-                                </Form.Select>
-                            </Form.Group>
+                        <h3>Status: {ticket.status || ''}</h3>
                         </Col>
                     </Row>
                     <Row>

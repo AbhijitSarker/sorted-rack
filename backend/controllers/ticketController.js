@@ -5,7 +5,6 @@ const checkPermission = require("../utility/checkPermission");
 
 const createTicket = async (req, res) => {
     const { title, description, category, priority } = req.body;
-
     if (!title || !description || !category) {
         throw new CustomError.BadRequestError("Please provide all required fields");
     }
@@ -41,7 +40,7 @@ const getSingleTicket = async (req, res) => {
         throw new CustomError.NotFoundError(`No ticket found with id ${ticketId}`);
     }
 
-    checkPermission(req.user, ticket.createdBy);
+    checkPermission(req.user, ticket.createdBy._id);
 
     res.status(StatusCodes.OK).json({ ticket });
 };
