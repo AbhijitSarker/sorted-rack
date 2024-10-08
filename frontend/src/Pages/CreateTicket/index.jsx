@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { axiosSecure } from '../../api/axios';
+import { useNavigate } from 'react-router-dom';
+import { Toaster } from '../../component/Toaster/Toaster';
 
 const CreateTicket = () => {
     const [ticket, setTicket] = useState({
@@ -11,8 +13,10 @@ const CreateTicket = () => {
     });
 
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(false);
+    const [showToaster, setShowToaster] = useState(false);
+    const [toasterMessage, setToasterMessage] = useState('');
+    const [toasterBg, setToasterBg] = useState('success');
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -25,8 +29,6 @@ const CreateTicket = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError(null);
-        setSuccess(false);
 
         try {
             const response = await axiosSecure.post('/ticket', ticket, {
@@ -37,22 +39,33 @@ const CreateTicket = () => {
                 },
             });
             console.log('Ticket created:', response.data);
-            setSuccess(true);
+            setToasterMessage('Ticket created successfully!');
+            setToasterBg('success');
+            setShowToaster(true);
             setTicket({ title: '', description: '', priority: 'Normal', category: '' });
+            // setTimeout(() => {
+                // navigate('/myTickets');
+            // }, 2000); 
         } catch (error) {
             console.error("Error creating ticket:", error);
-            setError("Failed to create ticket. Please try again.");
+            setToasterMessage("Failed to create ticket. Please try again.");
+            setToasterBg('danger');
+            setShowToaster(true);
         } finally {
             setLoading(false);
         }
     };
 
-
     return (
         <Container>
+            <Toaster
+                title={toasterMessage}
+                bg={toasterBg}
+                showToaster={showToaster}
+                setShowToaster={setShowToaster}
+                 to="myTickets"
+            />
             <h2 className="my-4">Create New Ticket</h2>
-            {error && <Alert variant="danger">{error}</Alert>}
-            {success && <Alert variant="success">Ticket created successfully!</Alert>}
             <Form onSubmit={handleSubmit}>
                 <Row>
                     <Col md={6}>

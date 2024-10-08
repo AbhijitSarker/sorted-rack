@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { axiosSecure } from "../../api/axios";
+import { Card, Col } from "react-bootstrap";
 
 const Dashbaord = () => {
   const [dashboardStats, setDashboardStats] = useState({});
@@ -51,23 +52,27 @@ const Dashbaord = () => {
       <div className="row">
         {dashboardStats?.length > 0 &&
           dashboardStats?.map((stock, index) => (
-            <div className="col-xl-3 col-lg-3 col-md-6" key={index}>
-              <div className="single-stock rounded-3 shadow text-center pt-5 mr-3 mb-3">
-                <h1 className="pb-3 fw-normal ">{stock.assignedDevicesCount}</h1>
-                <h5 className="mb-1 productName text-capitalize">{stock.deviceCategory}</h5>
-                <p className="stock-available border-bottom border-dark pb-5 stock">
-                  Available: {stock.availableDevicesCount}
-                </p>
-                <div className="total-stock row d-flex justify-content-center align-items-center">
-                  <div className="col-md-6 text-upercase">
-                    <p>Total</p>
+            <Col xl={3} lg={3} md={6} className="mb-4" key={index}>
+              <Card className="text-center shadow-sm h-100">
+                <Card.Body>
+                  <Card.Title as="h1" className="display-4 fw-bold text-primary">
+                    {stock.assignedDevicesCount}
+                  </Card.Title>
+                  <Card.Subtitle as="h5" className="mb-2 text-capitalize text-secondary">
+                    {stock.deviceCategory} Being used
+                  </Card.Subtitle>
+                  <hr />
+                  <p className="border-bottom pb-3 mb-3">
+                    Available:
+                    <span className="text-success fw-semibold"> {stock.availableDevicesCount}</span>
+                  </p>
+                  <div className="d-flex justify-content-between align-items-center bg-light p-2 rounded shadow-sm">
+                    <div className="text-uppercase small">Total</div>
+                    <h2 className="fw-bold m-0">{stock.availableDevicesCount + stock.assignedDevicesCount}</h2>
                   </div>
-                  <div className="col-md-6">
-                    <h1 className="fw-normal">{stock.availableDevicesCount + stock.assignedDevicesCount}</h1>
-                  </div>
-                </div>
-              </div>
-            </div>
+                </Card.Body>
+              </Card>
+            </Col>
           ))}
       </div>
     </div>

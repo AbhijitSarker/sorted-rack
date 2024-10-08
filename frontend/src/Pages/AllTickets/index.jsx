@@ -2,18 +2,18 @@ import React, { useEffect, useState, useMemo } from "react";
 import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
 import { Link } from "react-router-dom";
 import Col from "react-bootstrap/Col";
 import { axiosSecure } from "../../api/axios";
 import PaginationComponent from "../../component/Pagination/Pagination";
 import useAxios from "../../Hooks/useAxios";
-import { Button } from "react-bootstrap";
+import { Button, Row } from "react-bootstrap";
 
 const AllTickets = () => {
   const [response, error, loading, axiosFetch] = useAxios();
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [priorityFilter, setPriorityFilter] = useState("");
   const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
@@ -62,7 +62,6 @@ const AllTickets = () => {
     let filteredResult = response?.tickets?.sort((a, b) =>
       a.title.localeCompare(b.title)
     );
-    setTotalItems(filteredResult?.length);
 
     if (search) {
       filteredResult = filteredResult.filter((currentItem) =>
@@ -70,11 +69,22 @@ const AllTickets = () => {
         currentItem.category.toLowerCase().includes(search.toLowerCase())
       );
     }
+
+    if (statusFilter) {
+      filteredResult = filteredResult.filter(item => item.status === statusFilter);
+    }
+
+    if (priorityFilter) {
+      filteredResult = filteredResult.filter(item => item.priority === priorityFilter);
+    }
+
+    setTotalItems(filteredResult?.length);
+
     return filteredResult?.slice(
       (currentPage - 1) * ITEMS_PER_PAGE,
       (currentPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
     );
-  }, [currentPage, response, search]);
+  }, [currentPage, response, search, statusFilter, priorityFilter]);
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
@@ -86,24 +96,44 @@ const AllTickets = () => {
         <div className="col-8">
           <h2 className="py-3">Ticket Listing</h2>
         </div>
-        <Form.Group
-          as={Col}
-          md="3"
-          className="pe-3"
-          controlId="validationCustom01"
-        >
-          <Form.Control
-            onChange={handleSearch}
-            type="text"
-            placeholder="Search by title or category"
-          />
-        </Form.Group>
         <div style={{ width: "100px" }} className="col-1">
           <Link to="/createTicket" replace className="btn btn-primary">
             Create Ticket
           </Link>
         </div>
       </div>
+      <Row className="mb-3">
+        <Form.Group as={Col} md="3" controlId="searchFilter">
+          <Form.Control
+            onChange={handleSearch}
+            type="text"
+            placeholder="Search by title or category"
+          />
+        </Form.Group>
+        <Form.Group as={Col} md="3" controlId="statusFilter">
+          <Form.Select 
+            value={statusFilter} 
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="">Filter by Status</option>
+            <option value="Open">Open</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Resolved">Resolved</option>
+            <option value="Closed">Closed</option>
+          </Form.Select>
+        </Form.Group>
+        <Form.Group as={Col} md="3" controlId="priorityFilter">
+          <Form.Select 
+            value={priorityFilter} 
+            onChange={(e) => setPriorityFilter(e.target.value)}
+          >
+            <option value="">Filter by Priority</option>
+            <option value="Normal">Normal</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </Form.Select>
+        </Form.Group>
+      </Row>
       {loading && (
         <div className="d-flex justify-content-center">
           <div className="spinner-border" role="status">
@@ -113,7 +143,7 @@ const AllTickets = () => {
       )}
       {!loading && error && <p className="error-msg">{error}</p>}
 
-      {totalItems && (
+      {totalItems > 0 && (
         <div className="ticket-table">
           <Table striped hover bordered responsive>
             <thead>
@@ -144,7 +174,7 @@ const AllTickets = () => {
                       <option value="Closed">Closed</option>
                     </Form.Select>
                   </td>
-                  <td>hello</td>
+                  <td>{`${item.createdBy.fname} ${item.createdBy.lname}`}</td>
                   <td>{new Date(item.createdAt).toLocaleString()}</td>
                   <td className="text-center">
                     <Link to={`/ticket/${item._id}`} replace>
@@ -159,7 +189,7 @@ const AllTickets = () => {
       )}
       <div className="d-flex justify-content-end relative bottom-20 me-3">
         <PaginationComponent
-          total={response?.tickets?.length}
+          total={totalItems}
           itemsPerPage={ITEMS_PER_PAGE}
           currentPage={currentPage}
           onPageChange={(page) => setCurrentPage(page)}
