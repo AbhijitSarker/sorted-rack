@@ -14,7 +14,7 @@ const Layout = () => {
             <section style={{ minHeight: "85vh" }}>
               <Outlet />
             </section>
-            <Footer />
+            {/* <Footer /> */}
           </div>
         </main>
       </SidebarContextProvider>

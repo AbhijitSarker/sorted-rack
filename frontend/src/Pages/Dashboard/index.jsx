@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { axiosSecure } from "../../api/axios";
-import { Card, Col, Row } from "react-bootstrap";
+import { Button, Card, Col, Row, Table } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const [dashboardStats, setDashboardStats] = useState([]);
   const [ticketStats, setTicketStats] = useState({});
   const [userStats, setUserStats] = useState({});
+  const [latestTickets, setLatestTickets] = useState([]);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const [productResponse, ticketResponse, userResponse] = await Promise.all([
+        const [productResponse, ticketResponse, userResponse, latestTicketsResponse] = await Promise.all([
           axiosSecure.get("/product", {
             headers: {
               Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
@@ -22,6 +24,11 @@ const Dashboard = () => {
             },
           }),
           axiosSecure.get("/user/stats", {
+            headers: {
+              Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
+            },
+          }),
+          axiosSecure.get("/ticket/latest", {
             headers: {
               Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
             },
@@ -61,13 +68,14 @@ const Dashboard = () => {
         }
 
         if (ticketResponse?.data) {
-          console.log(ticketResponse);
           setTicketStats(ticketResponse.data);
         }
 
         if (userResponse?.data) {
-          console.log(userResponse);
           setUserStats(userResponse.data);
+        }
+        if (latestTicketsResponse?.data) {
+          setLatestTickets(latestTicketsResponse.data);
         }
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
@@ -76,7 +84,7 @@ const Dashboard = () => {
 
     fetchDashboardData();
   }, []);
-  console.log(ticketStats.avgResolutionTime);
+
   return (
     <div className="stock-main-body container">
       <h2 className="py-3">Dashboard</h2>
@@ -153,6 +161,46 @@ const Dashboard = () => {
           </Card>
         </Col>
       </Row>
+
+      {/* Latest Tickets Table */}
+      <Row className="mt-4">
+        <Col>
+          <Card>
+            <Card.Header>
+              <h3>Latest Tickets</h3>
+            </Card.Header>
+            <Card.Body>
+              <Table striped bordered hover responsive>
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Created At</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {latestTickets.map((ticket) => (
+                    <tr key={ticket._id}>
+                      <td>{ticket.title}</td>
+                      <td>{ticket.status}</td>
+                      <td>{ticket.priority}</td>
+                      <td>{new Date(ticket.createdAt).toLocaleString()}</td>
+                      <td>
+                        <Link to={`/ticket/${ticket._id}`} replace>
+                          <Button size="sm" variant="outline-primary">View Details </Button>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+
     </div>
   );
 };

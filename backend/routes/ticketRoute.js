@@ -6,7 +6,7 @@ const {
     authenticateUser,
     authorizeRoles,
 } = require("../middleware/authentication");
-const { createTicket, getAllTickets, getCurrentUserTickets, getSingleTicket, updateTicket, deleteTicket, getTicketStats } = require("../controllers/ticketController");
+const { createTicket, getAllTickets, getCurrentUserTickets, getSingleTicket, updateTicket, deleteTicket, getTicketStats, getLatestTickets } = require("../controllers/ticketController");
 
 router
     .route("/")
@@ -15,6 +15,7 @@ router
     
 router.route("/myTickets").get(authenticateUser, getCurrentUserTickets);
 router.route("/stats").get([authenticateUser, authorizeRoles("superadmin", "admin")], getTicketStats)
+router.route('/latest').get(authenticateUser, getLatestTickets);
 
 router
     .route("/:id")

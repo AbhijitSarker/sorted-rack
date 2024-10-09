@@ -24,8 +24,12 @@ const ticketSchema = new mongoose.Schema({
     status: {
         type: String,
         required: true,
-        enum: ['Open', 'In Progress', 'Resolved', 'Closed'],
+        enum: ['Open', 'In Progress', 'Resolved', 'Closed', 'Archived'],
         default: 'Open'
+    },
+    photoUrl: {
+        type: String,
+        default: null
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,

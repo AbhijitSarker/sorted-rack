@@ -4,7 +4,7 @@ const CustomError = require("../errors");
 const checkPermission = require("../utility/checkPermission");
 
 const createTicket = async (req, res) => {
-    const { title, description, category, priority } = req.body;
+    const { title, description, category, priority, photoUrl } = req.body;
     if (!title || !description || !category) {
         throw new CustomError.BadRequestError("Please provide all required fields");
     }
@@ -14,6 +14,7 @@ const createTicket = async (req, res) => {
         description,
         category,
         priority,
+        photoUrl,
         createdBy: req.user.userId,
     });
 
@@ -106,6 +107,20 @@ const getTicketStats = async (req, res) => {
     });
 };
 
+const getLatestTickets = async (req, res) => {
+    try {
+        const latestTickets = await Ticket.find()
+            .sort({ createdAt: -1 })
+            .limit(5)
+            .select('_id title status priority createdAt');
+
+        res.json(latestTickets);
+    } catch (error) {
+        console.error('Error fetching latest tickets:', error);
+        res.status(500).json({ message: 'Error fetching latest tickets' });
+    }
+};
+
 module.exports = {
     createTicket,
     getAllTickets,
@@ -113,5 +128,6 @@ module.exports = {
     updateTicket,
     deleteTicket,
     getCurrentUserTickets,
-    getTicketStats
+    getTicketStats,
+    getLatestTickets
 };
