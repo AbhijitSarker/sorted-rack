@@ -98,6 +98,24 @@ const UpdateUserPassword = (req, res) => {
   res.send("UpdateUserPassword");
 };
 
+// In your userController.js
+const getUserStats = async (req, res) => {
+  const totalUsers = await User.countDocuments();
+  const activeUsers = await User.countDocuments({ status: 'active' });
+  const inactiveUsers = await User.countDocuments({ status: 'inactive' });
+
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+  const newUsersThisMonth = await User.countDocuments({ createdAt: { $gte: oneMonthAgo } });
+
+  res.json({
+    totalUsers,
+    activeUsers,
+    inactiveUsers,
+    newUsersThisMonth
+  });
+};
+
 module.exports = {
   getAllUsers,
   getSingleUser,
@@ -105,4 +123,5 @@ module.exports = {
   UpdateUserRole,
   deleteAllUsers,
   UpdateUserPassword,
+  getUserStats
 };

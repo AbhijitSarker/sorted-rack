@@ -8,6 +8,7 @@ const {
   UpdateUserRole,
   deleteAllUsers,
   UpdateUserPassword,
+  getUserStats,
 } = require("../controllers/userController");
 const {
   authenticateUser,
@@ -18,13 +19,13 @@ router
   .route("/")
   .get([authenticateUser, authorizeRoles("superadmin", "admin")], getAllUsers);
 
-  router
-    .route("/deleteAllUsers")
-    .delete(
-      authenticateUser,
-      authorizeRoles("superadmin", "admin"),
-      deleteAllUsers
-    );
+router
+  .route("/deleteAllUsers")
+  .delete(
+    authenticateUser,
+    authorizeRoles("superadmin", "admin"),
+    deleteAllUsers
+  );
 
 router
   .route("/UpdateUserRole/:id")
@@ -33,7 +34,8 @@ router
   .route("/updateuser/:id")
   .patch(authenticateUser, authorizeRoles("superadmin", "admin"), UpdateUser);
 
-  
+router.route("/stats").get([authenticateUser, authorizeRoles("superadmin", "admin")], getUserStats)
+
 
 // route pending yet
 router.route("/UpdateUserPassword").patch(UpdateUserPassword);
