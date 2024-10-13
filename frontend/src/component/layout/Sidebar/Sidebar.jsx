@@ -1,101 +1,61 @@
 import React from "react";
-import { useContext } from "react";
-import { NavLink } from "react-router-dom";
-import { SidebarContext } from "../../../contexts/SidebarContext";
+import {
+  DesktopOutlined,
+  FileOutlined,
+  PieChartOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
+import { Layout, Menu } from 'antd';
+import { Link, useLocation } from "react-router-dom";
 import logo from "../../../assests/images/sorted-rack-logo.svg";
-import { FaHome, FaRegFileArchive, FaUserFriends } from "react-icons/fa";
-import { FaChalkboardUser } from "react-icons/fa6";
-import { MdImportantDevices, MdOutlineAddTask } from "react-icons/md";
-import { GoTasklist } from "react-icons/go";
+const { Sider } = Layout;
 
-import "./Sidebar.scss";
-import { getUserDetails } from "../../../service";
-import { BiTask } from "react-icons/bi";
+function getItem(label, key, icon, children) {
+  return {
+    key,
+    icon,
+    children,
+    label: children ? label : <Link to={key}>{label}</Link>,
+  };
+}
 
-const Sidebar = () => {
-  const { activeMenu, setActiveMenu } = useContext(SidebarContext);
-  const user = getUserDetails()
+const items = [
+  getItem('Dashboard', '/', <PieChartOutlined />),
+  getItem('Inventory Management', 'sub3', <DesktopOutlined />, [
+    getItem('Stock', '/stock'),
+    getItem('Add stock', '/stock/add'),
+    getItem('Assigned Devices', '/assigned'),
+  ]),
+  getItem('User Management', 'sub1', <UserOutlined />, [
+    getItem('All Users', '/user'),
+    getItem('Add User', '/user/add'),
+  ]),
+  getItem('Tickets', 'sub2', <TeamOutlined />, [
+    getItem('All Tickets', '/tickets'),
+    getItem('My Tickets', '/myTickets'),
+    getItem('Create Ticket', '/createTicket'),
+  ]),
+  getItem('Archive', '/archive', <FileOutlined />),
+];
 
-  const allNavLinks = [
-    {
-      to: "/",
-      icon: <FaHome />,
-      label: "Dashboard"
-    },
-    {
-      to: "/user",
-      icon: <FaUserFriends />,
-      label: "User"
-    },
-    {
-      to: "/stock",
-      icon: <MdImportantDevices />,
-      label: "Stock"
-    },
-    {
-      to: "/assigned",
-      icon: <FaChalkboardUser />,
-      label: "Assigned Devices"
-    },
-    {
-      to: "/tickets",
-      icon: <GoTasklist />,
-      label: "All Tickets"
-    },
-    {
-      to: "/myTickets",
-      icon: <BiTask />,
-      label: "My tickets"
-    },
-    {
-      to: "/createTicket",
-      icon: <MdOutlineAddTask />,
-      label: "Create Ticket"
-    },
-    {
-      to: "/archive",
-      icon: <FaRegFileArchive />,
-      label: "Ticket Archive"
-    }
-
-  ];
-
-  // Filter nav links based on user role
- const navLinks =
- user.role === 'user'
-   ? allNavLinks.filter(link =>
-       link.label === 'My tickets' || link.label === 'Create Ticket')
-   : allNavLinks;
-
+const Sidebar = ({ collapsed, setCollapsed }) => {
+  const location = useLocation();
 
   return (
-    <div className={activeMenu ? "sidebar d-flex bg-dark hide" : "sidebar d-flex bg-dark"}>
-      <div className="d-flex flex-column flex-shrink-0 px-3 text-white w-100">
-        <a href="/" className="d-flex align-items-center pt-3 mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-          <img alt="Sorted Rack" src={logo} width="140px" />
-        </a>
-
-        <hr />
-
-        <nav className="h-100vh">
-          <ul className="nav nav-pills flex-column mb-auto">
-            {navLinks.map((link, index) => (
-              <li key={index} className='nav-item'>
-                <NavLink
-                  end={link.to === '/'}
-                  to={link.to}
-                  className={({ isActive }) => `nav-link text-white ${isActive ? 'active' : undefined}`}
-                >
-                  {link.icon}
-                  <span className="ms-2">{link.label}</span>
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-      </div>
-    </div>
+    <Sider width={250} collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+      <img src={logo} className="demo-logo-vertical" style={{
+        height: '32px',
+        margin: '16px',
+        background: 'rgba(255, 255, 255, 0.2)',
+      }} />
+      <Menu
+        theme="dark"
+        defaultSelectedKeys={[location.pathname]}
+        mode="inline"
+        items={items}
+      />
+    </Sider>
   );
 };
 

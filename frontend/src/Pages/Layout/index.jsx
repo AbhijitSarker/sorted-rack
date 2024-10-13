@@ -1,25 +1,41 @@
-import { useLocation, Navigate, Outlet } from "react-router-dom";
-import SidebarContextProvider from "../../contexts/SidebarContext";
-import { isLoggedIn } from "../../service";
-import { Footer, Header, Sidebar } from "../../component";
+import React, { useState } from 'react';
+import { Layout as AntLayout, theme } from 'antd';
+import { Outlet } from "react-router-dom";
+
+import {Header, Sidebar } from "../../component";
+
+const { Content, Footer } = AntLayout;
 
 const Layout = () => {
-  const location = useLocation();
-  return isLoggedIn() ? (
-      <SidebarContextProvider>
-        <main className="d-flex flex-nowrap">
-          <Sidebar />
-          <div className="w-100 overflow-auto main-wrapper min-vh-100 d-flex flex-column">
-            <Header />
-            <section style={{ minHeight: "85vh" }}>
-              <Outlet />
-            </section>
-            {/* <Footer /> */}
+  const [collapsed, setCollapsed] = useState(false);
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+
+  return (
+    <AntLayout style={{ minHeight: '100vh' }}>
+      <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
+      <AntLayout>
+        <Header />
+        <Content style={{ margin: '0 16px' }}>
+          <div
+            style={{
+              padding: 24,
+              minHeight: 360,
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
+              margin: '16px 0',
+              overflowX: 'auto'
+            }}
+          >
+            <Outlet />
           </div>
-        </main>
-      </SidebarContextProvider>
-  ) : (
-    <Navigate to="/login" state={{ from: location }} replace />
+        </Content>
+        <Footer style={{ textAlign: 'center' }}>
+          Your Company Name ©{new Date().getFullYear()} Created by Your Team
+        </Footer>
+      </AntLayout>
+    </AntLayout>
   );
 };
 
