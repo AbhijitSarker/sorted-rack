@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Formik } from "formik";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -10,6 +10,7 @@ import "./users.scss";
 import { axiosSecure } from "../../../api/axios";
 import * as yup from "yup";
 import { Toaster } from "../../../component/Toaster/Toaster";
+import { HeaderContext } from "../../../contexts/HeaderContext";
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First Name is required"),
@@ -44,6 +45,13 @@ const AddUser = () => {
   const [showAddToaster, setShowAddToaster] = useState(false);
   const [showErrorToaster, setShowErrorToaster] = useState(false);
   const [error, setError] = useState("");
+  const { setHeaderText } = useContext(HeaderContext);
+
+  useEffect(() => {
+    setHeaderText('Add user');
+  }, [setHeaderText]);
+
+
   return (
     <div className="flex-grow-1">
       <Formik
@@ -82,7 +90,6 @@ const AddUser = () => {
         }) => (
           <Form onSubmit={handleSubmit}>
             <Container className="add-user-page d-flex flex-column justify-content-center">
-              <h2 className=" mb-4 ">Add User</h2>
               <h5 className="fw-bold mb-3">User Details</h5>
               <Row>
                 <Col md={6} lg={6} xl={6}>

@@ -1,17 +1,13 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { Layout, Button, theme } from 'antd';
-import { MenuUnfoldOutlined, MenuFoldOutlined, LogoutOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
+import { LogoutOutlined } from '@ant-design/icons';
 import { logout } from "../../../service";
-import { SidebarContext } from "../../../contexts/SidebarContext";
-
-const { Header: AntHeader } = Layout;
+import { HeaderContext } from "../../../contexts/HeaderContext";
 
 const Header = () => {
   const navigate = useNavigate();
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
+  const { headerText } = useContext(HeaderContext);
 
   const handleLogout = () => {
     navigate("/login", { replace: true });
@@ -19,15 +15,24 @@ const Header = () => {
   };
 
   return (
-    <AntHeader style={{ padding: 0, background: colorBgContainer }}>
+    <header style={{
+      padding: '0 24px',
+      background: '#fff',
+      boxShadow: '0 1px 4px rgba(0,21,41,.08)',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      height: '64px'
+    }}>
+      <h1 style={{ margin: 0, fontSize: '40px' }}>{headerText}</h1>
       <Button
         onClick={handleLogout}
         icon={<LogoutOutlined />}
-        style={{ float: 'right', margin: '16px 24px' }}
+        type="primary"
       >
         Logout
       </Button>
-    </AntHeader>
+    </header>
   );
 };
 

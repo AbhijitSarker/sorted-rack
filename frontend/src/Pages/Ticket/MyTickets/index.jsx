@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useContext } from "react";
 import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
@@ -7,6 +7,7 @@ import Col from "react-bootstrap/Col";
 import PaginationComponent from "../../../component/Pagination/Pagination";
 import { axiosSecure } from "../../../api/axios";
 import { Button, Row } from "react-bootstrap";
+import { HeaderContext } from "../../../contexts/HeaderContext";
 
 const MyTickets = () => {
     const [tickets, setTickets] = useState([]);
@@ -18,6 +19,11 @@ const MyTickets = () => {
     const [totalItems, setTotalItems] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 10;
+    const { setHeaderText } = useContext(HeaderContext);
+
+    useEffect(() => {
+        setHeaderText('My Tickets');
+    }, [setHeaderText]);
 
     const fetchMyTickets = async () => {
         try {
@@ -76,13 +82,8 @@ const MyTickets = () => {
     };
 
     return (
-        <Container className="flex-grow-1">
-            <div className="d-flex align-items-center justify-content-between">
-                <div className="col-8">
-                    <h2 className="py-3">My Tickets</h2>
-                </div>
-            </div>
-            <Row className="mb-3">
+        <Container className="flex-grow-1 ">
+            <Row className="d-flex py-4 align-items-center justify-content-between w-max">
                 <Form.Group as={Col} md="3" controlId="searchFilter">
                     <Form.Control
                         onChange={handleSearch}
@@ -114,7 +115,7 @@ const MyTickets = () => {
                     </Form.Select>
                 </Form.Group>
                 <Form.Group as={Col} md="3" controlId="priorityFilter">
-                    <Link to="/createTicket" replace className="btn btn-primary">
+                    <Link to="/createTicket" className="btn btn-primary">
                         Create Ticket
                     </Link>
                 </Form.Group>

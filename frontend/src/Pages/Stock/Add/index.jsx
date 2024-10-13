@@ -9,16 +9,21 @@ import AccessoriesFormContainer from "./AccessoriesForm";
 
 import { BsMouse2, BsCpu } from "react-icons/bs";
 import { StockContext } from "../../../contexts/StockContext";
+import { HeaderContext } from "../../../contexts/HeaderContext";
 const AddStock = () => {
   const { deviceCategory } = useContext(StockContext);
   const [activeTab, setActiveTab] = useState(deviceCategory);
   const handleSelect = (selectedTab) => setActiveTab(selectedTab);
+  const { setHeaderText } = useContext(HeaderContext);
+
+  useEffect(() => {
+    setHeaderText('Add Stock');
+  }, [setHeaderText]);
 
   return (
     <Container style={{ width: "80%" }}>
       <Row>
-        <Col xl={12}>
-          <h2 className="my-4 ">Add Stock</h2>
+        <Col xl={12} className="my-4 ">
         </Col>
       </Row>
       <Row>

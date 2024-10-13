@@ -1,11 +1,14 @@
-import { useState, createContext } from "react";
+// HeaderContext.js
+import { createContext, useState } from "react";
 
 export const HeaderContext = createContext();
 
-function HeaderTextProvider({ children }) {
+export function HeaderTextProvider({ children }) {
   const [headerText, setHeaderText] = useState("Dashboard");
 
-  return <HeaderContext.Provider value={{ headerText, setHeaderText }}>{children}</HeaderContext.Provider>;
+  return (
+    <HeaderContext.Provider value={{ headerText, setHeaderText }}>
+      {children}
+    </HeaderContext.Provider>
+  );
 }
-
-export default HeaderTextProvider;

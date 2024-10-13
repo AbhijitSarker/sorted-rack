@@ -1,13 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { axiosSecure } from "../../api/axios";
 import { Button, Card, Col, Row, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { HeaderContext } from "../../contexts/HeaderContext";
 
 const Dashboard = () => {
   const [dashboardStats, setDashboardStats] = useState([]);
   const [ticketStats, setTicketStats] = useState({});
   const [userStats, setUserStats] = useState({});
   const [latestTickets, setLatestTickets] = useState([]);
+  const { setHeaderText } = useContext(HeaderContext);
+
+  useEffect(() => {
+    setHeaderText('Dashboard');
+  }, [setHeaderText]);
 
   useEffect(() => {
     const fetchDashboardData = async () => {

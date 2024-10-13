@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useContext } from "react";
 import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
@@ -10,12 +10,18 @@ import { axiosSecure } from "../../../api/axios";
 import useAxios from "../../../Hooks/useAxios";
 import "./listUser.scss";
 import PaginationComponent from "../../../component/Pagination/Pagination";
+import { HeaderContext } from "../../../contexts/HeaderContext";
 const ListUser = () => {
   const [response, error, loading, axiosFetch] = useAxios();
   const [search, setSearch] = useState("");
   const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
+  const { setHeaderText } = useContext(HeaderContext);
+
+  useEffect(() => {
+    setHeaderText('User Listing');
+  }, [setHeaderText]);
 
   const fetchUserDetails = async () => {
     axiosFetch({
@@ -80,10 +86,8 @@ const ListUser = () => {
 
   return (
     <Container className="flex-grow-1">
-      <div className="d-flex align-items-center justify-content-between">
-        <div className="col-8">
-          <h2 className="py-3">User Listing</h2>
-        </div>
+      <div className="d-flex py-4 align-items-center justify-content-between">
+
         <Form.Group
           as={Col}
           md="3"
@@ -97,7 +101,7 @@ const ListUser = () => {
           />
         </Form.Group>
         <div style={{ width: "100px" }} className="col-1">
-          <Link to="/user/add" replace className="btn btn-primary">
+          <Link to="/user/add" className="btn btn-primary">
             Add User
           </Link>
         </div>

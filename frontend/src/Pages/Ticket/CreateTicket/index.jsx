@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Form, Button, Container, Row, Col, Image, Spinner } from 'react-bootstrap';
 import { axiosSecure } from '../../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import { Toaster } from '../../../component/Toaster/Toaster';
 import axios from 'axios';
+import { HeaderContext } from '../../../contexts/HeaderContext';
 
 const CreateTicket = () => {
     const [ticket, setTicket] = useState({
@@ -19,7 +20,11 @@ const CreateTicket = () => {
     const [toasterMessage, setToasterMessage] = useState('');
     const [toasterBg, setToasterBg] = useState('success');
     const navigate = useNavigate();
+    const { setHeaderText } = useContext(HeaderContext);
 
+    useEffect(() => {
+        setHeaderText('Create Ticket');
+    }, [setHeaderText]);
     const handleChange = (e) => {
         const { name, value } = e.target;
         setTicket(prevTicket => ({
@@ -87,7 +92,7 @@ const CreateTicket = () => {
     };
 
     return (
-        <Container className="p-4" style={{ maxWidth: '900px', backgroundColor: '#f9f9f9', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+        <Container className="p-4 mt-5" style={{ maxWidth: '900px', backgroundColor: '#f9f9f9', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
             <Toaster
                 title={toasterMessage}
                 bg={toasterBg}

@@ -1,10 +1,11 @@
-import React, { useRef, useState, useEffect, useMemo } from "react";
+import React, { useRef, useState, useEffect, useMemo, useContext } from "react";
 import { BsGear } from 'react-icons/bs';
 import { BiCheckCircle } from "react-icons/bi";
 import { Form, Table, Toast, Container, Dropdown, Col } from "react-bootstrap";
 import { axiosSecure } from "../../api/axios";
 import PaginationComponent from "../../component/Pagination/Pagination";
 import Columns from "../../constants/AssigmentColumns.json";
+import { HeaderContext } from "../../contexts/HeaderContext";
 
 const AssignItem = () => {
   const [columns, setColumns] = useState(Columns);
@@ -14,7 +15,11 @@ const AssignItem = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
   const [showToaster, setShowToaster] = useState(false);
+  const { setHeaderText } = useContext(HeaderContext);
 
+  useEffect(() => {
+    setHeaderText('Assigned Devices');
+  }, [setHeaderText]);
   const getAssignedDeviceDetails = async () => {
     const response = await axiosSecure.get("/assignedProduct", {
       headers: {
@@ -90,16 +95,13 @@ const AssignItem = () => {
   };
 
   return (
-    <Container>
-      <div className="d-flex align-items-center justify-content-between">
-        <div className="col-9">
-          <h2 className="py-3">Assigned Devices</h2>
-        </div>
+    <Container className="py-3">
+      {/* <div className="d-flex align-items-center justify-content-between my-3">
         <Form.Group as={Col} md="2" className="pe-3" controlId="validationCustom01">
           <Form.Control onChange={handleSearch} type="text" placeholder="Search devices" />
         </Form.Group>
-      </div>
-
+      </div> */}
+{/* 
       <div className="d-flex justify-content-end">
         <Dropdown>
           <Dropdown.Toggle variant="success" id="dropdown-basic" className="table-column-btn">
@@ -114,7 +116,7 @@ const AssignItem = () => {
             ))}
           </Dropdown.Menu>
         </Dropdown>
-      </div>
+      </div> */}
 
       <Toast
         className="toaster-position"

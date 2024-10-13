@@ -18,6 +18,7 @@ import { StockContext } from "../../../contexts/StockContext";
 import PaginationComponent from "../../../component/Pagination/Pagination";
 import { Col, Form } from "react-bootstrap";
 import { Toaster } from "../../../component/Toaster/Toaster";
+import { HeaderContext } from "../../../contexts/HeaderContext";
 
 const deleteStock = (stockItemId) =>
   axiosSecure.delete(`/product/${stockItemId}`, {
@@ -46,6 +47,11 @@ const ListStock = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 5;
   const removeDeviceIdRef = useRef(null);
+  const { setHeaderText } = useContext(HeaderContext);
+
+  useEffect(() => {
+    setHeaderText('Stock Listing');
+  }, [setHeaderText]);
 
   const handleAssignmentModal = () =>
     setShowAssignmentModal(!showAssignmentModal);
@@ -347,41 +353,36 @@ const ListStock = () => {
         </Modal>
       </div>
 
-      <div className="row">
-        <div className="col-6">
-          <h2>Stock Listing</h2>
-        </div>
-
-        <div className="col-6 d-flex justify-content-end">
-          <Form.Group
-            as={Col}
-            md="4"
+      <div className="d-flex align-items-center justify-content-between">
+        <Form.Group
+          as={Col}
+          md="4"
+          className="me-3"
+          controlId="validationCustom01"
+        >
+          <Form.Control
+            onChange={handleSearch}
+            type="text"
+            placeholder={`Search ${deviceCategory}`}
+          />
+        </Form.Group>
+        {/* <div> </div> <div>  </div> */}
+        {
+          <DropdownButton
+            id="dropdown-basic-button"
             className="me-3"
-            controlId="validationCustom01"
+            title={deviceCategory}
+            onSelect={handleProductCategorySelect}
           >
-            <Form.Control
-              onChange={handleSearch}
-              type="text"
-              placeholder={`Search ${deviceCategory}`}
-            />
-          </Form.Group>
-          {
-            <DropdownButton
-              id="dropdown-basic-button"
-              className="me-3"
-              title={deviceCategory}
-              onSelect={handleProductCategorySelect}
-            >
-              <Dropdown.Item eventKey="System">System</Dropdown.Item>
-              <Dropdown.Item eventKey="Accessories">Accessories</Dropdown.Item>
-            </DropdownButton>
-          }
-          <Link to="/stock/add">
-            <Button variant="primary mb-2 float-right">
-              Add {deviceCategory}
-            </Button>
-          </Link>
-        </div>
+            <Dropdown.Item eventKey="System">System</Dropdown.Item>
+            <Dropdown.Item eventKey="Accessories">Accessories</Dropdown.Item>
+          </DropdownButton>
+        }
+        <Link to="/stock/add">
+          <Button variant="primary mb-2 float-right">
+            Add {deviceCategory}
+          </Button>
+        </Link>
       </div>
 
       <div style={{ width: "100%", overflow: "auto" }}>

@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Layout as AntLayout, theme } from 'antd';
 import { Outlet } from "react-router-dom";
 
-import {Header, Sidebar } from "../../component";
+import {Footer, Header, Sidebar } from "../../component";
 
-const { Content, Footer } = AntLayout;
+const { Content } = AntLayout;
 
 const Layout = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -16,8 +16,7 @@ const Layout = () => {
     <AntLayout style={{ minHeight: '100vh' }}>
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
       <AntLayout>
-        <Header />
-        <Content style={{ margin: '0 16px' }}>
+        <Content style={{ margin: '0 16px', overflow: 'auto' }}>
           <div
             style={{
               padding: 24,
@@ -25,15 +24,13 @@ const Layout = () => {
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
               margin: '16px 0',
-              overflowX: 'auto'
             }}
           >
+            <Header />
             <Outlet />
           </div>
         </Content>
-        <Footer style={{ textAlign: 'center' }}>
-          Your Company Name ©{new Date().getFullYear()} Created by Your Team
-        </Footer>
+        <Footer></Footer>
       </AntLayout>
     </AntLayout>
   );

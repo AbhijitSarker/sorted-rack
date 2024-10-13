@@ -12,6 +12,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { axiosSecure } from "../../../api/axios";
 import useAxios from "../../../Hooks/useAxios";
 import { StockContext } from "../../../contexts/StockContext";
+import { HeaderContext } from "../../../contexts/HeaderContext";
 
 const EditSystemDetails = () => {
   const systemSchema = yup.object().shape({
@@ -44,6 +45,11 @@ const EditSystemDetails = () => {
   const productCategoryRef = useRef(null);
  const [response, error, loading, axiosFetch] = useAxios();
  const { setDeviceCategory } = useContext(StockContext);
+  const { setHeaderText } = useContext(HeaderContext);
+
+  useEffect(() => {
+    setHeaderText('Edit Stock');
+  }, [setHeaderText]);
 
  const getDeviceDetails = () =>
    axiosFetch({
@@ -111,9 +117,8 @@ const EditSystemDetails = () => {
  };
 
   return (
-    <Container className="mt-3" style={{ width: "80%" }}>
+    <Container className="mt-4" style={{ width: "80%" }}>
       <Row>
-        <h2 className="mb-2">Edit Stock</h2>
         <Col>
           {Object.keys(initialValues).length > 0 &&
             productCategoryRef.current === "Accessories" && (

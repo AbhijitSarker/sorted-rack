@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useContext } from "react";
 import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
@@ -8,6 +8,7 @@ import { axiosSecure } from "../../../api/axios";
 import PaginationComponent from "../../../component/Pagination/Pagination";
 import useAxios from "../../../Hooks/useAxios";
 import { Button, Row } from "react-bootstrap";
+import { HeaderContext } from "../../../contexts/HeaderContext";
 
 const AllTickets = () => {
   const [response, error, loading, axiosFetch] = useAxios();
@@ -17,7 +18,11 @@ const AllTickets = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
+  const { setHeaderText } = useContext(HeaderContext);
 
+  useEffect(() => {
+    setHeaderText('All Tickets');
+  }, [setHeaderText]);
   const fetchTicketDetails = async () => {
     axiosFetch({
       axiosInstance: axiosSecure,
@@ -92,12 +97,7 @@ const AllTickets = () => {
 
   return (
     <Container className="flex-grow-1">
-      <div className="d-flex align-items-center justify-content-between">
-        <div className="col-8">
-          <h2 className="py-3">Ticket Listing</h2>
-        </div>
-      </div>
-      <Row className="mb-3">
+      <Row className="my-4">
         <Form.Group as={Col} md="3" controlId="searchFilter">
           <Form.Control
             onChange={handleSearch}
@@ -129,7 +129,7 @@ const AllTickets = () => {
           </Form.Select>
         </Form.Group>
         <Form.Group as={Col} md="3" controlId="priorityFilter">
-          <Link to="/createTicket" replace className="btn btn-primary">
+          <Link to="/createTicket" className="btn btn-primary">
             Create Ticket
           </Link>
         </Form.Group>

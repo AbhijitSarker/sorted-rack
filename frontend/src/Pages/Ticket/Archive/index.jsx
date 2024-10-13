@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useContext } from "react";
 import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import PaginationComponent from "../../../component/Pagination/Pagination";
 import { axiosSecure } from "../../../api/axios";
+import { HeaderContext } from "../../../contexts/HeaderContext";
 
 const Archive = () => {
     const [tickets, setTickets] = useState([]);
@@ -16,6 +17,11 @@ const Archive = () => {
     const [totalItems, setTotalItems] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 10;
+    const { setHeaderText } = useContext(HeaderContext);
+
+    useEffect(() => {
+        setHeaderText('Ticket Archive');
+    }, [setHeaderText]);
 
     const fetchArchivedTickets = async () => {
         try {
@@ -64,10 +70,7 @@ const Archive = () => {
 
     return (
         <Container className="flex-grow-1">
-            <div className="d-flex align-items-center justify-content-between">
-                <div className="col-8">
-                    <h2 className="py-3">Archived Tickets</h2>
-                </div>
+            <div className="d-flex align-items-center justify-content-between my-4">
                 <Form.Group
                     as={Col}
                     md="3"

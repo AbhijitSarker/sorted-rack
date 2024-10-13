@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Card, Button, Form, Spinner, Image, Badge } from "react-bootstrap";
 import { axiosSecure } from "../../../api/axios";
 import useAxios from "../../../Hooks/useAxios";
+import { HeaderContext } from "../../../contexts/HeaderContext";
 
 const TicketDetails = () => {
     const { id } = useParams();
@@ -15,7 +16,11 @@ const TicketDetails = () => {
     const [addingComment, setAddingComment] = useState(false);
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [deletingCommentId, setDeletingCommentId] = useState(null);
+    const { setHeaderText } = useContext(HeaderContext);
 
+    useEffect(() => {
+        setHeaderText('Ticket Details');
+    }, [setHeaderText]);
     const fetchTicketDetails = async () => {
         axiosFetch({
             axiosInstance: axiosSecure,
@@ -159,9 +164,6 @@ const TicketDetails = () => {
         <Container className="py-4">
             <Row className="mb-4 justify-content-between align-items-center">
                 <Col xs="auto">
-                    <h2>Ticket Details</h2>
-                </Col>
-                <Col xs="auto">
                     <Button variant="secondary" onClick={() => navigate(-1)}>
                         Back
                     </Button>
@@ -171,8 +173,14 @@ const TicketDetails = () => {
             <Card className="shadow-sm">
                 <Card.Body>
                     <Row className="mb-4">
-                        <Col md={6}>
+                        
+                        <Col md={9} className="">
                             <h4>{ticket.title}</h4>
+                            <p>{ticket.description}</p>
+                        </Col>
+
+                        <Col md={3}>
+                            
                             <Badge bg={ticket.priority === "Urgent" ? "danger" : "primary"} className="me-2">
                                 {ticket.priority}
                             </Badge>
@@ -181,8 +189,6 @@ const TicketDetails = () => {
                                 <strong>Created By:</strong> {`${ticket.createdBy?.fname} ${ticket.createdBy?.lname}` || "Unknown"}
                             </p>
                             <p><strong>Created At:</strong> {ticket.createdAt ? new Date(ticket.createdAt).toLocaleString() : "Unknown"}</p>
-                        </Col>
-                        <Col md={6} className="text-md-end d-grid">
                             <h3>Status: {ticket.status || ""}</h3>
                             <div></div>
                             <Button
@@ -193,7 +199,7 @@ const TicketDetails = () => {
                                 Add to Archive
                             </Button>
                             <Form.Select
-                            className="w-50 mt-2"
+                                className="w-50 mt-2"
                                 value={ticket.status}
                                 onChange={(e) => handleStatusChange(e.target.value)}
                             >
@@ -214,12 +220,7 @@ const TicketDetails = () => {
                         </Row>
                     )}
 
-                    <Row>
-                        <Col>
-                            <h5>Description</h5>
-                            <p>{ticket.description}</p>
-                        </Col>
-                    </Row>
+                    
                 </Card.Body>
             </Card>
 
