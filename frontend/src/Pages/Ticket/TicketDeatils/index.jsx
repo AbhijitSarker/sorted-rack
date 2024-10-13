@@ -5,6 +5,7 @@ import { axiosSecure } from "../../../api/axios";
 import useAxios from "../../../Hooks/useAxios";
 import { HeaderContext } from "../../../contexts/HeaderContext";
 import { Divider, Modal } from "antd";
+import "./TicketDetails.scss";
 
 const TicketDetails = () => {
     const { id } = useParams();
@@ -21,6 +22,26 @@ const TicketDetails = () => {
     const [previewVisible, setPreviewVisible] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
+    const [showArchiveConfirmation, setShowArchiveConfirmation] = useState(false);
+
+    const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+    const userRole = userDetails ? userDetails.role : null;
+
+    const handleArchiveConfirmation = () => {
+        setShowArchiveConfirmation(true);
+    };
+
+    const handleArchiveCancel = () => {
+        setShowArchiveConfirmation(false);
+    };
+
+    const handleArchiveConfirm = async () => {
+        setShowArchiveConfirmation(false);
+        await handleStatusChange("Archived");
+    };
+
+
+
 
     const handleImagePreview = (image, index) => {
         setPreviewImage(image);
@@ -154,14 +175,6 @@ const TicketDetails = () => {
         }
     };
 
-    if (loading) {
-        return (
-            <div className="d-flex justify-content-center my-5">
-                <Spinner animation="border" role="status" />
-            </div>
-        );
-    }
-
     if (error) {
         return <p className="text-danger">Error: {error}</p>;
     }
@@ -171,8 +184,8 @@ const TicketDetails = () => {
     }
 
     return (
-        <Container className="py-4">
-            <Row className="mb-4 justify-content-between align-items-center">
+        <Container className="ticket-details">
+            <Row className="back-button">
                 <Col xs="auto">
                     <Button variant="secondary" onClick={() => navigate(-1)}>
                         Back
@@ -180,111 +193,110 @@ const TicketDetails = () => {
                 </Col>
             </Row>
 
-            <Card className="shadow-sm">
+            <Card className="ticket-card">
                 <Card.Body>
-                    <Row className="mb-4">
-                        
-                        <Col md={9} className="">
-                            <h4>{ticket.title}</h4>
-                            <p>{ticket.description}</p>
+                    <Row>
+                        <Col md={9}>
+                            <h4 className="ticket-title">{ticket.title}</h4>
+                            <p className="ticket-description">{ticket.description}</p>
                         </Col>
 
                         <Col md={3}>
-                            
                             <Badge bg={ticket.priority === "Urgent" ? "danger" : "primary"} className="me-2">
                                 {ticket.priority}
                             </Badge>
                             <Badge bg="secondary">{ticket.category}</Badge>
-                            <p className="mt-2">
+                            <p className="ticket-meta mt-2">
                                 <strong>Created By:</strong> {`${ticket.createdBy?.fname} ${ticket.createdBy?.lname}` || "Unknown"}
                             </p>
-                            <p><strong>Created At:</strong> {ticket.createdAt ? new Date(ticket.createdAt).toLocaleString() : "Unknown"}</p>
-                            <h3>Status: {ticket.status || ""}</h3>
-                            <div></div>
-                            <Button
-                                variant="outline-danger"
-                                onClick={() => handleStatusChange("Archived")}
-                                className="mt-2 w-50 float-end"
-                            >
-                                Add to Archive
-                            </Button>
-                            <Form.Select
-                                className="w-50 mt-2"
-                                value={ticket.status}
-                                onChange={(e) => handleStatusChange(e.target.value)}
-                            >
-                                <option value="Open">Open</option>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Resolved">Resolved</option>
-                                <option value="Closed">Closed</option>
-                            </Form.Select>
+                            <p className="ticket-meta"><strong>Created At:</strong> {ticket.createdAt ? new Date(ticket.createdAt).toLocaleString() : "Unknown"}</p>
+                            <h3 className="ticket-status">Status: {ticket.status || ""}</h3>
+                            {userRole !== "user" && ticket.status !== 'Archived' ? (
+                                <div className="status-select">
+                                    <Button
+                                        variant="outline-danger"
+                                        onClick={handleArchiveConfirmation}
+                                        className="w-100 mb-2"
+                                    >
+                                        Add to Archive
+                                    </Button>
+                                    <Form.Select
+                                        value={ticket.status}
+                                        onChange={(e) => handleStatusChange(e.target.value)}
+                                    >
+                                        <option value="Open">Open</option>
+                                        <option value="In Progress">In Progress</option>
+                                        <option value="Resolved">Resolved</option>
+                                        <option value="Closed">Closed</option>
+                                    </Form.Select>
+                                </div>
+                            )
+                                : null
+                            }
                         </Col>
                     </Row>
 
                     {ticket.photoUrls && ticket.photoUrls.length > 0 && (
-                        <Row className="mb-4">
-                            <Col>
-                                <h5>Attached Images</h5>
-                                <Row>
-                                    {ticket.photoUrls.map((photoUrl, index) => (
-                                        <Col key={index} xs={6} md={4} lg={3} className="mb-3">
-                                            <Image
-                                                src={photoUrl}
-                                                alt={`Ticket Image ${index + 1}`}
-                                                fluid
-                                                className="rounded shadow-sm cursor-pointer"
-                                                style={{ maxWidth: "100%", height: "auto", cursor: "pointer" }}
-                                                onClick={() => handleImagePreview(photoUrl, index)}
-                                            />
-                                        </Col>
-                                    ))}
-                                </Row>
-                            </Col>
-                        </Row>
+                        <div className="attached-images">
+                            <h5>Attached Images</h5>
+                            <Row>
+                                {ticket.photoUrls.map((photoUrl, index) => (
+                                    <Col key={index} xs={6} md={4} lg={3} className="mb-3">
+                                        <Image
+                                            src={photoUrl}
+                                            alt={`Ticket Image ${index + 1}`}
+                                            fluid
+                                            className="rounded shadow-sm image-thumbnail"
+                                            onClick={() => handleImagePreview(photoUrl, index)}
+                                        />
+                                    </Col>
+                                ))}
+                            </Row>
+                        </div>
                     )}
-
-
                 </Card.Body>
             </Card>
 
-            <h3 className="mt-5">Comments</h3>
-            {comments.map((comment) => (
-                <Card key={comment._id} className="mb-3 shadow-sm">
-                    <Card.Body>
-                        <p>{comment.content}</p>
-                        <small>By: {comment.createdBy.fname} {comment.createdBy.lname} at {new Date(comment.createdAt).toLocaleString()}</small>
-                        <div className="mt-2">
-                            <Button
-                                variant="outline-primary"
-                                size="sm"
-                                className="me-2"
-                                onClick={() => handleCommentEdit(comment._id, prompt("Edit comment:", comment.content))}
-                                disabled={editingCommentId === comment._id}
-                            >
-                                {editingCommentId === comment._id ? (
-                                    <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                                ) : (
-                                    "Edit"
-                                )}
-                            </Button>
-                            <Button
-                                variant="outline-danger"
-                                size="sm"
-                                onClick={() => handleCommentDelete(comment._id)}
-                                disabled={deletingCommentId === comment._id}
-                            >
-                                {deletingCommentId === comment._id ? (
-                                    <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                                ) : (
-                                    "Delete"
-                                )}
-                            </Button>
-                        </div>
-                    </Card.Body>
-                </Card>
-            ))}
+            <div className="comments-section">
+                <h3>Comments</h3>
+                {comments.map((comment) => (
+                    <Card key={comment._id} className="comment-card">
+                        <Card.Body>
+                            <p className="comment-content">{comment.content}</p>
+                            <small className="comment-meta">By: {comment.createdBy.fname} {comment.createdBy.lname} at {new Date(comment.createdAt).toLocaleString()}</small>
+                            <div className="comment-actions">
+                                <Button
+                                    variant="outline-primary"
+                                    size="sm"
+                                    className="me-2"
+                                    onClick={() => handleCommentEdit(comment._id, prompt("Edit comment:", comment.content))}
+                                    disabled={editingCommentId === comment._id}
+                                >
+                                    {editingCommentId === comment._id ? (
+                                        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                                    ) : (
+                                        "Edit"
+                                    )}
+                                </Button>
+                                <Button
+                                    variant="outline-danger"
+                                    size="sm"
+                                    onClick={() => handleCommentDelete(comment._id)}
+                                    disabled={deletingCommentId === comment._id}
+                                >
+                                    {deletingCommentId === comment._id ? (
+                                        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                                    ) : (
+                                        "Delete"
+                                    )}
+                                </Button>
+                            </div>
+                        </Card.Body>
+                    </Card>
+                ))}
+            </div>
 
-            <Form onSubmit={handleCommentSubmit} className="mt-4">
+            <Form onSubmit={handleCommentSubmit} className="add-comment-form">
                 <Form.Group controlId="newComment">
                     <Form.Label>Add a comment</Form.Label>
                     <Form.Control
@@ -295,7 +307,7 @@ const TicketDetails = () => {
                         required
                     />
                 </Form.Group>
-                <Button type="submit" className="mt-3" disabled={addingComment}>
+                <Button type="submit" className="submit-button" disabled={addingComment}>
                     {addingComment ? (
                         <>
                             <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
@@ -306,6 +318,22 @@ const TicketDetails = () => {
                     )}
                 </Button>
             </Form>
+
+            <Modal
+                visible={showArchiveConfirmation}
+                title="Confirm Archive"
+                onCancel={handleArchiveCancel}
+                footer={[
+                    <Button className="me-2" key="cancel" onClick={handleArchiveCancel}>
+                        Cancel
+                    </Button>,
+                    <Button key="archive" variant="danger" onClick={handleArchiveConfirm}>
+                        Archive
+                    </Button>,
+                ]}
+            >
+                <p>Are you sure you want to archive this ticket? This action cannot be undone.</p>
+            </Modal>
 
             <Modal
                 visible={previewVisible}

@@ -1,0 +1,115 @@
+
+$primary-color: #007bff;
+$secondary-color: #6c757d;
+$success-color: #28a745;
+$danger-color: #dc3545;
+$light-gray: #f8f9fa;
+$dark-gray: #343a40;
+
+.ticket-details {
+    padding: 2rem 0;
+
+    .back-button {
+        margin-bottom: 1rem;
+    }
+
+    .ticket-card {
+        background-color: $light-gray;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        margin-bottom: 2rem;
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .ticket-title {
+            color: $primary-color;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .ticket-description {
+            color: $dark-gray;
+            margin-bottom: 1rem;
+        }
+
+        .ticket-meta {
+            font-size: 0.9rem;
+            color: $secondary-color;
+        }
+
+        .ticket-status {
+            font-weight: bold;
+            color: $primary-color;
+            margin-top: 1rem;
+        }
+
+        .status-select {
+            margin-top: 1rem;
+        }
+    }
+
+    .attached-images {
+        margin-top: 2rem;
+
+        h5 {
+            color: $primary-color;
+            margin-bottom: 1rem;
+        }
+
+        .image-thumbnail {
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+
+            &:hover {
+                transform: scale(1.05);
+            }
+        }
+    }
+
+    .comments-section {
+        margin-top: 3rem;
+
+        h3 {
+            color: $primary-color;
+            margin-bottom: 1.5rem;
+        }
+
+        .comment-card {
+            background-color: $light-gray;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.2s ease-in-out;
+
+            &:hover {
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            }
+
+            .comment-content {
+                margin-bottom: 0.5rem;
+            }
+
+            .comment-meta {
+                font-size: 0.8rem;
+                color: $secondary-color;
+            }
+
+            .comment-actions {
+                margin-top: 1rem;
+            }
+        }
+    }
+
+    .add-comment-form {
+        margin-top: 2rem;
+
+        textarea {
+            resize: vertical;
+        }
+
+        .submit-button {
+            margin-top: 1rem;
+        }
+    }
+}
