@@ -1,6 +1,6 @@
 import React from 'react';
 import Dashboard from '../Dashboard';
-import MyTickets from '../MyTickets';
+import MyTickets from '../Ticket/MyTickets';
 
 const HomeRoute = () => {
   const userDetails = JSON.parse(localStorage.getItem('userDetails'));

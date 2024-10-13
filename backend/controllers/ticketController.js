@@ -121,6 +121,16 @@ const getLatestTickets = async (req, res) => {
     }
 };
 
+const getArchivedTickets = async (req, res) => {
+    try {
+        const archive = await Ticket.find({ status: 'Archived' });
+        res.json( archive );
+    } catch (error) {
+        console.error('Error fetching Archived tickets:', error);
+        res.status(500).json({ message: 'Error fetching Archived tickets' });
+    }
+}
+
 module.exports = {
     createTicket,
     getAllTickets,
@@ -129,5 +139,6 @@ module.exports = {
     deleteTicket,
     getCurrentUserTickets,
     getTicketStats,
-    getLatestTickets
+    getLatestTickets,
+    getArchivedTickets
 };

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Row, Col, Image, Spinner } from 'react-bootstrap';
-import { axiosSecure } from '../../api/axios';
+import { axiosSecure } from '../../../api/axios';
 import { useNavigate } from 'react-router-dom';
-import { Toaster } from '../../component/Toaster/Toaster';
+import { Toaster } from '../../../component/Toaster/Toaster';
 import axios from 'axios';
 
 const CreateTicket = () => {

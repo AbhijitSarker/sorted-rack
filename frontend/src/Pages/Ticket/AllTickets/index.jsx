@@ -4,9 +4,9 @@ import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import { Link } from "react-router-dom";
 import Col from "react-bootstrap/Col";
-import { axiosSecure } from "../../api/axios";
-import PaginationComponent from "../../component/Pagination/Pagination";
-import useAxios from "../../Hooks/useAxios";
+import { axiosSecure } from "../../../api/axios";
+import PaginationComponent from "../../../component/Pagination/Pagination";
+import useAxios from "../../../Hooks/useAxios";
 import { Button, Row } from "react-bootstrap";
 
 const AllTickets = () => {

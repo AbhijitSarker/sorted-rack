@@ -2,13 +2,10 @@ import React, { useEffect, useState, useMemo } from "react";
 import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
 import { Link } from "react-router-dom";
 import Col from "react-bootstrap/Col";
-import useAxios from "../../Hooks/useAxios";
-import PaginationComponent from "../../component/Pagination/Pagination";
-import { axiosSecure } from "../../api/axios";
+import PaginationComponent from "../../../component/Pagination/Pagination";
+import { axiosSecure } from "../../../api/axios";
 import { Button } from "react-bootstrap";
 
 const MyTickets = () => {
