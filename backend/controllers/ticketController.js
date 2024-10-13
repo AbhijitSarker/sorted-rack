@@ -4,7 +4,7 @@ const CustomError = require("../errors");
 const checkPermission = require("../utility/checkPermission");
 
 const createTicket = async (req, res) => {
-    const { title, description, category, priority, photoUrl } = req.body;
+    const { title, description, category, priority, photoUrls } = req.body;
     if (!title || !description || !category) {
         throw new CustomError.BadRequestError("Please provide all required fields");
     }
@@ -14,7 +14,7 @@ const createTicket = async (req, res) => {
         description,
         category,
         priority,
-        photoUrl,
+        photoUrls,
         createdBy: req.user.userId,
     });
 

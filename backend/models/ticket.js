@@ -27,9 +27,9 @@ const ticketSchema = new mongoose.Schema({
         enum: ['Open', 'In Progress', 'Resolved', 'Closed', 'Archived'],
         default: 'Open'
     },
-    photoUrl: {
-        type: String,
-        default: null
+    photoUrls: {
+        type: Array,
+        default: []
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,

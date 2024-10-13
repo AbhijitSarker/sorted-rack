@@ -92,8 +92,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="stock-main-body container">
-      <h2 className="py-3">Dashboard</h2>
+    <div className="stock-main-body container pt-4">
       <Row>
         {dashboardStats?.map((stock, index) => (
           <Col xl={3} lg={3} md={6} className="mb-4" key={index}>

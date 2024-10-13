@@ -4,6 +4,7 @@ import { Container, Row, Col, Card, Button, Form, Spinner, Image, Badge } from "
 import { axiosSecure } from "../../../api/axios";
 import useAxios from "../../../Hooks/useAxios";
 import { HeaderContext } from "../../../contexts/HeaderContext";
+import { Divider, Modal } from "antd";
 
 const TicketDetails = () => {
     const { id } = useParams();
@@ -17,6 +18,15 @@ const TicketDetails = () => {
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [deletingCommentId, setDeletingCommentId] = useState(null);
     const { setHeaderText } = useContext(HeaderContext);
+    const [previewVisible, setPreviewVisible] = useState(false);
+    const [previewImage, setPreviewImage] = useState('');
+    const [previewTitle, setPreviewTitle] = useState('');
+
+    const handleImagePreview = (image, index) => {
+        setPreviewImage(image);
+        setPreviewTitle(`Image ${index + 1}`);
+        setPreviewVisible(true);
+    };
 
     useEffect(() => {
         setHeaderText('Ticket Details');
@@ -211,16 +221,29 @@ const TicketDetails = () => {
                         </Col>
                     </Row>
 
-                    {ticket.photoUrl && (
+                    {ticket.photoUrls && ticket.photoUrls.length > 0 && (
                         <Row className="mb-4">
                             <Col>
-                                <h5>Attached Image</h5>
-                                <Image src={ticket.photoUrl} alt="Ticket" fluid style={{ maxWidth: "400px" }} className="rounded shadow-sm" />
+                                <h5>Attached Images</h5>
+                                <Row>
+                                    {ticket.photoUrls.map((photoUrl, index) => (
+                                        <Col key={index} xs={6} md={4} lg={3} className="mb-3">
+                                            <Image
+                                                src={photoUrl}
+                                                alt={`Ticket Image ${index + 1}`}
+                                                fluid
+                                                className="rounded shadow-sm cursor-pointer"
+                                                style={{ maxWidth: "100%", height: "auto", cursor: "pointer" }}
+                                                onClick={() => handleImagePreview(photoUrl, index)}
+                                            />
+                                        </Col>
+                                    ))}
+                                </Row>
                             </Col>
                         </Row>
                     )}
 
-                    
+
                 </Card.Body>
             </Card>
 
@@ -283,6 +306,15 @@ const TicketDetails = () => {
                     )}
                 </Button>
             </Form>
+
+            <Modal
+                visible={previewVisible}
+                title={previewTitle}
+                footer={null}
+                onCancel={() => setPreviewVisible(false)}
+            >
+                <img alt={previewTitle} style={{ width: '100%' }} src={previewImage} />
+            </Modal>
         </Container>
     );
 };
