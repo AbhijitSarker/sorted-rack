@@ -94,6 +94,7 @@ const getTicketStats = async (req, res) => {
     const closedTickets = await Ticket.countDocuments({ status: 'Closed' });
     const inProgressTickets = await Ticket.countDocuments({ status: 'In Progress' });
     const resolvedTickets = await Ticket.countDocuments({ status: 'Resolved' });
+    const archiveTickets = await Ticket.countDocuments({ status: 'Archived' });
 
     // Calculate average resolution time (this is a simplified example)
     const closedTicketsWithDuration = await Ticket.find({ status: 'closed' });
@@ -103,7 +104,8 @@ const getTicketStats = async (req, res) => {
         openTickets,
         closedTickets,
         inProgressTickets,
-        resolvedTickets
+        resolvedTickets,
+        archiveTickets
     });
 };
 

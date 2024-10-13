@@ -96,11 +96,6 @@ const AllTickets = () => {
         <div className="col-8">
           <h2 className="py-3">Ticket Listing</h2>
         </div>
-        <div style={{ width: "100px" }} className="col-1">
-          <Link to="/createTicket" replace className="btn btn-primary">
-            Create Ticket
-          </Link>
-        </div>
       </div>
       <Row className="mb-3">
         <Form.Group as={Col} md="3" controlId="searchFilter">
@@ -132,6 +127,11 @@ const AllTickets = () => {
             <option value="Medium">Medium</option>
             <option value="High">High</option>
           </Form.Select>
+        </Form.Group>
+        <Form.Group as={Col} md="3" controlId="priorityFilter">
+          <Link to="/createTicket" replace className="btn btn-primary">
+            Create Ticket
+          </Link>
         </Form.Group>
       </Row>
       {loading && (

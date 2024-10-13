@@ -124,7 +124,7 @@ const Dashboard = () => {
               </Card.Subtitle>
               <hr />
               <p className="border-bottom pb-3 mb-3">
-                <span className="text-warning fw-semibold me-2">Open: {ticketStats.openTickets || 0}</span>
+                <span className="text-warning fw-semibold me-2">Archive: {ticketStats.archiveTickets || 0}</span>
                 <span className="text-success fw-semibold">Closed: {ticketStats.closedTickets || 0}</span>
               </p>
               <p className="border-bottom pb-3 mb-3">
