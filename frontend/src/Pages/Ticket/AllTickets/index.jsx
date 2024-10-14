@@ -22,7 +22,9 @@ const AllTickets = () => {
   const ITEMS_PER_PAGE = 10;
   const { setHeaderText } = useContext(HeaderContext);
   const [admins, setAdmins] = useState([]);
-
+  const [assignedFilter, setAssignedFilter] = useState("");
+  const [sortField, setSortField] = useState("createdAt");
+  const [sortDirection, setSortDirection] = useState("desc");
   useEffect(() => {
     setHeaderText('All Tickets');
   }, [setHeaderText]);
@@ -101,32 +103,63 @@ const AllTickets = () => {
   };
 
   const filtered = useMemo(() => {
-    let filteredResult = response?.tickets?.sort((a, b) =>
-      a.title.localeCompare(b.title)
-    );
-
+    let filteredResult = response?.tickets
+      ?.filter(ticket => ticket.status !== 'Archived') // Exclude archived tickets
+  
     if (search) {
       filteredResult = filteredResult.filter((currentItem) =>
         currentItem.title.toLowerCase().includes(search.toLowerCase()) ||
         currentItem.category.toLowerCase().includes(search.toLowerCase())
       );
     }
-
+  
     if (statusFilter) {
       filteredResult = filteredResult.filter(item => item.status === statusFilter);
     }
-
+  
     if (priorityFilter) {
       filteredResult = filteredResult.filter(item => item.priority === priorityFilter);
     }
-
+  
+    if (assignedFilter) {
+      filteredResult = filteredResult.filter(item => {
+        if (assignedFilter === 'assigned') {
+          return item.assignedTo != null && item.assignedTo !== '';
+        } else if (assignedFilter === 'unassigned') {
+          return item.assignedTo == null || item.assignedTo === '';
+        }
+        return true;
+      });
+    }
+  
+    // Sorting
+    filteredResult?.sort((a, b) => {
+      let compareA = a[sortField];
+      let compareB = b[sortField];
+  
+      // Special handling for priority
+      if (sortField === 'priority') {
+        const priorityOrder = { 'Normal': 1, 'Medium': 2, 'High': 3, 'Urgent': 4 };
+        compareA = priorityOrder[a.priority];
+        compareB = priorityOrder[b.priority];
+      }
+  
+      if (compareA < compareB) {
+        return sortDirection === 'asc' ? -1 : 1;
+      }
+      if (compareA > compareB) {
+        return sortDirection === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+  
     setTotalItems(filteredResult?.length);
-
+  
     return filteredResult?.slice(
       (currentPage - 1) * ITEMS_PER_PAGE,
       (currentPage - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE
     );
-  }, [currentPage, response, search, statusFilter, priorityFilter]);
+  }, [currentPage, response, search, statusFilter, priorityFilter, assignedFilter, sortField, sortDirection]);
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
@@ -142,44 +175,73 @@ const AllTickets = () => {
 
   return (
     <Container className="all-tickets">
-      <Row className="filters">
-        <Form.Group as={Col} md="3" controlId="searchFilter">
-          <Form.Control
-            onChange={handleSearch}
-            type="text"
-            placeholder="Search by title or category"
-          />
-        </Form.Group>
-        <Form.Group as={Col} md="3" controlId="statusFilter">
-          <Form.Select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="">Filter by Status</option>
-            <option value="Open">Open</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Resolved">Resolved</option>
-            <option value="Closed">Closed</option>
-          </Form.Select>
-        </Form.Group>
-        <Form.Group as={Col} md="3" controlId="priorityFilter">
-          <Form.Select
-            value={priorityFilter}
-            onChange={(e) => setPriorityFilter(e.target.value)}
-          >
-            <option value="">Filter by Priority</option>
-            <option value="Normal">Normal</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-            <option value="Urgent">Urgent</option>
-          </Form.Select>
-        </Form.Group>
-        <Form.Group as={Col} md="3" controlId="createTicket">
-          <Link to="/createTicket" className="btn btn-primary w-100">
-            Create Ticket
-          </Link>
-        </Form.Group>
-      </Row>
+<Row className="filters">
+      <Form.Group as={Col} md="2" controlId="searchFilter">
+        <Form.Control
+          onChange={handleSearch}
+          type="text"
+          placeholder="Search by title or category"
+        />
+      </Form.Group>
+      <Form.Group as={Col} md="2" controlId="statusFilter">
+        <Form.Select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+        >
+          <option value="">Filter by Status</option>
+          <option value="Open">Open</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Resolved">Resolved</option>
+          <option value="Closed">Closed</option>
+        </Form.Select>
+      </Form.Group>
+      <Form.Group as={Col} md="2" controlId="priorityFilter">
+        <Form.Select
+          value={priorityFilter}
+          onChange={(e) => setPriorityFilter(e.target.value)}
+        >
+          <option value="">Filter by Priority</option>
+          <option value="Normal">Normal</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+          <option value="Urgent">Urgent</option>
+        </Form.Select>
+      </Form.Group>
+      <Form.Group as={Col} md="2" controlId="assignmentFilter">
+        <Form.Select
+          value={assignedFilter}
+          onChange={(e) => setAssignedFilter(e.target.value)}
+        >
+          <option value="">All Tickets</option>
+          <option value="assigned">Assigned Tickets</option>
+          <option value="unassigned">Unassigned Tickets</option>
+        </Form.Select>
+      </Form.Group>
+      <Form.Group as={Col} md="2" controlId="sortFilter">
+        <Form.Select
+          value={`${sortField}-${sortDirection}`}
+          onChange={(e) => {
+            const [field, direction] = e.target.value.split('-');
+            setSortField(field);
+            setSortDirection(direction);
+          }}
+        >
+          <option value="createdAt-desc">Newest First</option>
+          <option value="createdAt-asc">Oldest First</option>
+          <option value="title-asc">Title (A-Z)</option>
+          <option value="title-desc">Title (Z-A)</option>
+          <option value="priority-desc">Priority (High-Low)</option>
+          <option value="priority-asc">Priority (Low-High)</option>
+        </Form.Select>
+      </Form.Group>
+      <Form.Group as={Col} md="2" controlId="createTicket">
+        <Link to="/createTicket" className="btn btn-primary w-100">
+          Create Ticket
+        </Link>
+      </Form.Group>
+    </Row>
+
+
       {loading && (
         <div className="d-flex justify-content-center">
           <Spinner animation="border" role="status">
