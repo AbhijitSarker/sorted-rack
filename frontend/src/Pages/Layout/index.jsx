@@ -30,7 +30,6 @@ const Layout = () => {
             <Outlet />
           </div>
         </Content>
-        {/* <Footer></Footer> */}
       </AntLayout>
     </AntLayout>
   );

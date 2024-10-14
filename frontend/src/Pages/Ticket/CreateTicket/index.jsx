@@ -109,7 +109,7 @@ const CreateTicket = () => {
     };
 
     return (
-        <Container className="p-4 mt-5" style={{ maxWidth: '900px', backgroundColor: '#f9f9f9', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+        <Container className="p-5 border my-5" style={{ maxWidth: '900px', borderRadius: '8px', boxShadow: '0 8px 16px rgba(0,0,0,0.1)' }}>
             <Toaster
                 title={toasterMessage}
                 bg={toasterBg}

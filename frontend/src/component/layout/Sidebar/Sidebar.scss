@@ -5,3 +5,27 @@
 .h-100vh {
   height: 100vh;
 }
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 64px;
+  padding: 16px;
+  transition: all 0.3s;
+}
+
+.logo-container.collapsed {
+  padding: 8px;
+}
+
+.logo {
+  height: 32px;
+  transition: all 0.3s;
+}
+
+.logo-container.collapsed .logo {
+  height: 32px;
+  width: 32px;
+  object-fit: cover;
+}

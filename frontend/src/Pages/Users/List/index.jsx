@@ -11,6 +11,9 @@ import useAxios from "../../../Hooks/useAxios";
 import "./listUser.scss";
 import PaginationComponent from "../../../component/Pagination/Pagination";
 import { HeaderContext } from "../../../contexts/HeaderContext";
+import { Row, Spinner } from "react-bootstrap";
+import { Button } from "antd";
+
 const ListUser = () => {
   const [response, error, loading, axiosFetch] = useAxios();
   const [search, setSearch] = useState("");
@@ -85,39 +88,33 @@ const ListUser = () => {
   };
 
   return (
-    <Container className="flex-grow-1">
-      <div className="d-flex py-4 align-items-center justify-content-between">
-
-        <Form.Group
-          as={Col}
-          md="3"
-          className="pe-3"
-          controlId="validationCustom01"
-        >
+    <Container className="user-management">
+      <Row className="user-filters">
+        <Form.Group as={Col} md="3" controlId="userSearchFilter">
           <Form.Control
             onChange={handleSearch}
             type="text"
-            placeholder="Search with first name"
+            placeholder="Search with name"
           />
         </Form.Group>
-        <div style={{ width: "100px" }} className="col-1">
-          <Link to="/user/add" className="btn btn-primary">
+        <Form.Group as={Col} md="3" controlId="createUser">
+          <Link to="/user/add" className="btn btn-primary w-100">
             Add User
           </Link>
-        </div>
-      </div>
+        </Form.Group>
+      </Row>
       {loading && (
         <div className="d-flex justify-content-center">
-          <div className="spinner-border" role="status">
+          <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
-          </div>
+          </Spinner>
         </div>
       )}
-      {!loading && error && <p classname="error-msg">{error}</p>}
+      {!loading && error && <p className="error-msg">{error}</p>}
 
-      {totalItems && (
-        <div className="user-table">
-          <Table striped hover bordered responsive>
+      {totalItems > 0 && (
+        <div className="user-table-container">
+          <Table hover bordered responsive>
             <thead>
               <tr>
                 <th>Status</th>
@@ -125,38 +122,34 @@ const ListUser = () => {
                 <th>Last Name</th>
                 <th>Email</th>
                 <th>Branch</th>
-                <th>Type</th>
+                <th>Role</th>
                 <th className="text-center">Action</th>
               </tr>
             </thead>
-            <tbody className="table-group-divider">
+            <tbody>
               {filtered?.map((item, index) => (
                 <tr key={index}>
-                  <td className="text-center">
+                  <td className="text-center user-status-switch">
                     <Form.Check
                       type="switch"
-                      id="custom-switch"
-                      defaultChecked={item.status === "active" ? true : false}
-                      onClick={() => handleStatusToggle(item)}
+                      id={`user-status-switch-${item._id}`}
+                      defaultChecked={item.status === "active"}
+                      onChange={() => handleStatusToggle(item)}
                     />
                   </td>
-                  <td>{item.fname}</td>
-                  <td>{item.lname}</td>
-                  <td>{item.email}</td>
+                  <td className="user-name">{item.fname}</td>
+                  <td className="user-name">{item.lname}</td>
+                  <td >{item.email}</td>
                   <td>{item.branch}</td>
-                  <td>{item.role}</td>
+                  <td>
+                    <span className={`role-badge ${item.role.toLowerCase()}`}>
+                      {item.role}
+                    </span>
+                  </td>
                   <td className="text-center">
-                    <OverlayTrigger
-                      key={item._id}
-                      placement="bottom"
-                      overlay={
-                        <Tooltip id={`tooltip-${item._id}`}>Edit User</Tooltip>
-                      }
-                    >
-                      <Link to={`/user/edit/${item._id}`} replace>
-                        <i className="bi bi-pencil-square"></i>
-                      </Link>
-                    </OverlayTrigger>
+                    <Link to={`/user/edit/${item._id}`} replace>
+                      <Button size="sm" variant="outline-primary">Edit User</Button>
+                    </Link>
                   </td>
                 </tr>
               ))}
@@ -164,14 +157,12 @@ const ListUser = () => {
           </Table>
         </div>
       )}
-      <div className="d-flex justify-content-end relative bottom-20 me-3">
-        <PaginationComponent
-          total={response?.user?.length}
-          itemsPerPage={ITEMS_PER_PAGE}
-          currentPage={currentPage}
-          onPageChange={(page) => setCurrentPage(page)}
-        />
-      </div>
+      <PaginationComponent
+        total={totalItems}
+        itemsPerPage={ITEMS_PER_PAGE}
+        currentPage={currentPage}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
     </Container>
   );
 };

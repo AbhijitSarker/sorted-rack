@@ -1,0 +1,160 @@
+@use "sass:map";
+
+$primary-color: #4e73df;
+$secondary-color: #858796;
+$success-color: #1cc88a;
+$info-color: #36b9cc;
+$warning-color: #f6c23e;
+$danger-color: #e74a3b;
+$light-color: #f8f9fc;
+$dark-color: #5a5c69;
+
+.all-tickets {
+    padding: 2rem 0;
+
+    .filters {
+        margin-bottom: 2rem;
+
+        .form-control,
+        .form-select {
+            border-radius: 0.35rem;
+            border: 1px solid $secondary-color;
+
+            &:focus {
+                box-shadow: 0 0 0 0.2rem rgba($primary-color, 0.25);
+                border-color: $primary-color;
+            }
+        }
+
+        .btn-primary {
+            background-color: $primary-color;
+            border-color: $primary-color;
+            border-radius: 0.35rem;
+
+            &:hover {
+                background-color: darken($primary-color, 10%);
+                border-color: darken($primary-color, 10%);
+            }
+        }
+    }
+
+    .ticket-table {
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        border-radius: 0.35rem;
+        overflow: hidden;
+
+        .table {
+            margin-bottom: 0;
+
+            th {
+                background-color: $light-color;
+                color: $dark-color;
+                font-weight: 600;
+                text-transform: uppercase;
+                border-top: none;
+            }
+
+            td {
+                vertical-align: middle;
+            }
+        }
+
+        .productName {
+            color: #000000;
+        }
+
+        .stock {
+            color: #979797;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+
+            &.open {
+                background-color: $info-color;
+                color: white;
+            }
+
+            &.in-progress {
+                background-color: $warning-color;
+                color: $dark-color;
+            }
+
+            &.resolved {
+                background-color: $success-color;
+                color: white;
+            }
+
+            &.closed {
+                background-color: $secondary-color;
+                color: white;
+            }
+
+            &.archived {
+                background-color: $danger-color;
+                color: white;
+            }
+        }
+
+        .priority-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+
+            &.normal {
+                background-color: $success-color;
+                color: white;
+            }
+
+            &.medium {
+                background-color: $warning-color;
+                color: $dark-color;
+            }
+
+            &.high {
+                background-color: orange;
+                color: white;
+            }
+
+            &.urgent {
+                background-color: red;
+                color: white;
+            }
+        }
+    }
+
+    .pagination {
+        justify-content: flex-end;
+        margin-top: 1rem;
+
+        .page-item {
+            .page-link {
+                color: black;
+
+                &:hover {
+                    background-color: $light-color;
+                }
+            }
+
+            &.active .page-link {
+                background-color: $primary-color;
+                border-color: $primary-color;
+            }
+        }
+    }
+
+    .spinner-border {
+        color: $primary-color;
+    }
+
+    .error-msg {
+        color: $danger-color;
+        font-weight: 600;
+    }
+}

@@ -1,3 +1,137 @@
-.user-table {
-  height: auto;
+@use "sass:map";
+
+$primary-color: #4e73df;
+$secondary-color: #858796;
+$success-color: #1cc88a;
+$info-color: #36b9cc;
+$warning-color: #f6c23e;
+$danger-color: #e74a3b;
+$light-color: #f8f9fc;
+$dark-color: #5a5c69;
+
+.user-management {
+  padding: 2rem 0;
+
+  .user-filters {
+    margin-bottom: 2rem;
+
+    .form-control,
+    .form-select {
+      border-radius: 0.35rem;
+      border: 1px solid $secondary-color;
+
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba($primary-color, 0.25);
+        border-color: $primary-color;
+      }
+    }
+
+    .btn-primary {
+      background-color: $primary-color;
+      border-color: $primary-color;
+      border-radius: 0.35rem;
+
+      &:hover {
+        background-color: darken($primary-color, 10%);
+        border-color: darken($primary-color, 10%);
+      }
+    }
+  }
+
+  .user-table-container {
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    border-radius: 0.35rem;
+    overflow: hidden;
+
+    .table {
+        margin-bottom: 0;
+    
+        .user-name {
+          font-weight: 600;
+          color: $primary-color;
+        }
+    
+        th {
+          background-color: $light-color;    color: $dark-color;
+        font-weight: 600;
+        text-transform: uppercase;
+        border-top: none;
+      }
+
+      td {
+        vertical-align: middle;
+      }
+    }
+
+    .user-name {
+      color: #000000;
+    }
+
+    .user-email {
+      color: #979797;
+    }
+
+    .user-status-switch {
+      .form-check-input {
+        &:checked {
+          background-color: $success-color;
+          border-color: $success-color;
+        }
+      }
+    }
+
+    .role-badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+
+      &.admin {
+        background-color: $primary-color;
+        color: white;
+      }
+
+      &.user {
+        background-color: $info-color;
+        color: white;
+      }
+
+      &.superadmin {
+        background-color: $warning-color;
+        color: $dark-color;
+      }
+
+      // Add more role-based styles as needed
+    }
+  }
+
+  .pagination {
+    justify-content: flex-end;
+    margin-top: 1rem;
+
+    .page-item {
+      .page-link {
+        color: black;
+
+        &:hover {
+          background-color: $light-color;
+        }
+      }
+
+      &.active .page-link {
+        background-color: $primary-color;
+        border-color: $primary-color;
+      }
+    }
+  }
+
+  .spinner-border {
+    color: $primary-color;
+  }
+
+  .error-msg {
+    color: $danger-color;
+    font-weight: 600;
+  }
 }

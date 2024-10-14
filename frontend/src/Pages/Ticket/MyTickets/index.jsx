@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import Col from "react-bootstrap/Col";
 import PaginationComponent from "../../../component/Pagination/Pagination";
 import { axiosSecure } from "../../../api/axios";
-import { Button, Row } from "react-bootstrap";
+import { Button, Row, Spinner } from "react-bootstrap";
 import { HeaderContext } from "../../../contexts/HeaderContext";
 
 const MyTickets = () => {
@@ -82,8 +82,8 @@ const MyTickets = () => {
     };
 
     return (
-        <Container className="flex-grow-1 ">
-            <Row className="d-flex py-4 align-items-center justify-content-between w-max">
+        <Container className="all-tickets flex-grow-1">
+            <Row className="filters d-flex py-4 align-items-center justify-content-between w-max">
                 <Form.Group as={Col} md="3" controlId="searchFilter">
                     <Form.Control
                         onChange={handleSearch}
@@ -112,27 +112,29 @@ const MyTickets = () => {
                         <option value="Normal">Normal</option>
                         <option value="Medium">Medium</option>
                         <option value="High">High</option>
+                        <option value="Urgent">Urgent</option>
                     </Form.Select>
                 </Form.Group>
-                <Form.Group as={Col} md="3" controlId="priorityFilter">
-                    <Link to="/createTicket" className="btn btn-primary">
+                <Form.Group as={Col} md="3" controlId="createTicket">
+                    <Link to="/createTicket" className="btn btn-primary w-100">
                         Create Ticket
                     </Link>
                 </Form.Group>
-                
             </Row>
+
             {loading && (
                 <div className="d-flex justify-content-center">
-                    <div className="spinner-border" role="status">
+                    <Spinner animation="border" role="status">
                         <span className="visually-hidden">Loading...</span>
-                    </div>
+                    </Spinner>
                 </div>
             )}
+
             {!loading && error && <p className="error-msg">{error}</p>}
 
             {totalItems > 0 && (
                 <div className="ticket-table">
-                    <Table striped hover bordered responsive>
+                    <Table hover bordered responsive>
                         <thead>
                             <tr>
                                 <th>Title</th>
@@ -143,17 +145,25 @@ const MyTickets = () => {
                                 <th className="text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody className="table-group-divider">
+                        <tbody>
                             {filtered.map((item, index) => (
                                 <tr key={index}>
-                                    <td>{item.title}</td>
+                                    <td className="productName">{item.title}</td>
                                     <td>{item.category}</td>
-                                    <td>{item.priority}</td>
-                                    <td>{item.status}</td>
+                                    <td>
+                                        <span className={`priority-badge ${item.priority.toLowerCase()}`}>
+                                            {item.priority}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span className={`status-badge ${item.status.toLowerCase().replace(' ', '-')}`}>
+                                            {item.status}
+                                        </span>
+                                    </td>
                                     <td>{new Date(item.createdAt).toLocaleString()}</td>
                                     <td className="text-center">
                                         <Link to={`/ticket/${item._id}`} replace>
-                                            <Button size="sm" variant="outline-primary">View Details </Button>
+                                            <Button size="sm" variant="outline-primary">View Details</Button>
                                         </Link>
                                     </td>
                                 </tr>
@@ -163,7 +173,7 @@ const MyTickets = () => {
                 </div>
             )}
             {totalItems === 0 && !loading && (
-                <p>You haven't created any tickets yet.</p>
+                <p className="stock">You haven't created any tickets yet.</p>
             )}
             <div className="d-flex justify-content-end relative bottom-20 me-3">
                 <PaginationComponent

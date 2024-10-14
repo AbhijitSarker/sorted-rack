@@ -1,0 +1,114 @@
+@use "sass:map";
+
+$primary-color: #4e73df;
+$secondary-color: #858796;
+$success-color: #1cc88a;
+$info-color: #36b9cc;
+$warning-color: #f6c23e;
+$danger-color: #e74a3b;
+$light-color: #f8f9fc;
+$dark-color: #5a5c69;
+
+.stock-management {
+    padding: 2rem 0;
+
+    .stock-filters {
+        margin-bottom: 2rem;
+
+        .form-control,
+        .form-select,
+        .dropdown-toggle {
+            border-radius: 0.35rem;
+            border: 1px solid $secondary-color;
+
+            &:focus {
+                box-shadow: 0 0 0 0.2rem rgba($primary-color, 0.25);
+                border-color: $primary-color;
+            }
+        }
+
+        .btn-primary {
+            background-color: $primary-color;
+            border-color: $primary-color;
+            border-radius: 0.35rem;
+
+            &:hover {
+                background-color: darken($primary-color, 10%);
+                border-color: darken($primary-color, 10%);
+            }
+        }
+    }
+
+    .stock-table-container {
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        border-radius: 0.35rem;
+        overflow: hidden;
+
+        .table {
+            margin-bottom: 0;
+
+            th {
+                background-color: $light-color;
+                color: $dark-color;
+                font-weight: 600;
+                text-transform: uppercase;
+                border-top: none;
+            }
+
+            td {
+                vertical-align: middle;
+            }
+        }
+
+        .stock-name {
+            font-weight: 600;
+            color: $primary-color;
+        }
+    }
+
+    .pagination {
+        justify-content: flex-end;
+        margin-top: 1rem;
+
+        .page-item {
+            .page-link {
+                color: $dark-color;
+
+                &:hover {
+                    background-color: $light-color;
+                }
+            }
+
+            &.active .page-link {
+                background-color: $primary-color;
+                border-color: $primary-color;
+                color: white;
+            }
+        }
+    }
+
+    .spinner-border {
+        color: $primary-color;
+    }
+
+    .error-msg {
+        color: $danger-color;
+        font-weight: 600;
+    }
+
+    .modal {
+        .modal-content {
+            border-radius: 0.5rem;
+        }
+
+        .modal-header {
+            background-color: $light-color;
+            border-bottom: 1px solid $secondary-color;
+        }
+
+        .modal-footer {
+            border-top: 1px solid $secondary-color;
+        }
+    }
+
+}

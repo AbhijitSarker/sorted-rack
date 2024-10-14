@@ -4,7 +4,7 @@ import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import { Link } from "react-router-dom";
-import { Button } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
 import PaginationComponent from "../../../component/Pagination/Pagination";
 import { axiosSecure } from "../../../api/axios";
 import { HeaderContext } from "../../../contexts/HeaderContext";
@@ -69,13 +69,13 @@ const Archive = () => {
     };
 
     return (
-        <Container className="flex-grow-1">
-            <div className="d-flex align-items-center justify-content-between my-4">
+        <Container className="all-tickets flex-grow-1">
+            <div className="filters d-flex align-items-center justify-content-between my-4">
                 <Form.Group
                     as={Col}
                     md="3"
                     className="pe-3"
-                    controlId="validationCustom01"
+                    controlId="searchFilter"
                 >
                     <Form.Control
                         onChange={handleSearch}
@@ -86,34 +86,36 @@ const Archive = () => {
             </div>
             {loading && (
                 <div className="d-flex justify-content-center">
-                    <div className="spinner-border" role="status">
+                    <Spinner animation="border" role="status">
                         <span className="visually-hidden">Loading...</span>
-                    </div>
+                    </Spinner>
                 </div>
             )}
             {!loading && error && <p className="error-msg">{error}</p>}
 
             {totalItems > 0 && (
                 <div className="ticket-table">
-                    <Table striped hover bordered responsive>
+                    <Table hover responsive bordered>
                         <thead>
                             <tr>
                                 <th>Title</th>
                                 <th>Category</th>
                                 <th>Priority</th>
-                                <th>Status</th>
                                 <th>Created At</th>
                                 <th className="text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody className="table-group-divider">
+                        <tbody>
                             {filtered.map((item, index) => (
                                 <tr key={index}>
-                                    <td>{item.title}</td>
-                                    <td>{item.category}</td>
-                                    <td>{item.priority}</td>
-                                    <td>{item.status}</td>
-                                    <td>{new Date(item.createdAt).toLocaleString()}</td>
+                                    <td className="productName">{item.title}</td>
+                                    <td >{item.category}</td>
+                                    <td>
+                                        <span className={`priority-badge ${item.priority.toLowerCase()}`}>
+                                            {item.priority}
+                                        </span>
+                                    </td>
+                                    <td >{new Date(item.createdAt).toLocaleString()}</td>
                                     <td className="text-center">
                                         <Link to={`/ticket/${item._id}`} replace>
                                             <Button size="sm" variant="outline-primary">View Details</Button>
@@ -126,7 +128,7 @@ const Archive = () => {
                 </div>
             )}
             {totalItems === 0 && !loading && (
-                <p>There are no archived tickets.</p>
+                <p >There are no archived tickets.</p>
             )}
             <div className="d-flex justify-content-end relative bottom-20 me-3">
                 <PaginationComponent

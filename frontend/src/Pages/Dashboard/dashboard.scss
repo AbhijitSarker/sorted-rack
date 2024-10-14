@@ -1,9 +1,164 @@
-@use "sass:map";
-
-.productName {
-  color: #000000;
+.dashboard {
+  padding: 2rem;
+  background-color: #f8f9fa;
 }
 
-.stock {
-  color: #979797;
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  margin-right: 1rem;
+}
+
+.stat-content {
+  flex-grow: 1;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.stat-title {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  margin-bottom: 0;
+  color: #6c757d;
+}
+
+.stat-card.blue {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.stat-card.green {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.stat-card.orange {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.stat-card.purple {
+  background-color: #f3e5f5;
+  color: #6a1b9a;
+}
+
+.stat-card.red {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.stat-card.teal {
+  background-color: #e0f2f1;
+  color: #00695c;
+}
+
+.latest-tickets {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.latest-tickets h2 {
+  margin-bottom: 1rem;
+  color: #343a40;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.modern-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+}
+
+.modern-table th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 1rem;
+}
+
+.modern-table td {
+  background-color: #ffffff;
+  padding: 1rem;
+}
+
+.modern-table tr {
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.modern-table tr:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge,
+.priority-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.status-badge.open {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.status-badge.in-progress {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.status-badge.resolved {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-badge.closed {
+  background-color: #efebe9;
+  color: #4e342e;
+}
+
+.priority-badge.low {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.priority-badge.medium {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.priority-badge.high {
+  background-color: #ffebee;
+  color: #c62828;
 }

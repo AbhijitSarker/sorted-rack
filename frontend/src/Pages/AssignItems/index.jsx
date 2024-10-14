@@ -6,6 +6,8 @@ import { axiosSecure } from "../../api/axios";
 import PaginationComponent from "../../component/Pagination/Pagination";
 import Columns from "../../constants/AssigmentColumns.json";
 import { HeaderContext } from "../../contexts/HeaderContext";
+import { Button, Row } from "antd";
+import './assignitems.scss';
 
 const AssignItem = () => {
   const [columns, setColumns] = useState(Columns);
@@ -84,7 +86,7 @@ const AssignItem = () => {
   const handlerCheckbox = (e) => {
     const checkboxStatus = e.target.checked;
     const name = e.target.name;
-    const updatedColumns = columns.length > 0  && columns.map((column) => {
+    const updatedColumns = columns.length > 0 && columns.map((column) => {
       if (column.name === name) {
         column.show = !column.show;
       }
@@ -95,8 +97,84 @@ const AssignItem = () => {
   };
 
   return (
-    <Container className="py-3">
-      {/* <div className="d-flex align-items-center justify-content-between my-3">
+    <Container className="assigned-devices-management">
+      <Row className="assigned-devices-filters">
+        <Form.Group as={Col} md="3" controlId="assignedDevicesSearchFilter">
+          <Form.Control
+            onChange={handleSearch}
+            type="text"
+            placeholder="Search devices"
+          />
+        </Form.Group>
+      </Row>
+
+      {filtered?.length > 0 ? (
+        <div className="assigned-devices-table-container">
+          <Table hover bordered responsive>
+            <thead>
+              <tr>
+                {columns.length > 0 && columns.map(({ id, fieldName, name, show }) => (
+                  <th key={id} className={show ? "" : "d-none"}>
+                    {fieldName}
+                  </th>
+                ))}
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((item, index) => (
+                <tr key={item._id || index}>
+                  {columns.length > 0 && columns.map(({ name, show }) => (
+                    <td key={name} className={show ? "" : "d-none"}>
+                      {item[name] || "---"}
+                    </td>
+                  ))}
+                  <td className="text-center">
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={() => handleUnassignment(item._id)}
+                      title="Unassign"
+                    >
+                      Unassign
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+      ) : (
+        <p className="no-devices-message">No devices found.</p>
+      )}
+      <div className="d-flex justify-content-end mt-3">
+        <PaginationComponent
+          total={totalItems}
+          itemsPerPage={ITEMS_PER_PAGE}
+          currentPage={currentPage}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
+      </div>
+
+      <Toast
+        className="unassignment-toast"
+        onClose={() => setShowToaster(false)}
+        show={showToaster}
+        delay={2000}
+        autohide
+      >
+        <Toast.Header>
+          <BiCheckCircle className="me-2" />
+          <strong className="me-auto">Unassignment Successful</strong>
+        </Toast.Header>
+      </Toast>
+    </Container>
+  );
+};
+
+export default AssignItem;
+
+{/* <div className="d-flex align-items-center justify-content-between my-3">
         <Form.Group as={Col} md="2" className="pe-3" controlId="validationCustom01">
           <Form.Control onChange={handleSearch} type="text" placeholder="Search devices" />
         </Form.Group>
@@ -117,72 +195,3 @@ const AssignItem = () => {
           </Dropdown.Menu>
         </Dropdown>
       </div> */}
-
-      <Toast
-        className="toaster-position"
-        onClose={() => setShowToaster(!showToaster)}
-        show={showToaster}
-        delay={2000}
-        autohide
-      >
-        <Toast.Header>
-          <div className="info-container">
-            <BiCheckCircle className="info-icon" />
-            &nbsp;
-          </div>
-          <div className="toaster-title">
-            <strong className="me-auto">Unassignment Successfull</strong>
-          </div>
-        </Toast.Header>
-      </Toast>
-
-      {filtered?.length > 0 ? (
-        <Table striped hover responsive bordered>
-          <thead>
-            <tr>
-              {columns.length > 0  && columns.map(({ id, fieldName, name, show }) => (
-                <th id={name} className={`${show ? "show" : "hide"} `} key={id}>
-                  {fieldName}
-                </th>
-              ))}
-
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody className="table-group-divider">
-            {filtered.map((item, index) => {
-              return (
-                <tr key={item._id || index}>
-                  {columns.length > 0 && columns.map(({ name, show }) => (
-                    <td key={name} id={name} className={`${show ? "show" : "hide"}`}>
-                      {item[name] || "---"}
-                    </td>
-                  ))}
-                  <td id="actions" className="text-center">
-                    <i
-                      className="bi bi-person-dash-fill px-1"
-                      title="Un Assign"
-                      onClick={() => handleUnassignment(item._id)}
-                    ></i>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-      ) : (
-        <h4 className="ms-3 mt-3">no devices found....</h4>
-      )}
-      <div className="d-flex justify-content-end me-3">
-        <PaginationComponent
-          total={totalItems}
-          itemsPerPage={ITEMS_PER_PAGE}
-          currentPage={currentPage}
-          onPageChange={(page) => setCurrentPage(page)}
-        />
-      </div>
-    </Container>
-  );
-};
-
-export default AssignItem;

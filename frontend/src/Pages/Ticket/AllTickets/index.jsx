@@ -7,8 +7,10 @@ import Col from "react-bootstrap/Col";
 import { axiosSecure } from "../../../api/axios";
 import PaginationComponent from "../../../component/Pagination/Pagination";
 import useAxios from "../../../Hooks/useAxios";
-import { Button, Row } from "react-bootstrap";
+import { Button, Row, Spinner } from "react-bootstrap";
 import { HeaderContext } from "../../../contexts/HeaderContext";
+import '../allTickets.scss';
+
 
 const AllTickets = () => {
   const [response, error, loading, axiosFetch] = useAxios();
@@ -95,9 +97,17 @@ const AllTickets = () => {
     setSearch(e.target.value);
   };
 
+  const getStatusBadgeClass = (status) => {
+    return `status-badge ${status.toLowerCase().replace(' ', '-')}`;
+  };
+
+  const getPriorityBadgeClass = (priority) => {
+    return `priority-badge ${priority.toLowerCase()}`;
+  };
+
   return (
-    <Container className="flex-grow-1">
-      <Row className="my-4">
+    <Container className="all-tickets">
+      <Row className="filters">
         <Form.Group as={Col} md="3" controlId="searchFilter">
           <Form.Control
             onChange={handleSearch}
@@ -106,8 +116,8 @@ const AllTickets = () => {
           />
         </Form.Group>
         <Form.Group as={Col} md="3" controlId="statusFilter">
-          <Form.Select 
-            value={statusFilter} 
+          <Form.Select
+            value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <option value="">Filter by Status</option>
@@ -118,67 +128,72 @@ const AllTickets = () => {
           </Form.Select>
         </Form.Group>
         <Form.Group as={Col} md="3" controlId="priorityFilter">
-          <Form.Select 
-            value={priorityFilter} 
+          <Form.Select
+            value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
           >
             <option value="">Filter by Priority</option>
             <option value="Normal">Normal</option>
             <option value="Medium">Medium</option>
             <option value="High">High</option>
+            <option value="Urgent">Urgent</option>
           </Form.Select>
         </Form.Group>
-        <Form.Group as={Col} md="3" controlId="priorityFilter">
-          <Link to="/createTicket" className="btn btn-primary">
+        <Form.Group as={Col} md="3" controlId="createTicket">
+          <Link to="/createTicket" className="btn btn-primary w-100">
             Create Ticket
           </Link>
         </Form.Group>
       </Row>
       {loading && (
         <div className="d-flex justify-content-center">
-          <div className="spinner-border" role="status">
+          <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
-          </div>
+          </Spinner>
         </div>
       )}
       {!loading && error && <p className="error-msg">{error}</p>}
 
       {totalItems > 0 && (
         <div className="ticket-table">
-          <Table striped hover bordered responsive>
+          <Table hover bordered responsive>
             <thead>
               <tr>
                 <th>Title</th>
                 <th>Category</th>
                 <th>Priority</th>
-                <th>Status</th>
                 <th>Created By</th>
                 <th>Created At</th>
+                <th>Status</th>
                 <th className="text-center">Action</th>
               </tr>
             </thead>
-            <tbody className="table-group-divider">
+            <tbody>
               {filtered?.map((item, index) => (
                 <tr key={index}>
-                  <td>{item.title}</td>
+                  <td className="productName">{item.title}</td>
                   <td>{item.category}</td>
-                  <td>{item.priority}</td>
                   <td>
-                    <Form.Select
-                      value={item.status}
-                      onChange={(e) => handleStatusChange(item, e.target.value)}
-                    >
-                      <option value="Open">Open</option>
-                      <option value="In Progress">In Progress</option>
-                      <option value="Resolved">Resolved</option>
-                      <option value="Closed">Closed</option>
-                    </Form.Select>
+                    <span className={getPriorityBadgeClass(item.priority)}>
+                      {item.priority}
+                    </span>
                   </td>
-                  <td>{`${item.createdBy.fname} ${item.createdBy.lname}`}</td>
+                  <td>{`${item.createdBy?.fname} ${item.createdBy?.lname}`}</td>
                   <td>{new Date(item.createdAt).toLocaleString()}</td>
+                  <td>
+                      <Form.Select
+                        value={item.status}
+                        onChange={(e) => handleStatusChange(item, e.target.value)}
+                      >
+                        <option value="Open">Open</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Closed">Closed</option>
+                      </Form.Select>
+                  </td>
                   <td className="text-center">
                     <Link to={`/ticket/${item._id}`} replace>
-                      <Button size="sm" variant="outline-primary">View Details </Button>
+                      <Button size="sm" variant="outline-primary">View Details</Button>
                     </Link>
                   </td>
                 </tr>
@@ -187,14 +202,12 @@ const AllTickets = () => {
           </Table>
         </div>
       )}
-      <div className="d-flex justify-content-end relative bottom-20 me-3">
         <PaginationComponent
           total={totalItems}
           itemsPerPage={ITEMS_PER_PAGE}
           currentPage={currentPage}
           onPageChange={(page) => setCurrentPage(page)}
         />
-      </div>
     </Container>
   );
 };

@@ -183,165 +183,136 @@ const TicketDetails = () => {
         return <p>No ticket found.</p>;
     }
 
+
     return (
         <Container className="ticket-details">
-            <Row className="back-button">
-                <Col xs="auto">
-                    <Button variant="secondary" onClick={() => navigate(-1)}>
-                        Back
-                    </Button>
-                </Col>
-            </Row>
-
-            <Card className="ticket-card">
-                <Card.Body>
-                    <Row>
-                        <Col md={9}>
+            <Row>
+                <Col md={8}>
+                    <Card className="ticket-card mb-4">
+                        <Card.Body style={{minHeight: '500px'}}>
                             <h4 className="ticket-title">{ticket.title}</h4>
                             <p className="ticket-description">{ticket.description}</p>
-                        </Col>
 
-                        <Col md={3}>
+                            {ticket.photoUrls && ticket.photoUrls.length > 0 && (
+                                <div className="attached-images">
+                                    <h5>Attached Images</h5>
+                                    <Row>
+                                        {ticket.photoUrls.map((photoUrl, index) => (
+                                            <Col key={index} xs={6} md={4} className="mb-3">
+                                                <Image
+                                                    src={photoUrl}
+                                                    alt={`Ticket Image ${index + 1}`}
+                                                    fluid
+                                                    className="rounded shadow-sm"
+                                                    onClick={() => handleImagePreview(photoUrl, index)}
+                                                />
+                                            </Col>
+                                        ))}
+                                    </Row>
+                                </div>
+                            )}
+                        </Card.Body>
+                    </Card>
+                </Col>
+
+                <Col md={4}>
+                    <Card className="ticket-meta-card mb-4">
+                        <Card.Body>
                             <Badge bg={ticket.priority === "Urgent" ? "danger" : "primary"} className="me-2">
                                 {ticket.priority}
                             </Badge>
                             <Badge bg="secondary">{ticket.category}</Badge>
-                            <p className="ticket-meta mt-2">
-                                <strong>Created By:</strong> {`${ticket.createdBy?.fname} ${ticket.createdBy?.lname}` || "Unknown"}
-                            </p>
+                            <p className="ticket-meta mt-2"><strong>Created By:</strong> {`${ticket.createdBy?.fname} ${ticket.createdBy?.lname}` || "Unknown"}</p>
                             <p className="ticket-meta"><strong>Created At:</strong> {ticket.createdAt ? new Date(ticket.createdAt).toLocaleString() : "Unknown"}</p>
                             <h3 className="ticket-status">Status: {ticket.status || ""}</h3>
-                            {userRole !== "user" && ticket.status !== 'Archived' ? (
-                                <div className="status-select">
-                                    <Button
-                                        variant="outline-danger"
-                                        onClick={handleArchiveConfirmation}
-                                        className="w-100 mb-2"
-                                    >
-                                        Add to Archive
+
+                            {userRole !== "user" && ticket.status !== 'Archived' && (
+                                <div className="status-actions">
+                                    <Button variant="outline-danger" onClick={handleArchiveConfirmation} className="w-100 mb-2">
+                                        Archive
                                     </Button>
-                                    <Form.Select
-                                        value={ticket.status}
-                                        onChange={(e) => handleStatusChange(e.target.value)}
-                                    >
+                                    <Form.Select value={ticket.status} onChange={(e) => handleStatusChange(e.target.value)} className="w-100">
                                         <option value="Open">Open</option>
                                         <option value="In Progress">In Progress</option>
                                         <option value="Resolved">Resolved</option>
                                         <option value="Closed">Closed</option>
                                     </Form.Select>
                                 </div>
-                            )
-                                : null
-                            }
-                        </Col>
-                    </Row>
-
-                    {ticket.photoUrls && ticket.photoUrls.length > 0 && (
-                        <div className="attached-images">
-                            <h5>Attached Images</h5>
-                            <Row>
-                                {ticket.photoUrls.map((photoUrl, index) => (
-                                    <Col key={index} xs={6} md={4} lg={3} className="mb-3">
-                                        <Image
-                                            src={photoUrl}
-                                            alt={`Ticket Image ${index + 1}`}
-                                            fluid
-                                            className="rounded shadow-sm image-thumbnail"
-                                            onClick={() => handleImagePreview(photoUrl, index)}
-                                        />
-                                    </Col>
-                                ))}
-                            </Row>
-                        </div>
-                    )}
-                </Card.Body>
-            </Card>
-
-            <div className="comments-section">
-                <h3>Comments</h3>
-                {comments.map((comment) => (
-                    <Card key={comment._id} className="comment-card">
-                        <Card.Body>
-                            <p className="comment-content">{comment.content}</p>
-                            <small className="comment-meta">By: {comment.createdBy.fname} {comment.createdBy.lname} at {new Date(comment.createdAt).toLocaleString()}</small>
-                            <div className="comment-actions">
-                                <Button
-                                    variant="outline-primary"
-                                    size="sm"
-                                    className="me-2"
-                                    onClick={() => handleCommentEdit(comment._id, prompt("Edit comment:", comment.content))}
-                                    disabled={editingCommentId === comment._id}
-                                >
-                                    {editingCommentId === comment._id ? (
-                                        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                                    ) : (
-                                        "Edit"
-                                    )}
-                                </Button>
-                                <Button
-                                    variant="outline-danger"
-                                    size="sm"
-                                    onClick={() => handleCommentDelete(comment._id)}
-                                    disabled={deletingCommentId === comment._id}
-                                >
-                                    {deletingCommentId === comment._id ? (
-                                        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                                    ) : (
-                                        "Delete"
-                                    )}
-                                </Button>
-                            </div>
+                            )}
                         </Card.Body>
                     </Card>
-                ))}
-            </div>
+                </Col>
+            </Row>
 
-            <Form onSubmit={handleCommentSubmit} className="add-comment-form">
-                <Form.Group controlId="newComment">
-                    <Form.Label>Add a comment</Form.Label>
-                    <Form.Control
-                        as="textarea"
-                        rows={3}
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        required
-                    />
-                </Form.Group>
-                <Button type="submit" className="submit-button" disabled={addingComment}>
-                    {addingComment ? (
-                        <>
-                            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                            <span className="ms-2">Adding Comment...</span>
-                        </>
-                    ) : (
-                        "Add Comment"
-                    )}
-                </Button>
-            </Form>
+            <Row className="comments-section">
+                <Col>
+                    <h3>Comments</h3>
+                    {comments.map((comment) => (
+                        <Card key={comment._id} className="comment-card mb-3">
+                            <Card.Body>
+                                <p className="comment-content">{comment.content}</p>
+                                <small className="comment-meta">By: {comment.createdBy.fname} {comment.createdBy.lname} at {new Date(comment.createdAt).toLocaleString()}</small>
+                                <div className="comment-actions">
+                                    <Button
+                                        variant="outline-primary"
+                                        size="sm"
+                                        className="me-2"
+                                        onClick={() => handleCommentEdit(comment._id, prompt("Edit comment:", comment.content))}
+                                        disabled={editingCommentId === comment._id}
+                                    >
+                                        {editingCommentId === comment._id ? <Spinner as="span" animation="border" size="sm" /> : "Edit"}
+                                    </Button>
+                                    <Button
+                                        variant="outline-danger"
+                                        size="sm"
+                                        onClick={() => handleCommentDelete(comment._id)}
+                                        disabled={deletingCommentId === comment._id}
+                                    >
+                                        {deletingCommentId === comment._id ? <Spinner as="span" animation="border" size="sm" /> : "Delete"}
+                                    </Button>
+                                </div>
+                            </Card.Body>
+                        </Card>
+                    ))}
 
-            <Modal
-                visible={showArchiveConfirmation}
-                title="Confirm Archive"
-                onCancel={handleArchiveCancel}
-                footer={[
-                    <Button className="me-2" key="cancel" onClick={handleArchiveCancel}>
-                        Cancel
-                    </Button>,
-                    <Button key="archive" variant="danger" onClick={handleArchiveConfirm}>
-                        Archive
-                    </Button>,
-                ]}
-            >
-                <p>Are you sure you want to archive this ticket? This action cannot be undone.</p>
-            </Modal>
+                    <Form onSubmit={handleCommentSubmit}>
+                        <Form.Group controlId="comment">
+                            <Form.Label>Add Comment</Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                rows={3}
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                                required
+                            />
+                        </Form.Group>
+                        <Button type="submit" className="mt-3" disabled={addingComment}>
+                            {addingComment ? <Spinner as="span" animation="border" size="sm" /> : "Submit"}
+                        </Button>
+                    </Form>
+                </Col>
+            </Row>
 
+            {/* Image Preview Modal */}
             <Modal
                 visible={previewVisible}
                 title={previewTitle}
                 footer={null}
                 onCancel={() => setPreviewVisible(false)}
             >
-                <img alt={previewTitle} style={{ width: '100%' }} src={previewImage} />
+                <img alt={previewTitle} style={{ width: "100%" }} src={previewImage} />
+            </Modal>
+
+            {/* Archive Confirmation Modal */}
+            <Modal
+                visible={showArchiveConfirmation}
+                title="Confirm Archive"
+                onOk={handleArchiveConfirm}
+                onCancel={handleArchiveCancel}
+                okText="Yes, Archive"
+                cancelText="Cancel"
+            >
+                <p>Are you sure you want to archive this ticket?</p>
             </Modal>
         </Container>
     );

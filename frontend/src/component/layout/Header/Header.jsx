@@ -16,9 +16,11 @@ const Header = () => {
 
   return (
     <header style={{
+      border: '1px solid #d2d2d2',
+      borderRadius: '4px',
       padding: '0 24px',
       background: '#fff',
-      boxShadow: '0 1px 4px rgba(0,21,41,.08)',
+      boxShadow: '0 1px 4px rgba(0,21,41,.1)',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
@@ -26,6 +28,7 @@ const Header = () => {
     }}>
       <h1 style={{ margin: 0, fontSize: '40px' }}>{headerText}</h1>
       <Button
+        style={{ background: '#4e73df' }}
         onClick={handleLogout}
         icon={<LogoutOutlined />}
         type="primary"

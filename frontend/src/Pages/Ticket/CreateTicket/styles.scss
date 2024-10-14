@@ -1,0 +1,76 @@
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+
+.create-ticket {
+    max-width: 900px;
+    margin-top: 2rem;
+    padding: 2rem;
+    background-color: $white;
+    border-radius: $border-radius;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    &__title {
+        margin-bottom: 1.5rem;
+        text-align: center;
+        font-weight: bold;
+        color: $primary;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .form-control {
+        border-color: $input-border-color;
+        padding: 0.75rem;
+        font-size: 1rem;
+
+        &:focus {
+            border-color: $primary;
+            box-shadow: 0 0 0 0.2rem rgba($primary, 0.25);
+        }
+    }
+
+    textarea.form-control {
+        min-height: 100px;
+    }
+
+    .ant-upload-list-picture-card .ant-upload-list-item {
+        border-radius: $border-radius-sm;
+    }
+
+    &__submit {
+        text-align: center;
+        margin-top: 2rem;
+
+        .btn-primary {
+            padding: 0.75rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+    }
+}
+
+// Responsive adjustments
+@include media-breakpoint-down(md) {
+    .create-ticket {
+        padding: 1.5rem;
+
+        &__title {
+            font-size: 1.5rem;
+        }
+
+        .form-control {
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        &__submit {
+            .btn-primary {
+                padding: 0.5rem 1rem;
+                font-size: 1rem;
+            }
+        }
+    }
+}
