@@ -281,11 +281,11 @@ const TicketDetails = () => {
 
                             {userRole !== "user" && ticket.status !== 'Archived' && (
                                 <div className="status-actions">
-                                    <Button variant="outline-danger" onClick={handleArchiveConfirmation} className="w-100 mb-2">
+                                    <Button variant="outline-danger" onClick={handleArchiveConfirmation} className="w-100 mb-4">
                                         Archive
                                     </Button>
                                     <Form.Label>Update Status</Form.Label>
-                                    <Form.Select value={ticket.status} onChange={(e) => handleStatusChange(e.target.value)} className="w-100">
+                                    <Form.Select value={ticket.status} onChange={(e) => handleStatusChange(e.target.value)} className="w-100 mt-0">
                                         <option value="Open">Open</option>
                                         <option value="In Progress">In Progress</option>
                                         <option value="Resolved">Resolved</option>
@@ -295,13 +295,13 @@ const TicketDetails = () => {
                                 </div>
                             )}
                             
-
                             {userRole === 'superadmin' && ticket.status !== 'Archived' && (
-                                <div className="assign-admin mt-3">
+                                <div className="assign-admin mt-4">
                                     <Form.Label>Assign to Admin</Form.Label>
                                     <Form.Select
                                         value={assignedAdmin?.id || ''}
                                         onChange={(e) => handleAssign(e.target.value)}
+                                        className="mt-0"
                                     >
                                         <option value="">Select an admin</option>
                                         {Object.values(admins).map((admin) => (
