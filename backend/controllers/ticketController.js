@@ -2,6 +2,7 @@ const Ticket = require("../models/ticket");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const checkPermission = require("../utility/checkPermission");
+const user = require("../models/user");
 
 const createTicket = async (req, res) => {
     const { title, description, category, priority, photoUrls } = req.body;
@@ -133,6 +134,32 @@ const getArchivedTickets = async (req, res) => {
     }
 }
 
+const assignTicket = async (req, res) => {
+    const { id: ticketId } = req.params;
+    const { adminId } = req.body;
+
+    if (!adminId) {
+      throw new CustomError.BadRequestError('Please provide an admin ID');
+    }
+  
+    const ticket = await Ticket.findOne({ _id: ticketId });
+  
+    if (!ticket) {
+      throw new CustomError.NotFoundError(`No ticket found with id ${ticketId}`);
+    }
+  
+    const admin = await user.findOne({ _id: adminId, role: 'admin' });
+  
+    if (!admin) {
+      throw new CustomError.NotFoundError(`No admin found with id ${adminId}`);
+    }
+  
+    ticket.assignedTo = adminId;
+    await ticket.save();
+  
+    res.status(StatusCodes.OK).json({ ticket });
+  };
+
 module.exports = {
     createTicket,
     getAllTickets,
@@ -142,5 +169,6 @@ module.exports = {
     getCurrentUserTickets,
     getTicketStats,
     getLatestTickets,
-    getArchivedTickets
+    getArchivedTickets,
+    assignTicket
 };

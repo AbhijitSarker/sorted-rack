@@ -15,7 +15,8 @@ const { createTicket,
     deleteTicket, 
     getTicketStats, 
     getLatestTickets, 
-    getArchivedTickets 
+    getArchivedTickets, 
+    assignTicket
 } = require("../controllers/ticketController");
 
 router
@@ -27,6 +28,7 @@ router.route("/myTickets").get(authenticateUser, getCurrentUserTickets);
 router.route("/stats").get([authenticateUser, authorizeRoles("superadmin", "admin")], getTicketStats);
 router.route('/latest').get([authenticateUser, authorizeRoles("superadmin", "admin")], getLatestTickets);
 router.route('/archive').get([authenticateUser, authorizeRoles("superadmin", "admin")], getArchivedTickets);
+router.route('/:id/assign').patch([authenticateUser, authorizeRoles("superadmin")], assignTicket);
 
 router
     .route("/:id")

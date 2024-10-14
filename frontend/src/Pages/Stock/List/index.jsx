@@ -237,8 +237,8 @@ const ListStock = () => {
                   </>
                 ) : (
                   <>
-                    <th>Accessories Type</th>
                     <th>Accessories Name</th>
+                    <th>Accessories Type</th>
                     <th>Date of Purchase</th>
                     <th>Serial Number</th>
                     <th>Warranty</th>
@@ -268,8 +268,8 @@ const ListStock = () => {
                     </>
                   ) : (
                     <>
-                      <td>{item.productType}</td>
                       <td className="stock-name">{item.accessoriesName}</td>
+                      <td>{item.productType}</td>
                       <td>{convertDate(item.dateOfPurchase || "")}</td>
                       <td>{item.serialNumber}</td>
                       <td>{item.warrantyPeriod}</td>

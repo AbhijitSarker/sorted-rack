@@ -116,6 +116,11 @@ const getUserStats = async (req, res) => {
   });
 };
 
+const getAdmins = async (req, res) => {
+  const admins = await User.find({ role: 'admin' }).select('_id fname lname email');
+  res.status(StatusCodes.OK).json({ admins });
+};
+
 module.exports = {
   getAllUsers,
   getSingleUser,
@@ -123,5 +128,6 @@ module.exports = {
   UpdateUserRole,
   deleteAllUsers,
   UpdateUserPassword,
-  getUserStats
+  getUserStats,
+  getAdmins
 };

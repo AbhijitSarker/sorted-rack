@@ -23,6 +23,8 @@ const TicketDetails = () => {
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
     const [showArchiveConfirmation, setShowArchiveConfirmation] = useState(false);
+    const [admins, setAdmins] = useState([]);
+    const [assignedAdmin, setAssignedAdmin] = useState(null);
 
     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
     const userRole = userDetails ? userDetails.role : null;
@@ -85,16 +87,64 @@ const TicketDetails = () => {
         }
     };
 
-    useEffect(() => {
+    const fetchAdmins = async () => {
+        try {
+          const response = await axiosSecure.get('/user/admins', {
+            headers: {
+              Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
+            },
+          });
+          const adminMap = {};
+          response.data.admins.forEach(admin => {
+            adminMap[admin._id] = admin;
+          });
+          setAdmins(adminMap);
+        } catch (error) {
+          console.error("Error fetching admins:", error);
+        }
+      };
+
+      useEffect(() => {
         fetchTicketDetails();
         fetchComments();
-    }, [id]);
-
-    useEffect(() => {
-        if (response?.ticket) {
-            setTicket(response?.ticket);
+        if (userRole === 'superadmin') {
+          fetchAdmins();
         }
-    }, [response]);
+      }, [id, userRole]);
+
+      useEffect(() => {
+        if (response?.ticket) {
+          setTicket(response.ticket);
+          const assignedAdminId = response.ticket.assignedTo;
+          if (assignedAdminId && admins[assignedAdminId]) {
+            setAssignedAdmin({
+              id: assignedAdminId,
+              name: `${admins[assignedAdminId].fname} ${admins[assignedAdminId].lname}`
+            });
+          } else {
+            setAssignedAdmin(null);
+          }
+        }
+      }, [response, admins]);
+
+      const handleAssign = async (adminId) => {
+        try {
+          await axiosSecure.patch(`/ticket/${id}/assign`, { adminId }, {
+            headers: {
+              Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
+            },
+          });
+          if (admins[adminId]) {
+            setAssignedAdmin({
+              id: adminId,
+              name: `${admins[adminId].fname} ${admins[adminId].lname}`
+            });
+          }
+          fetchTicketDetails();
+        } catch (error) {
+          console.error("Error assigning ticket:", error);
+        }
+      };
 
     const handleStatusChange = async (newStatus) => {
         try {
@@ -224,6 +274,9 @@ const TicketDetails = () => {
                             <Badge bg="secondary">{ticket.category}</Badge>
                             <p className="ticket-meta mt-2"><strong>Created By:</strong> {`${ticket.createdBy?.fname} ${ticket.createdBy?.lname}` || "Unknown"}</p>
                             <p className="ticket-meta"><strong>Created At:</strong> {ticket.createdAt ? new Date(ticket.createdAt).toLocaleString() : "Unknown"}</p>
+                            <p className="ticket-meta">
+                                <strong>Assigned To:</strong> {assignedAdmin ? assignedAdmin.name : "Not Assigned"}
+                            </p>
                             <h3 className="ticket-status">Status: {ticket.status || ""}</h3>
 
                             {userRole !== "user" && ticket.status !== 'Archived' && (
@@ -231,11 +284,31 @@ const TicketDetails = () => {
                                     <Button variant="outline-danger" onClick={handleArchiveConfirmation} className="w-100 mb-2">
                                         Archive
                                     </Button>
+                                    <Form.Label>Update Status</Form.Label>
                                     <Form.Select value={ticket.status} onChange={(e) => handleStatusChange(e.target.value)} className="w-100">
                                         <option value="Open">Open</option>
                                         <option value="In Progress">In Progress</option>
                                         <option value="Resolved">Resolved</option>
                                         <option value="Closed">Closed</option>
+                                    </Form.Select>
+
+                                </div>
+                            )}
+                            
+
+                            {userRole === 'superadmin' && ticket.status !== 'Archived' && (
+                                <div className="assign-admin mt-3">
+                                    <Form.Label>Assign to Admin</Form.Label>
+                                    <Form.Select
+                                        value={assignedAdmin?.id || ''}
+                                        onChange={(e) => handleAssign(e.target.value)}
+                                    >
+                                        <option value="">Select an admin</option>
+                                        {Object.values(admins).map((admin) => (
+                                            <option key={admin._id} value={admin._id}>
+                                                {admin.fname} {admin.lname}
+                                            </option>
+                                        ))}
                                     </Form.Select>
                                 </div>
                             )}

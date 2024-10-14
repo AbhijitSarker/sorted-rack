@@ -21,10 +21,47 @@ const AllTickets = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
   const { setHeaderText } = useContext(HeaderContext);
+  const [admins, setAdmins] = useState([]);
 
   useEffect(() => {
     setHeaderText('All Tickets');
   }, [setHeaderText]);
+
+  useEffect(() => {
+    // Fetch list of admins
+    const fetchAdmins = async () => {
+      try {
+        const response = await axiosSecure.get('/user/admins', {
+          headers: {
+            Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
+          },
+        });
+        const adminMap = {};
+        response.data.admins.forEach(admin => {
+          adminMap[admin._id] = admin;
+        });
+        setAdmins(adminMap);
+      } catch (error) {
+        console.error("Error fetching admins:", error);
+      }
+    };
+
+    fetchAdmins();
+  }, []);
+
+  const handleAssign = async (ticketId, adminId) => {
+    try {
+      await axiosSecure.patch(`/ticket/${ticketId}/assign`, { adminId }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.userDetails && JSON.parse(localStorage.userDetails).token}`,
+        },
+      });
+      fetchTicketDetails(); // Refresh the ticket list
+    } catch (error) {
+      console.error("Error assigning ticket:", error);
+    }
+  };
+
   const fetchTicketDetails = async () => {
     axiosFetch({
       axiosInstance: axiosSecure,
@@ -33,10 +70,9 @@ const AllTickets = () => {
       requestConfig: [
         {
           headers: {
-            Authorization: `Bearer ${
-              localStorage.userDetails &&
+            Authorization: `Bearer ${localStorage.userDetails &&
               JSON.parse(localStorage.userDetails).token
-            }`,
+              }`,
           },
         },
       ],
@@ -55,10 +91,9 @@ const AllTickets = () => {
       },
       {
         headers: {
-          Authorization: `Bearer ${
-            localStorage.userDetails &&
+          Authorization: `Bearer ${localStorage.userDetails &&
             JSON.parse(localStorage.userDetails).token
-          }`,
+            }`,
         },
       }
     );
@@ -72,7 +107,7 @@ const AllTickets = () => {
 
     if (search) {
       filteredResult = filteredResult.filter((currentItem) =>
-        currentItem.title.toLowerCase().includes(search.toLowerCase()) || 
+        currentItem.title.toLowerCase().includes(search.toLowerCase()) ||
         currentItem.category.toLowerCase().includes(search.toLowerCase())
       );
     }
@@ -165,6 +200,7 @@ const AllTickets = () => {
                 <th>Created By</th>
                 <th>Created At</th>
                 <th>Status</th>
+                <th>Assign To</th>
                 <th className="text-center">Action</th>
               </tr>
             </thead>
@@ -181,15 +217,28 @@ const AllTickets = () => {
                   <td>{`${item.createdBy?.fname} ${item.createdBy?.lname}`}</td>
                   <td>{new Date(item.createdAt).toLocaleString()}</td>
                   <td>
-                      <Form.Select
-                        value={item.status}
-                        onChange={(e) => handleStatusChange(item, e.target.value)}
-                      >
-                        <option value="Open">Open</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Resolved">Resolved</option>
-                        <option value="Closed">Closed</option>
-                      </Form.Select>
+                    <Form.Select
+                      value={item.status}
+                      onChange={(e) => handleStatusChange(item, e.target.value)}
+                    >
+                      <option value="Open">Open</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Resolved">Resolved</option>
+                      <option value="Closed">Closed</option>
+                    </Form.Select>
+                  </td>
+                  <td>
+                    <Form.Select
+                      value={item.assignedTo || ''}
+                      onChange={(e) => handleAssign(item._id, e.target.value)}
+                    >
+                      <option value="">Assign to...</option>
+                      {Object.values(admins).map((admin) => (
+                        <option key={admin._id} value={admin._id}>
+                          {admin.fname} {admin.lname}
+                        </option>
+                      ))}
+                    </Form.Select>
                   </td>
                   <td className="text-center">
                     <Link to={`/ticket/${item._id}`} replace>
@@ -202,12 +251,12 @@ const AllTickets = () => {
           </Table>
         </div>
       )}
-        <PaginationComponent
-          total={totalItems}
-          itemsPerPage={ITEMS_PER_PAGE}
-          currentPage={currentPage}
-          onPageChange={(page) => setCurrentPage(page)}
-        />
+      <PaginationComponent
+        total={totalItems}
+        itemsPerPage={ITEMS_PER_PAGE}
+        currentPage={currentPage}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
     </Container>
   );
 };
