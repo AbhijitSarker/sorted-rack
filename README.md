@@ -7,6 +7,7 @@
 The **SORTED RACK** is a comprehensive solution designed to streamline the management of IT assets and support tickets within organizations. It empowers teams to efficiently track IT equipment, assign devices, manage users, and handle support tickets---all in one place.
 
 Demo Link: https://vimeo.com/1019677195?share=copy
+
 🚀 Features
 -----------
 
